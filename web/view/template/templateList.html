@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    \{include file="../common/resource.html"\}
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        \{include file="../common/header.html"\}
+        \{include file="../common/menu.html"\}
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1></h1>
+            </section>
+            <!-- Main content -->
+            <section class="content">
+                <div class="row">
+                    <div class="col-md-8">
+                        \{if $error != ''\}
+                        <div class="alert alert-warning alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$error\}</h4>
+                        </div>
+                        \{/if\}
+                        \{if $msg != ''\}
+                        <div class="alert alert-success alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$msg\}</h4>
+                        </div>
+                        \{/if\}
+                        <div class="box box-info" >
+                            <div class="box-header with-border">
+                                    <h3 class="box-title">文青樣板管理</h3>
+                            </div>
+                            <div class="box-body">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr style="background-color: #00c0ef;color: #fff;">
+                                            <th class="col-md-1">ID</th>
+                                            <th class="col-md-2">樣板名稱</th>
+                                            <th class="col-md-1">樣板</th>
+                                            <th class="col-md-3">建立時間</th>
+                                            <th class="col-md-3">最後更新</th>
+                                            <th class="col-md-2">操作選項</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        \{foreach from=$templateData item=template\}
+                                        <tr>
+                                            <td>\{$template.hipster_template_id\}</td>
+                                            <td>\{$template.name\}</td>
+                                            <td>
+                                                <a href="#">
+                                                    <button id="showBtn" class="btn btn-sm btn-warning"><i class="glyphicon glyphicon-picture"></i></button>
+                                                </a>
+                                            </td>
+                                            <td>\{$template.create_date\}</td> 
+                                            <td>\{$template.lastupdate_date\}</td>
+                                            <td>
+                                                <a href="../controller/templateController.php?action=viewEditForm&id=\{$template.hipster_template_id\}">
+                                                    <button class="btn btn-sm btn-success"><i class="glyphicon glyphicon-pencil"></i></button>
+                                                </a>
+                                                <a href="#">
+                                                    <button class="btn btn-sm btn-danger" onclick="deleteTemplate('\{$template.hipster_template_id\}');"><i class="glyphicon glyphicon-remove"></i></button>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr id="showPic" class="collapse">
+                                            <td colspan="6">
+                                                <img src="\{$template.template\}" width="100%" />
+                                            </td>
+                                        </tr>
+                                        \{/foreach\}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        \{include file="../common/footer.html"\}
+    </div>
+    <script src="../javascript/templateList.js"></script>
+</body>
+
+</html>

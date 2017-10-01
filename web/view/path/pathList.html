@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    \{include file="../common/resource.html"\}
+
+    <script type="text/javascript">
+    
+    function deletePath(svgID){
+        BootstrapDialog.show({
+            title:'提醒',
+            message: '確定刪除路線嗎?',
+            buttons: [{
+                label: '確定',
+                cssClass: 'btn-danger',
+                action: function(){
+                    location='../controller/pathController.php?action=deletePath&svgID='+ svgID ;
+                }
+            },{
+                label: '取消',
+                action: function(dialogItself){
+                    dialogItself.close();
+                }
+            }]
+        });
+    }
+
+</script>
+
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        \{include file="../common/header.html"\}
+        \{include file="../common/menu.html"\}
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1>路徑列表</h1>
+            </section>
+            <!-- Main content -->
+            <section class="content">
+                <div class="row">
+                    <div class="col-xs-12">
+                        \{if $error != ''\}
+                        <div class="alert alert-warning alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$error\}</h4>
+                        </div>
+                        \{/if\}
+                        \{if $msg != ''\}
+                        <div class="alert alert-success alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$msg\}</h4>
+                        </div>
+                        \{/if\}
+                        <div class="box box-info">
+                            <div class="box-header">
+                                <h3 class="box-title">路徑管理</h3>
+                            </div>
+                            <div class="box-body">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr style="background-color: #00c0ef;color: #fff;">
+                                            <th>SVG_ID</th>
+                                            <th>起始區域編號</th>
+                                            <th>起始區域名稱</th>
+                                            <th>目的區域編號</th>
+                                            <th>目的區域名稱</th>
+                                            <th>建立時間</th>
+                                            <th>最後更新</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        \{foreach from=$allPath item=item\}
+                                        <tr>
+                                            <td>\{$item.svg_id\}</td>
+                                            <td>\{$item.start\}</td>
+                                            <td>\{$item.Sn\}</td>
+                                            <td>\{$item.end\}</td>
+                                            <td>\{$item.En\}</td>
+                                            <td>\{$item.create_date\}</td>
+                                            <td>\{$item.lastupdate_date\}</td>
+                                            <td>
+                                                <a href="../controller/pathController.php?action=editPathForm&pathID=\{$item.path_id\}">
+                                                    <button class="btn btn-sm btn-success"><i class="glyphicon glyphicon-pencil"></i></button>
+                                                </a>&nbsp;
+                                                <a href="#">
+                                                    <button class="btn btn-sm btn-danger" onclick="deletePath('\{$item.svg_id\}')"><i class="glyphicon glyphicon-remove"></i></button>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        \{/foreach\}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        \{include file="../common/footer.html"\}
+    </div>
+</body>
+
+</html>

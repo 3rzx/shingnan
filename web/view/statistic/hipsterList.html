@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    \{include file="../common/resource.html"\}
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        \{include file="../common/header.html"\}
+        \{include file="../common/menu.html"\}
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1></h1>
+            </section>
+            <!-- Main content -->
+            <section class="content">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box box-info" >
+                            <div class="box-header with-border">
+                                    <h3 class="box-title">文青樣板使用資料統計</h3>
+                            </div>
+                            <div class="box-body">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr style="background-color: #00c0ef;color: #fff;">
+                                            <th >ID</th>
+                                            <th class="col-md-2">文字</th>
+                                            <th class="col-md-1">樣板編號</th>
+                                            <th class="col-md-2">罐頭文字編號</th>
+                                            <th >建立時間</th>
+                                            <th >最後更新</th>
+                                            <th >顯示圖片</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        \{foreach from=$hipster_contentData item=hipster_content\}
+                                        <tr>
+                                            <td>\{$hipster_content.hipster_content_id\}</td>
+                                            <td>\{$hipster_content.content\}</td>
+                                            <td>
+                                                \{$hipster_content.hipster_template_id\}
+                                            </td>
+                                            <td>\{$hipster_content.hipster_text_id\}</td>
+                                            <td>\{$hipster_content.create_date\}</td> 
+                                            <td>\{$hipster_content.lastupdate_date\}</td>
+                                            <td>
+                                                <a href="#">
+                                                    <button id="showPic" class="btn btn-sm btn-warning"><i class="glyphicon glyphicon-picture"></i></button>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr id="showPic" class="collapse">
+                                            <td colspan="8">
+                                                <div id="Pic\{$hipster_content.hipster_content_id\}" class="panel panel-default">
+                                                    <div class="panel-heading">
+                                                        <h3 class="panel-title">
+                                                            照片
+                                                        </h3>
+                                                    </div>
+                                                    <div class="panel-body">
+                                                        <img src="\{$hipster_content.picture\}" width="100%" />
+                                                    </div>
+                                                </div>
+                                                <div id="Comb\{$hipster_content.hipster_content_id\}" class="panel panel-default">
+                                                    <div class="panel-heading">
+                                                        <h3 class="panel-title">
+                                                            輸出
+                                                        </h3>
+                                                    </div>
+                                                    <div class="panel-body">
+                                                        <img src="\{$hipster_content.combine_picture\}" width="100%" />
+                                                    </div>
+                                                </div>
+                                                <div id="Temp\{$hipster_content.hipster_content_id\}" class="panel panel-default">
+                                                    <div class="panel-heading">
+                                                        <h3 class="panel-title">
+                                                            \{$hipster_content.hipster_template_id\}&nbsp&nbsp\{$hipster_content.template_name\}
+                                                        </h3>
+                                                    </div>
+                                                    <div class="panel-body">
+                                                        <img src="\{$hipster_content.template_path\}" width="100%" />
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        \{/foreach\}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        \{include file="../common/footer.html"\}
+    </div>
+    <script src="../javascript/hipsterList.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    \{include file="../common/resource.html"\}
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        \{include file="../common/header.html"\}
+        \{include file="../common/menu.html"\}
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1></h1>
+            </section>
+            <!-- Main content -->
+            <section class="content">
+                <div class="row">
+                    <div class="col-xs-7">
+                        \{if $error != ''\}
+                        <div class="alert alert-warning alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$error\}</h4>
+                        </div>
+                        \{/if\}
+                        \{if $msg != ''\}
+                        <div class="alert alert-success alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$msg\}</h4>
+                        </div>
+                        \{/if\}
+                        <div class="box box-primary">
+                            <div class="box-header with-border">
+                                    <h3 class="box-title">裝置硬體管理</h3>
+                                    <a href="../controller/leaseController.php?action=viewAddForm">
+                                    <button class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-plus"></i></button>
+                                    </a>
+                            </div>
+                            <div class="box-body">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr style="background-color: #3c8dbc;color: #fff;">
+                                            <th class="col-md-1">ID</th>
+                                            <th class="col-md-1">PadID</th>
+                                            <th class="col-md-1">借用人</th>
+                                            <th class="col-md-1">借用人聯絡電話</th>
+                                            <th class="col-md-1">借出時間</th>
+                                            <th class="col-md-1">歸還時間</th>
+                                            <th class="col-md-1">操作選項</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        \{foreach from=$leaseData item=lease\}
+                                        <tr>
+                                            <td>\{$lease.id\}</td>
+                                            <td>\{$lease.pad_id\}</td>
+                                            \{if $lease.borrower == NULL\}
+                                            <td>未出借</td>
+                                            <td>--</td>
+                                            \{else\}
+                                            <td>\{$lease.borrower\}</td>
+                                            <td>\{$lease.borrower_tel\}</td> 
+                                            \{/if\}
+                                            <td>\{$lease.lease_date\}</td>
+                                            <td>\{$lease.return_date\}</td>
+                                            <td>
+                                                <a href="../controller/leaseController.php?action=viewEditPad&id=\{$lease.id\}">
+                                                    <button class="btn btn-sm btn-success"><i class="glyphicon glyphicon-pencil"></i></button>
+                                                </a>
+                                                \{if $lease.borrower == NULL\}
+                                                <a href="#">
+                                                    <button class="btn btn-sm btn-danger" onclick="deletePad('\{$lease.pad_id\}');"><i class="glyphicon glyphicon-remove"></i></button>
+                                                </a>
+                                                \{/if\}
+                                            </td>
+                                        </tr>
+                                        \{/foreach\}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        \{include file="../common/footer.html"\}
+    </div>
+    <script src="../javascript/leaseList.js"></script>
+</body>
+
+</html>

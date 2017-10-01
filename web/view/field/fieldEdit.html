@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    \{include file="../common/resource.html"\}
+    <!-- Bootstrap3 input file 1.2.1 -->
+    <script type="text/javascript" src="../plugins/bootstrap-filestyle/src/bootstrap-filestyle.min.js"> </script>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        \{include file="../common/header.html"\}
+        \{include file="../common/menu.html"\}
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1>專案編輯</h1>
+            </section>
+            <!-- Main content -->
+            <section class="content">
+                <div class="row">
+                    <div class="col-md-6">
+                        \{if $error != ''\}
+                        <div class="alert alert-warning alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$error\}</h4>
+                        </div>
+                        \{/if\}
+                        <div class="box box-success">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">編輯場域</h3>
+                            </div>
+                            <form class="form-horizontal" enctype="multipart/form-data" method="post" action="../controller/fieldController.php" onsubmit="return formValidation();">
+                                <div class="box-body">
+                                    <div id="fieldNameDiv" class="form-group">
+                                        <label for="fieldName" class="col-sm-2 control-label">場域名稱</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="fieldName" name="fieldName" placeholder="輸入場域名稱" value="\{$field.name\}">
+                                        </div>
+                                    </div>
+                                    <div id="fieldNameEnDiv" class="form-group">
+                                        <label for="fieldNameEn" class="col-sm-2 control-label">英文名稱</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="fieldNameEn" name="fieldNameEn" placeholder="輸入英文名稱" value="\{$field.name_en\}">
+                                        </div>
+                                    </div>
+                                    <div id="fieldIntroductionDiv" class="form-group">
+                                        <label for="fieldIntroduction" class="col-sm-2 control-label">場域介紹</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="fieldIntroduction" name="fieldIntroduction" placeholder="輸入場域介紹" value="\{$field.introduction\}">
+                                        </div>
+                                    </div>
+                                    <div id="fieldPhotoDiv" class="form-group">
+                                        <label for="fieldPhoto" class="col-sm-2 control-label">場域圖片(平板)</label>
+                                        <div class="col-sm-10">
+                                            <input type="file" id="fieldPhoto" name="fieldPhoto" data-input="false" accept="image/*">
+                                            <img id="fieldPhotoImg" class="img-thumbnail" src="\{$field.photo\}"/>
+                                        </div>
+                                    </div>
+                                    <div id="fieldPhotoAppDiv" class="form-group">
+                                        <label for="fieldPhotoApp" class="col-sm-2 control-label">場域圖片(App)</label>
+                                        <div class="col-sm-10">
+                                            <input type="file" id="fieldPhotoApp" name="fieldPhotoApp" data-input="false" accept="image/*">
+                                            <img id="fieldPhotoAppImg" class="img-thumbnail" src="\{$field.photo_vertical\}"/>
+                                        </div>
+                                    </div>
+                                    <div id="fieldMapDiv" class="form-group">
+                                        <label for="fieldMap" class="col-sm-2 control-label">場域地圖</label>
+                                        <div class="col-sm-10">
+                                            <input type="file" id="fieldMap" name="fieldMap" data-input="false" accept="image/*">
+                                            <img id="fieldMapImg" class="img-thumbnail" src="\{$field.map_svg\}"/>
+                                        </div>
+                                    </div>
+                                    <div id="fieldMapEnDiv" class="form-group">
+                                        <label for="fieldMapEn" class="col-sm-2 control-label">場域地圖(英文)</label>
+                                        <div class="col-sm-10">
+                                            <input type="file" id="fieldMapEn" name="fieldMapEn" data-input="false" accept="image/*">
+                                            <img id="fieldMapEnImg" class="img-thumbnail" src="\{$field.map_svg_en\}"/>
+                                        </div>
+                                    </div>
+                                    <div id="fieldMapBgDiv" class="form-group">
+                                        <label for="fieldMapBg" class="col-sm-2 control-label">場域背景</label>
+                                        <div class="col-sm-10">
+                                            <input type="file" id="fieldMapBg" name="fieldMapBg" data-input="false" accept="image/*">
+                                            <img id="fieldMapBgImg" class="img-thumbnail" src="\{$field.map_bg\}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="box-footer" style="text-align: right;">
+                                    <a href="../controller/projectController.php?action=viewProjectDetail&projectId=\{$field.project_id\}" class="btn btn-warning">取消</a>
+                                    <input type="hidden" name="action" value="updateField">
+                                    <input type="hidden" name="projectId" value="\{$field.project_id\}">
+                                    <input type="hidden" name="fieldId" value="\{$field.field_map_id\}">
+                                    <button type="submit" class="btn btn-primary">確定</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        \{include file="../common/footer.html"\}
+    </div>
+    <script src="../javascript/fieldEdit.js"></script>
+</body>
+
+</html>

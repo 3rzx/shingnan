@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    \{include file="../common/resource.html"\}
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        \{include file="../common/header.html"\}
+        \{include file="../common/menu.html"\}
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1></h1>
+            </section>
+            <section class="content">
+                <div class="row">
+                    <div class="col-md-6">
+                        \{if $error != ''\}
+                        <div class="alert alert-warning alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$error\}</h4>
+                        </div>
+                        \{/if\}
+                        <div class="box box-primary">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">新增Beacon</h3>
+                            </div>
+                            <!-- form-->
+                            <form class="form-horizontal" method="post" action="../controller/fieldController.php" onsubmit="return formValidation();">
+                                <div class="box-body">
+                                    <div id="mac_addrDiv" class="form-group\{if $error == '此 Beacon Mac 已登記'\} has-error\{/if\}">
+                                        <label for="mac_addr" class="col-sm-3 control-label">Beacon Mac</label>
+                                        <div class="col-sm-9">
+                                            <input id="mac_addr" name="mac_addr" type="text" class="form-control" placeholder="輸入 Beacon Mac">
+                                        </div>
+                                    </div>
+                                    <div id="nameDiv" class="form-group">
+                                        <label for="name" class="col-sm-3 control-label">Beacon名稱</label>
+                                        <div class="col-sm-9">
+                                            <input id="name" name="name" type="text" class="form-control" placeholder="輸入 Beacon名稱">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="zone" class="col-sm-3 control-label">隸屬分區編號</label>
+                                        <select name="zone" class="selectpicker col-sm-9">
+                                            \{foreach from=$zoneId item=$id\}
+                                            <option value="\{$id.zone_id\}">\{$id.name\}</option>
+                                            \{/foreach\}
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="status" class="col-sm-3 control-label">紀錄Beacon佈建狀態</label>
+                                        <select name="status" class="selectpicker col-sm-9">
+                                            <option value="0">預設</option>
+                                            <option value="1">未佈置</option>
+                                            <option value="2">待確認</option>
+                                            <option value="3">已確認</option>
+                                        </select>
+                                    </div>
+                                    <div id="xDiv" class="form-group">
+                                        <label for="x" class="col-sm-3 control-label">X座標</label>
+                                        <div class="col-sm-9">
+                                            <input id="x" name="x" type="text" class="form-control" placeholder="輸入 X座標">
+                                        </div>
+                                    </div>
+                                    <div id="yDiv" class="form-group">
+                                        <label for="y" class="col-sm-3 control-label">Y座標</label>
+                                        <div class="col-sm-9">
+                                            <input id="y" name="y" type="text" class="form-control" placeholder="輸入 Y座標">
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /.box-body -->
+                                <div class="box-footer" style="text-align: right;">
+                                    <input type="hidden" name="fieldId" value="\{$fieldId\}">
+                                    <a href="../controller/fieldController.php?action=viewFieldDetail&fieldId=\{$fieldId\}" class="btn btn-warning">取消</a>
+                                    <input type="hidden" name="action" value="addBeacon">
+                                    <button type="submit" class="btn btn-primary">確定</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        \{include file="../common/footer.html"\}
+    </div>
+    <script src="../javascript/beaconAdd.js"></script>
+</body>
+
+</html>

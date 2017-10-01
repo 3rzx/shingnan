@@ -1,0 +1,34 @@
+<header class="main-header">
+    <!-- Logo -->
+    <div class="logo">
+        <img src="../image/living3_icon.png" style="width: 20%;">
+    </div>
+    <!-- Header Navbar: style can be found in header.less -->
+    <nav class="navbar navbar-static-top" role="navigation">
+        <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+            <span class="sr-only">Toggle navigation</span>
+        </a>
+        <!-- Sidebar toggle button-->
+        <div class="navbar-custom-menu">
+            <ul class="nav navbar-nav">
+                \{if $smarty.session.isLogin\}
+                <!-- User Account: style can be found in dropdown.less -->
+                <li class="dropdown user user-menu">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <img src="../image/living3_icon.png" class="user-image" alt="User Image">
+                        <span class="hidden-xs">\{$smarty.session.user['email']\}</span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <!-- Menu Footer-->
+                        <li class="user-footer">
+                            <div class="pull-right">
+                                <a href="../controller/userController.php?action=logout" class="btn btn-default btn-flat">登出</a>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+                \{/if\}
+            </ul>
+        </div>
+    </nav>
+</header>

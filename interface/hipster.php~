@@ -1,0 +1,76 @@
+
+<?php
+	header("Content-Type:text/html; charset=utf-8");
+	include_once("conf.php");
+	//default-character-set=utf8 ;
+	$data = $_REQUEST['hipster_content'];
+	
+	//$data = '{"content":"66666","picture":"../media/template/N!57e16b27cc1809.58067951","combine_picture":"../media/template/N!57e16b27cc1809.58067951","hipster_template_id":"30","hipster_text_id":"1","zone_id":"9"}';
+	
+	$obj=json_decode($data, true);
+	
+	$content = $obj['content'];
+	$picture = $obj['picture_name'];
+	$combine_picture = $obj['combine_name'];
+	$hipster_template_id = $obj['hipster_template_id'];
+	$hipster_text_id = $obj['hipster_text_id'];
+	$zone_id = $obj['zone_id'];
+	$date = date('Y/m/d h:i:sa', time());
+	
+	$picture_data = $obj['picture_data'];
+	$combine_data =  $obj['combine_data'];
+	$path = "../web/media/combine_picture/";
+	
+	//$picture = '123.png';
+	//$combine_picture = '456.png';
+	//$path = "../web/media/combine_picture/123.txt";
+	//$combine_picture_data = "hello World. Testing!" ;
+	//	file_put_contents($path,base64_decode($image));
+//echo file_put_contents($path,"Hello World. Testing!");
+	//echo file_put_contents("test.txt","Hello World. Testing!");
+	
+
+	$data2 = explode(',', $picture_data);
+	//echo var_dump($data2);
+
+	$data3 = base64_decode($data2[0]);//解base64碼
+    //$file = './img/test/'. uniqid().'.jpg';//檔名 包含資料夾路徑 請記得此資料夾需 777 權限 方可寫入圖檔
+    $success = file_put_contents($path.$picture, $data3);
+	
+	$data2 = explode(',', $combine_data);
+	$data3 = base64_decode($data2[0]);
+	$success = file_put_contents($path.$combine_picture, $data3);
+	
+	$path1 = $path.$picture;
+	$path2 = $path.$combine_picture;
+
+//file_put_contents($path,$combine_picture_data);
+	mysql_query("SET NAMES 'utf8'"); 
+    mysql_query("SET CHARACTER_SET_CLIENT=utf8"); 
+    mysql_query("SET CHARACTER_SET_RESULTS=utf8"); 
+	
+	//$sql = "INSERT INTO `tncb_new`.`hipster_content` (`hipster_content_id`, `content`, `picture`, `combine_picture`, `hipster_template_id`, `hipster_text_id`, `zone_id`, `create_date`, `lastupdate_date`) VALUES (NULL, '$content', '$path1', '$path2', '$hipster_template_id', '$hipster_text_id', '$zone_id', '$date', '$date');";
+	//$sql = "INSERT INTO `tncb_new`.`hipster_content` (`hipster_template_id`, `hipster_text_id`, `zone_id`, `create_date`, `lastupdate_date`) VALUES ('$hipster_template_id', '$hipster_text_id', '$zone_id', '$date', '$date');";
+	$sql = "INSERT INTO  `tncb_new`.`hipster_content` (
+`hipster_content_id` ,
+`content` ,
+`picture` ,
+`combine_picture` ,
+`hipster_template_id` ,
+`hipster_text_id` ,
+`zone_id` ,
+`create_date` ,
+`lastupdate_date`
+)
+VALUES (
+NULL ,'$content', '$path1', '$path2', '$hipster_template_id', '$hipster_text_id', '$zone_id' ,  '$date', '$date'
+);";
+	$result = mysql_query($sql);
+	if($result)
+		echo 'y';
+	else
+		echo 'no';
+	
+
+	
+?>

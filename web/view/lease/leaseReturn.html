@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    \{include file="../common/resource.html"\}
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        \{include file="../common/header.html"\}
+        \{include file="../common/menu.html"\}
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1></h1>
+            </section>
+            <!-- Main content -->
+            <section class="content">
+                <div class="row">
+                    <div class="col-xs-7">
+                        \{if $error != ''\}
+                        <div class="alert alert-warning alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$error\}</h4>
+                        </div>
+                        \{/if\}
+                        \{if $msg != ''\}
+                        <div class="alert alert-success alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$msg\}</h4>
+                        </div>
+                        \{/if\}
+                        <div class="box box-primary">
+                            <div class="box-header with-border">
+                                    <h3 class="box-title">裝置管理歸還</h3>
+                            </div>
+                            <div class="box-body">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr style="background-color: #3c8dbc;color: #fff;">
+                                            <th class="col-md-1">ID</th>
+                                            <th class="col-md-1">PadID</th>
+                                            <th class="col-md-1">借用人</th>
+                                            <th class="col-md-1">借用人聯絡電話</th>
+                                            <th class="col-md-1">借出日期</th>
+                                            <th class="col-md-1">操作選項</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        \{foreach from=$leaseData item=lease\}
+                                        <tr>
+                                            <td>\{$lease.id\}</td>
+                                            <td>\{$lease.pad_id\}</td>
+                                            <td>\{$lease.borrower\}</td>
+                                            <td>\{$lease.borrower_tel\}</td> 
+                                            <td>\{$lease.lease_date\}</td> 
+                                            <td>
+                                                <a href="#">
+                                                    <button class="btn btn-sm btn-success" onclick="returnPad('\{$lease.pad_id\}', '\{$lease.borrower\}');"><i class="glyphicon glyphicon-ok"></i></button>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        \{/foreach\}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        \{include file="../common/footer.html"\}
+    </div>
+    <script src="../javascript/leaseList.js"></script>
+</body>
+
+</html>

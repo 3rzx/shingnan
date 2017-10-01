@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    \{include file="../common/resource.html"\}
+    <script src="../javascript/zoneDetail.js"></script>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        \{include file="../common/header.html"\}
+        \{include file="../common/menu.html"\}
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1>區域詳細資料</h1>
+                <ol class="breadcrumb">
+                    <li><a href="../controller/fieldController.php?action=viewFieldDetail&fieldId=\{$zone.field_id\}"><i class="fa fa-arrow-right"></i>回到場域詳細資料</a></li>
+                </ol>
+            </section>
+            <!-- Main content -->
+            <section class="content">
+                <div class="row">
+                    <div class="col-xs-12">
+                        \{if $error != ''\}
+                        <div class="alert alert-warning alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$error\}</h4>
+                        </div>
+                        \{/if\}
+                        \{if $msg != ''\}
+                        <div class="alert alert-success alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$msg\}</h4>
+                        </div>
+                        \{/if\}
+                        <div class="box box-info">
+                            <div class="box-header">
+                                <h3 class="box-title">
+                                    區域編號:&nbsp;&nbsp;\{$zone.zone_id\}
+                                    <a href="../controller/zoneController.php?action=viewEditForm&fieldId=\{$zone.field_id\}&zoneId=\{$zone.zone_id\}">&nbsp;
+                                        <button class="btn btn-sm btn-success"><i class="glyphicon glyphicon-pencil"></i></button>
+                                    </a>
+                                </h3>
+                            </div>
+                            <div class="box-body">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr style="background-color: #00c0ef;color: #fff;">
+                                            <th class="col-md-2">欄位</th>
+                                            <th>資料</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>名稱</td>
+                                            <td>\{$zone.name\}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>英文名稱</td>
+                                            <td>\{$zone.name_en\}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>簡介</td>
+                                            <td>\{$zone.introduction\}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>簡介(英文)</td>
+                                            <td>\{$zone.introduction_en\}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>導覽語音</td>
+                                            <td>
+                                                \{if $zone.guide_voice == null\}
+                                                尚無語音檔
+                                                \{else\}
+                                                <audio controls src="\{$zone.guide_voice\}" type="audio/*">
+                                                </audio>
+                                                \{/if\}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>導覽語音(英文)</td>
+                                            <td>
+                                                \{if $zone.guide_voice_en == null\}
+                                                尚無語音檔
+                                                \{else\}
+                                                <audio controls src="\{$zone.guide_voice_en\}" type="audio/*">
+                                                </audio>
+                                                \{/if\}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>提示</td>
+                                            <td>\{$zone.hint\}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>區域圖片(平板)</td>
+                                            <td>
+                                                <img src="\{$zone.photo\}" class="img-thumbnail">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>區域圖片(App)</td>
+                                            <td>
+                                                <img src="\{$zone.photo_vertical\}" class="img-thumbnail">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>建立時間</td>
+                                            <td>\{$zone.create_date\}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>最近編輯</td>
+                                            <td>\{$zone.lastupdate_date\}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="box box-info">
+                            <div class="box-header">
+                                <h3 class="box-title">
+                                展項列表&nbsp;&nbsp;<a href="../controller/modeController.php?action=addModeForm&zoneID=\{$zone.zone_id\}" class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-plus"></span></a>
+                                </h3>
+                            </div>
+                            <div class="box-body">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr style="background-color: #00c0ef;color: #fff;">
+                                            <th class="col-xs-1">模式ID</th>
+                                            <th class="col-xs-1">模式名稱</th>
+                                            <th class="col-xs-1">英文名稱</th>
+                                            <th class="col-xs-5">模式介紹</th>
+                                            <th class="col-xs-1">建立時間</th>
+                                            <th class="col-xs-1">最近編輯</th>
+                                            <th class="col-xs-2">操作選項</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        \{foreach from=$mode item='item'\}
+                                        <tr>
+                                            <td>\{$item.mode_id\}</td>
+                                            <td>\{$item.name\}</td>
+                                            <td>\{$item.name_en\}</td>
+                                            <td>\{$item.introduction\}</td>
+                                            <td>\{$item.create_date\}</td>
+                                            <td>\{$item.lastupdate_date\}</td>
+                                            <td>
+                                                <a href="../controller/modeController.php?action=detailMode&modeID=\{$item.mode_id\}">
+                                                    <button class="btn btn-sm btn-info"><i class="glyphicon glyphicon-search"></i></button>
+                                                </a>&nbsp;
+                                                <a href="../controller/modeController.php?action=editModeForm&modeID=\{$item.mode_id\}">
+                                                    <button class="btn btn-sm btn-success"><i class="glyphicon glyphicon-pencil"></i></button>
+                                                </a>&nbsp;
+                                                <a>
+                                                    <button class="btn btn-sm btn-danger" onclick="deleteMode(\{$item.mode_id\})"><i class="glyphicon glyphicon-remove"></i></button>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        \{/foreach\}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        \{include file="../common/footer.html"\}
+    </div>
+</body>
+
+</html>

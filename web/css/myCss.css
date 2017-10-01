@@ -1,0 +1,22 @@
+@CHARSET "UTF-8";
+
+.beaconSender {
+	width: 12px;
+    height: 12px;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    background: #00b050;
+    border: 2px solid #92d050;
+}
+
+.beaconReceiver {
+	width: 12px;
+    height: 12px;
+    background: #00b050;
+    border: 2px solid #92d050;
+}
+
+.xeditableInputWidth {
+	width: 400px !important; 
+}

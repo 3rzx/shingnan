@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    \{include file="../common/resource.html"\}
+    
+<script type="text/javascript">
+    var i=1;
+
+    function pathValidation(){          //檢查有無重複路徑
+        return true;
+    }
+
+    function deletePath(item){
+        i--;
+        var target = '#path' + item + 'Form';
+        $(target).remove();
+        if(i>1){
+            var str=''; 
+            str +=      '<div id="deleteDiv' + i + '"class="col-sm-1">'
+            str +=          '<a class="btn btn-sm btn-danger" onclick="deletePath('+ i +')"><i class="glyphicon glyphicon-remove"></i></a>'
+            $('#pathSelect' + i ).after(str);
+        }
+    }
+
+    function addPath(){
+        i++;
+        var str = '';
+        str += '<div id="path' + i + 'Form" class="form-group">'
+        str +=      '<label class="col-sm-3 control-label">'+ i +'</label>'
+        str +=      '<div id="pathSelect' + i + '" name="pathSelect' + i + '" class="col-sm-6">'
+        str +=      '</div>'
+        str +=      '<div id="deleteDiv' + i + '"class="col-sm-1">'
+        str +=          '<a class="btn btn-sm btn-danger" onclick="deletePath('+ i +')"><i class="glyphicon glyphicon-remove"></i></a>'
+        str +=      '</div>'
+        str +=  '</div>';
+        $('#forAddPath').before(str);
+        
+        var x = document.createElement("SELECT");
+        x.setAttribute("id", "path" + i);
+        x.setAttribute("name", "path" + i);
+        x.setAttribute("class", "selectpicker");
+        document.getElementById('pathSelect' + i).appendChild(x);
+        $("#path" + i).append($("<option></option>").attr("value", "null").text(""));
+        \{foreach from=$allPath item='item'\}
+            $("#path" + i).append($("<option></option>").attr("value", "\{$item.svg_id\}").text("\{$item.svg_id\} | \{$item.start\}\{$item.Sn\} | \{$item.end\}\{$item.En\}"));
+        \{/foreach\}
+        $("#path" + i).selectpicker('refresh');
+        $("#deleteDiv" + (i-1)).remove();
+        $("#pathCount").val(i);
+
+    }
+</script>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        \{include file="../common/header.html"\}
+        \{include file="../common/menu.html"\}
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1>新增走法</h1>
+            </section>
+            <section class="content">
+                <div class="row">
+                    <div class="col-md-8">
+                        \{if $error != ''\}
+                        <div class="alert alert-warning alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$error\}</h4>
+                        </div>
+                        \{/if\}
+                        \{if $msg != ''\}
+                        <div class="alert alert-success alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$msg\}</h4>
+                        </div>
+                        \{/if\}
+                        <div class="box box-primary">
+                            <!-- form-->
+                            <form class="form-horizontal" method="post" action="../controller/pathController.php" onsubmit="return pathValidation();">
+                                <div class="box-body">
+                                    <div class="col-sm-9">
+                                        <div class="form-group">
+                                            <div class="row">
+                                            <label class="col-sm-3 control-label">順序</label>
+                                            <label class="col-sm-7" style="padding-top:7px;text-align:left">選擇路徑(SVG ID)</label> 
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="svg" class="col-sm-3 control-label">1</label>
+                                            <div id="pathSelect1" class="col-sm-6">
+                                                <select id="path1" name="path1" class="selectpicker">
+                                                    <option value="null"></option>
+                                                    \{foreach from=$allPath item='item'\}
+                                                    <option value="\{$item.svg_id\}"> \{$item.svg_id\}&nbsp;&nbsp;|&nbsp;&nbsp; \{$item.start\}&nbsp;&nbsp;&nbsp;&nbsp;\{$item.Sn\} &nbsp;&nbsp;|&nbsp;&nbsp; \{$item.end\}&nbsp;&nbsp;\{$item.En\}</option>
+                                                        \{/foreach\}
+                                                </select>
+                                            </div>
+                                            <div class="col-sm-1">
+                                                <a class="btn btn-sm btn-primary" onclick="addPath();"><i class="glyphicon glyphicon-plus"></i></a>
+                                            </div>
+                                        </div>
+                                        <div id="forAddPath"></div>              
+                                    </div>                             
+                                </div>
+                                <!-- /.box-body -->
+                                <div class="box-footer" style="text-align: right;">
+                                    <a href="../controller/pathController.php?action=addChoosePathForm" class="btn btn-warning">取消</a>
+                                    <input id="pathCount" type="hidden" name="pathCount" value="0">
+                                    <input type="hidden" name="action" value="addChoosePath">
+                                    <button type="submit" class="btn btn-primary">確定</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div id="t"></div>
+                </div>
+            </section>
+        </div>
+        \{include file="../common/footer.html"\}
+    </div>
+</body>
+
+
+</html>

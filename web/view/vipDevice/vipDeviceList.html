@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    \{include file="../common/resource.html"\}
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini">
+	<div class="wrapper">
+		\{include file="../common/header.html"\}
+        \{include file="../common/menu.html"\}
+        <div class="content-wrapper">
+        	<section class="content-header">
+                <h1></h1>
+            </section>
+            <!-- Main content -->
+            <section class="content">
+            	<div class="row">
+            		<div class="col-xs-12">
+            			\{if $error != ''\}
+                        <div class="alert alert-warning alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$error\}</h4>
+                        </div>
+                        \{/if\}
+                        \{if $msg != ''\}
+                        <div class="alert alert-success alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$msg\}</h4>
+                        </div>
+                        \{/if\}
+                        <div class="box">
+                        	<div class="box-header">
+                                <h3 class="box-title">貴賓證列表</h3>
+                            </div>
+                            <div class="box-body">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr style="background-color: #00c0ef;color: #fff;">
+                                            <th>貴賓證編號</th>
+                                            <th>貴賓證識別碼</th>
+                                            <th>裝置電量</th>
+                                            <th>使用者姓名</th>
+                                            <th>操作選項</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        \{foreach from=$vipDeviceData item=vip\}
+                                        <tr>
+                                            <td>\{$vip.vip_device_hu_id\}</td>
+                                            <td>\{$vip.mac_addr\}</td>
+                                            <td>\{$vip.power\}</td>
+                                            \{if $vip.name == NULL\}
+                                            <td>無</td>
+                                            \{else\}
+                                            <td>\{$vip.name\}</td>
+                                            \{/if\}
+                                            <td>
+                                                \{if $vip.name == NULL\}
+                                                <a href="../controller/vipDeviceController.php?action=viewVIPSetForm&vipDeviceId=\{$vip.vip_device_id\}">
+                                                    <button class="btn btn-sm btn-success">租借</button>
+                                                    <a href="../controller/vipDeviceController.php?action=viewVIPEditForm&vipDeviceId=\{$vip.vip_device_id\}">
+                                                        <button class="btn btn-sm btn-warning"><i class="glyphicon glyphicon-pencil"></i></button>
+                                                    </a>
+                                                    <a href="../controller/vipDeviceController.php?action=deleteVIPDevice&vipDeviceId=\{$vip.vip_device_id\}">
+                                                        <button class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-remove"></i></button>
+                                                    </a>
+                                                </a>
+                                                \{else\}
+                                                <a href="#">
+                                                    <button class="btn btn-sm btn-danger" onclick="returnVIP(\{$vip.vip_device_id\});">歸還</button>
+                                                    <a href="../controller/vipDeviceController.php?action=viewVIPEditForm&vipDeviceId=\{$vip.vip_device_id\}">
+                                                        <button class="btn btn-sm btn-warning"><i class="glyphicon glyphicon-pencil"></i></button>
+                                                    </a>
+                                                </a>
+                                                \{/if\}
+                                            </td>
+                                        </tr>
+                                        \{/foreach\}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+            		</div>
+            	</div>
+            </section>
+        </div>
+        \{include file="../common/footer.html"\}
+	</div>
+	<script src="../javascript/vipDeviceList.js"></script>
+</body>
+
+</html>

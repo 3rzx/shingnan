@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    \{include file="../common/resource.html"\}
+    
+<script type="text/javascript">
+    function changeZoneCandidate(){
+        var str = '';           //用來放要加入的<td>
+        var candidateTotal = 0;
+        
+        //統計有幾個在同場域內 並記下zone_id
+        \{foreach from=$allZone item='item'\}
+            if( \{$item.field_id\} == $("#field").val() ){
+                candidateTotal++;
+            }
+        \{/foreach\}
+
+        for(i=0;i<candidateTotal;i++){
+            str += '<tr><td>' + (i+1) + '</td>';
+            str += '<td>';
+            \{foreach from=$allZone item='item'\}
+            if( \{$item.field_id\} == $("#field").val() ){
+                str += '<input type="radio" id="zoneChoose' + i +'" name="zoneChoose' + i +'" value="\{$item.zone_id\}">\{$item.zone_id\} &nbsp;&nbsp;\{$item.name\}<br>';
+            }
+            \{/foreach\}
+
+            str += '<input type="radio" id="zoneChoose' + i +'" name="zoneChoose' + i +'" value="null">無<br></td></tr>';
+        }
+
+        document.getElementById('zoneCandidate').innerHTML = str;
+        document.getElementById('pathCount').value = candidateTotal;
+    }
+
+    function clean(){
+        document.getElementById('zoneCandidate').innerHTML = "";
+        $('#field').val(""); 
+    }
+
+    function pathValidation(){          //檢查有無重複路徑
+        var pathCount = $('#pathCount').val();
+        var i,j;
+        //BootstrapDialog.alert( $('input[name="zoneChoose' + i + '"]:checked').val() );
+        for(i=0; i<pathCount-1; i++){
+            if( $('input[name="zoneChoose' + i + '"]:checked').val() == 'null' ){
+                //BootstrapDialog.alert('因為順序' + (i+1) + '設定為無，所以將不會新增' + i + '順序以後的路徑。');
+                /*BootstrapDialog.show({
+                    title:'提醒',
+                    message: '因為順序' + (i+1) + '設定為無，所以將不會新增' + i + '順序以後的路徑。請問是繼續?',
+                    buttons: [{
+                        label: '確定',
+                        cssClass: 'btn-danger',
+                        action: function(){
+                            return true;
+                        }
+                    },{
+                        label: '取消',
+                        action: function(dialogItself){
+                            dialogItself.close();
+                            return false;
+                        }
+                    }]
+                });*/
+                break;
+            }else{
+                for(j=i+1; j<pathCount; j++){
+                    if( $('input[name="zoneChoose' + i + '"]:checked').val() == $('input[name="zoneChoose' + j + '"]:checked').val()){
+                        BootstrapDialog.alert('有路徑重複: <br> 順序' + (i+1) + ' 與 順序' + (j+1) );
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    function test(){
+        $('#area09_x5F_inactive').hide();
+    }
+
+    function test2(){
+        $('#area09_x5F_inactive').show();
+    }
+</script>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        \{include file="../common/header.html"\}
+        \{include file="../common/menu.html"\}
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1>新增路徑</h1>
+            </section>
+            <section class="content">
+                <div class="row">
+                    <div class="col-md-8">
+                        \{if $error != ''\}
+                        <div class="alert alert-warning alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$error\}</h4>
+                        </div>
+                        \{/if\}
+                        \{if $msg != ''\}
+                        <div class="alert alert-success alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$msg\}</h4>
+                        </div>
+                        \{/if\}
+                        <div class="box box-primary">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">路徑編號: \{$maxPath.max+1\}</h3>
+                            </div>
+                            <!-- form-->
+                            <form class="form-horizontal" method="post" action="../controller/journalController.php" onsubmit="return pathValidation();">
+                                <div id="test" class="box-body">
+                                    <div class="form-group">
+                                        <label class="col-sm-1 control-label">場域:</label>
+                                        <select id="field" name="field" onchange="changeZoneCandidate();" class="selectpicker col-sm-10">
+                                            <option value=""></option>
+                                            \{foreach from=$allField item='item'\}
+                                            <option value="\{$item.field_map_id\}"> \{$item.field_map_id\}&nbsp;&nbsp;\{$item.name\}</option>
+                                            \{/foreach\}
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-8">
+                                            <table id="zoneChooseTable" class="table table-striped"  width="100%">
+                                                <thead style="background-color: #3c8dbc;color: #fff;">
+                                                    <tr>
+                                                        <th class="col-sm-3">順序</th>
+                                                        <th>區域</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="zoneCandidate">
+                                                </tbody>
+                                            </table>   
+                                        </div>                                
+                                    </div>
+                                </div>
+                                <!-- /.box-body -->
+                                <div class="box-footer" style="text-align: right;">
+                                    <a onclick="clean();" class="btn btn-warning">取消</a>
+                                    <input id="pathCount" type="hidden" name="pathCount" value="0">
+                                    <input type="hidden" name="pathId" value="\{$maxPath.max+1\}">
+                                    <input type="hidden" name="action" value="addJournal">
+                                    <button type="submit" class="btn btn-primary">確定</button>
+                                </div>
+                            </form>
+                            <div id="svg_Test">
+                                <div>
+                                    <button onclick="test()">test</button>
+                                    <button onclick="test2()">test2</button>
+                                    <div id='hihi'>hihi</div>
+                                    <div>
+                                        \{include file="../path/tt.svg"\}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        \{include file="../common/footer.html"\}
+    </div>
+</body>
+
+
+</html>

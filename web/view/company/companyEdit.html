@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    \{include file="../common/resource.html"\}
+    <script type="text/javascript" src="../plugins/bootstrap-filestyle/src/bootstrap-filestyle.min.js"> </script>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        \{include file="../common/header.html"\}
+        \{include file="../common/menu.html"\}
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1></h1>
+            </section>
+            <section class="content">
+                <div class="row">
+                    <div class="col-md-6">
+                        \{if $error != ''\}
+                        <div class="alert alert-warning alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$error\}</h4>
+                        </div>
+                        \{/if\}
+                        <div class="box box-success">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">編輯公司</h3>
+                            </div>
+                            <!-- form-->
+                            <form class="form-horizontal" method="post" action="../controller/companyController.php" enctype="multipart/form-data" onsubmit="return formValidation();">
+                                <div class="box-body">
+                                    <div id="nameDiv" class="form-group">
+                                        <label for="name" class="col-sm-2 control-label">名稱</label>
+                                        <div class="col-sm-10">
+                                            <input id="name" name="name" type="text" class="form-control" placeholder="輸入名稱" value="\{$companyData.name\}">
+                                        </div>
+                                    </div>
+                                    <div id="nameEnDiv" class="form-group">
+                                        <label for="name" class="col-sm-2 control-label">英文名稱</label>
+                                        <div class="col-sm-10">
+                                            <input id="nameEn" name="nameEn" type="text" class="form-control" placeholder="輸入英文名稱" value="\{$companyData.name_en\}">
+                                        </div>
+                                    </div>
+                                    <div id="telDiv" class="form-group">
+                                        <label for="tel" class="col-sm-2 control-label">電話</label>
+                                        <div class="col-sm-10">
+                                            <input id="tel" name="tel" type="text" class="form-control" placeholder="輸入電話" value="\{$companyData.tel\}">
+                                        </div>
+                                    </div>
+                                    <div id="faxDiv" class="form-group">
+                                        <label for="fax" class="col-sm-2 control-label">傳真</label>
+                                        <div class="col-sm-10">
+                                            <input id="fax" name="fax" type="text" class="form-control" placeholder="輸入傳真" value="\{$companyData.fax\}">
+                                        </div>
+                                    </div>
+                                    <div id="addrDiv" class="form-group">
+                                        <label for="addr" class="col-sm-2 control-label">地址</label>
+                                        <div class="col-sm-10">
+                                            <input id="addr" name="addr" type="text" class="form-control" placeholder="輸入地址" value="\{$companyData.addr\}">
+                                        </div>
+                                    </div>
+                                    <div id="webDiv" class="form-group">
+                                        <label for="web" class="col-sm-2 control-label">網頁</label>
+                                        <div class="col-sm-10">
+                                            <input id="web" name="web" type="text" class="form-control" placeholder="輸入網頁" value="\{$companyData.web\}">
+                                        </div>
+                                    </div>
+                                    <div id="qrcodeDiv" class="form-group">
+                                        <label for="" class="col-sm-2 control-label">QR code</label>
+                                        <div class="col-sm-10">
+                                            <input type="hidden" name="oldqrcode" value="\{$companyData.qrcode\}">
+                                            <input type="file" id="qrcode" name="qrcode" data-input="false">
+                                            <img id="qrcodeImg" class="img-thumbnail" alt="QR code" \{if $companyData.qrcode==''\} style="display:none" \{else\} src="\{$companyData.qrcode\}" \{/if\}/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /.box-body -->
+                                <div class="box-footer" style="text-align: right;">
+                                    <a href="../controller/companyController.php?action=viewCompanyList" class="btn btn-warning">取消</a>
+                                    <input type="hidden" name="action" value="updateCompany">
+                                    <input type="hidden" name="companyId" value="\{$companyData.company_id\}">
+                                    <button type="submit" class="btn btn-primary">更新</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        \{include file="../common/footer.html"\}
+    </div>
+    <script src="../javascript/companyEdit.js"></script>
+</body>
+
+</html>

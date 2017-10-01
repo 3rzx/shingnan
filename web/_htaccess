@@ -1,0 +1,14 @@
+RewriteEngine on
+
+# prevent httpd from serving dotfiles (.htaccess, .svn, .git, etc.)
+RedirectMatch 403 /\..*$
+# if a directory or a file exists, use it directly
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+# otherwise forward it to index.php
+RewriteRule . index.php
+
+# change php.ini setup values
+php_value include_path '.:/home/olivia/svn/tainan/src/backend/smarty/libs:/usr/share/php:/usr/share/pear'
+php_value post_max_size 200M
+php_value upload_max_filesize 200M

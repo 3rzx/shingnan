@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    \{include file="../common/resource.html"\}
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        \{include file="../common/header.html"\}
+        \{include file="../common/menu.html"\}
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1></h1>
+            </section>
+            <section class="content">
+                <div class="row">
+                    <div class="col-md-8">
+                        \{if $error != ''\}
+                        <div class="alert alert-warning alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$error\}</h4>
+                        </div>
+                        \{/if\}
+                        <div class="box box-success">
+                             <!-- form-->
+                            <form class="form-horizontal" method="post" action="../controller/pathController.php" onsubmit="return pathValidation();">
+                                <div id="test"class="box-body">
+                                    <div class="col-sm-8">
+                                        <div class="form-group">
+                                            <label for="svg" class="col-sm-3 control-label">SVG圖上ID</label>
+                                            <div class="col-sm-9">
+                                                <input id="svg_id" name="svg_id" type="text" class="form-control" value="\{$pathData.svg_id\}">
+                                            </div>
+                                        </div>  
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">起始區域</label>
+                                            <select id="start" name="start" class="selectpicker col-sm-9">
+                                                \{foreach from=$allZone item='item'\}
+                                                \{if $item.zone_id == $pathData.start \}
+                                                <option value="\{$item.zone_id\}" selected> \{$item.zone_id\}&nbsp;&nbsp;\{$item.name\}</option>
+                                                \{else\}
+                                                <option value="\{$item.zone_id\}"> \{$item.zone_id\}&nbsp;&nbsp;\{$item.name\}</option>
+                                                \{/if\}
+                                                \{/foreach\}
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">目的區域</label>
+                                            <select id="end" name="end" class="selectpicker col-sm-9">
+                                                \{foreach from=$allZone item='item'\}
+                                                \{if $item.zone_id == $pathData.end \}
+                                                <option value="\{$item.zone_id\}" selected> \{$item.zone_id\}&nbsp;&nbsp;\{$item.name\}</option>
+                                                \{else\}
+                                                <option value="\{$item.zone_id\}"> \{$item.zone_id\}&nbsp;&nbsp;\{$item.name\}</option>
+                                                \{/if\}
+                                                \{/foreach\}
+                                            </select>
+                                        </div>                              
+                                    </div>
+                                </div>
+                                <!-- /.box-body -->
+                                <div class="box-footer" style="text-align: right;">
+                                    <a href="../controller/beaconController.php?action=listPath" class="btn btn-warning">取消</a>
+                                    <input type="hidden" name="action" value="updatePath">
+                                    <input type="hidden" name="pathID" value="\{$pathID\}">
+                                    <button type="submit" class="btn btn-primary">更新</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        \{include file="../common/footer.html"\}
+    </div>
+</body>
+
+</html>

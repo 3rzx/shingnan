@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    \{include file="../common/resource.html"\}
+    <script>
+    function deleteVoice(voiceID){
+        BootstrapDialog.show({
+            title:'提醒',
+            message: '確定刪除裝置嗎?',
+            buttons: [{
+                label: '確定',
+                cssClass: 'btn-danger',
+                action: function(){
+                    location='../controller/vipDeviceController.php?action=deleteVIPVoice&voiceID='+ voiceID ;
+                }
+            },{
+                label: '取消',
+                action: function(dialogItself){
+                    dialogItself.close();
+                }
+            }]
+        });
+    }
+    </script>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini">
+	<div class="wrapper">
+		\{include file="../common/header.html"\}
+        \{include file="../common/menu.html"\}
+        <div class="content-wrapper">
+        	<section class="content-header">
+                <h1></h1>
+            </section>
+            <!-- Main content -->
+            <section class="content">
+            	<div class="row">
+            		<div class="col-xs-12">
+            			\{if $error != ''\}
+                        <div class="alert alert-warning alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$error\}</h4>
+                        </div>
+                        \{/if\}
+                        \{if $msg != ''\}
+                        <div class="alert alert-success alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$msg\}</h4>
+                        </div>
+                        \{/if\}
+                        <div class="box box-primary">
+                        	<div class="box-header">
+                                <h3 class="box-title">貴賓證語音列表</h3>
+                            </div>
+                            <div class="box-body">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr style="background-color: #00c0ef;color: #fff;">
+                                            <th>貴賓語音編號</th>
+                                            <th>語音檔案</th>
+                                            <th>語音名稱</th>
+                                            <th>最後更新時間</th>
+                                            <th>建立時間</th>
+                                            <th>修改<th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        \{foreach from=$vipVoiceData item='item'\}
+                                        <tr>
+                                            <td>\{$item.voice_id\}</td>
+                                            <td><audio controls src="\{$item.voice\}"></audio></td>
+                                            <td>\{$item.voice_name\}</td>
+                                            <td>\{$item.lastupdate_date\}</td>
+                                            <td>\{$item.create_date\}</td>
+                                            <td>
+                                                <a href="../controller/vipDeviceController.php?action=viewVIPVoiceEditForm&voiceID=\{$item.voice_id\}">
+                                                    <button class="btn btn-sm btn-success"><i class="glyphicon glyphicon-pencil"></i></button>
+                                                </a>
+                                                <a href="#">
+                                                    <button class="btn btn-sm btn-danger" onclick="deleteVoice(\{$item.voice_id\})" ><i class="glyphicon glyphicon-remove"></i></button>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        \{/foreach\}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+            		</div>
+            	</div>
+            </section>
+        </div>
+        \{include file="../common/footer.html"\}
+	</div>
+	<script src="../javascript/vipDeviceList.js"></script>
+</body>
+
+</html>
