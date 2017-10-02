@@ -1,17 +1,17 @@
 <?php
-/* Smarty version 3.1.28, created on 2017-10-02 08:21:44
+/* Smarty version 3.1.28, created on 2017-10-02 12:11:30
   from "C:\xampp\htdocs\shingnan\web\view\common\menu.html" */
 
 if ($_smarty_tpl->smarty->ext->_validateCompiled->decodeProperties($_smarty_tpl, array (
   'has_nocache_code' => false,
   'version' => '3.1.28',
-  'unifunc' => 'content_59d1daf80342e7_83615271',
+  'unifunc' => 'content_59d210d274a128_24141923',
   'file_dependency' => 
   array (
     '66b002da06299ae751daa67dbf438250ed14d565' => 
     array (
       0 => 'C:\\xampp\\htdocs\\shingnan\\web\\view\\common\\menu.html',
-      1 => 1506923029,
+      1 => 1506938459,
       2 => 'file',
     ),
   ),
@@ -19,7 +19,7 @@ if ($_smarty_tpl->smarty->ext->_validateCompiled->decodeProperties($_smarty_tpl,
   array (
   ),
 ),false)) {
-function content_59d1daf80342e7_83615271 ($_smarty_tpl) {
+function content_59d210d274a128_24141923 ($_smarty_tpl) {
 ?>
 <!-- Left side column. contains the logo and sidebar -->
 <aside class="main-sidebar">
@@ -118,15 +118,14 @@ function content_59d1daf80342e7_83615271 ($_smarty_tpl) {
                     <i class="fa fa-th-list"></i><span>統計與報表功能</span><i class="fa fa-angle-down pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
-                    <li><a href="#"><i class="fa fa-bar-chart"></i>問卷調查統計</a></li>
-                    <li><a href="#"><i class="fa fa-bar-chart"></i>按讚統計</a></li>
-                    <li><a href="#"><i class="fa fa-bar-chart"></i>文青樣板使用資料統計</a></li>
+                    <li><a href="#"><i class="fa fa-bar-chart"></i>消費記錄統計</a></li>
+                    <li><a href="#"><i class="fa fa-bar-chart"></i>商品點擊率統計</a></li>
+                    <li><a href="#"><i class="fa fa-bar-chart"></i>文章點擊率統計</a></li>
                 </ul>
             </li>
             <?php }?>
         </ul>
         <?php }?>
     </section>
-</aside>
-<?php }
+</aside><?php }
 }

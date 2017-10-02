@@ -1,17 +1,17 @@
 <?php
-/* Smarty version 3.1.28, created on 2017-10-02 08:21:44
+/* Smarty version 3.1.28, created on 2017-10-02 12:11:30
   from "C:\xampp\htdocs\shingnan\web\view\common\header.html" */
 
 if ($_smarty_tpl->smarty->ext->_validateCompiled->decodeProperties($_smarty_tpl, array (
   'has_nocache_code' => false,
   'version' => '3.1.28',
-  'unifunc' => 'content_59d1daf8028763_56883748',
+  'unifunc' => 'content_59d210d27368a4_34336859',
   'file_dependency' => 
   array (
     'f5c1986b58a155369c5caee0aa9dd4b321f03962' => 
     array (
       0 => 'C:\\xampp\\htdocs\\shingnan\\web\\view\\common\\header.html',
-      1 => 1506921858,
+      1 => 1506938960,
       2 => 'file',
     ),
   ),
@@ -19,7 +19,7 @@ if ($_smarty_tpl->smarty->ext->_validateCompiled->decodeProperties($_smarty_tpl,
   array (
   ),
 ),false)) {
-function content_59d1daf8028763_56883748 ($_smarty_tpl) {
+function content_59d210d27368a4_34336859 ($_smarty_tpl) {
 ?>
 <header class="main-header">
     <!-- Logo -->
@@ -42,22 +42,18 @@ function content_59d1daf8028763_56883748 ($_smarty_tpl) {
                 </li>
                 <li class="dropdown user user-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <span class="hidden-xs"><?php echo $_SESSION['user']['email'];?>
+                        <span class="hidden-xs"><?php echo $_SESSION['user']['account'];?>
 </span>
                     </a>
-                    <ul class="dropdown-menu">
-                        <!-- Menu Footer-->
-                        <li class="user-footer">
-                            <div>
-                                <a href="../controller/userController.php?action=logout" class="btn btn-default">登出</a>
-                            </div>
-                        </li>
-                    </ul>
+                </li>
+                <li class="dropdown messages-menu">
+                    <a href="../controller/userController.php?action=logout" class="dropdown-toggle">
+                        <i class="fa fa-sign-out">&nbsp;登出</i>
+                    </a>
                 </li>
                 <?php }?>
             </ul>
         </div>
     </nav>
-</header>
-<?php }
+</header><?php }
 }

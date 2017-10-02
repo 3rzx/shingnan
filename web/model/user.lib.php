@@ -56,12 +56,12 @@ class User
     public function isValidInput($input)
     {
         // 清除空格
-        $input['email']    = trim($input['email']);
+        $input['account']    = trim($input['account']);
         $input['password'] = trim($input['password']);
 
         // 測試是否為空值
-        if (strlen($input['email']) == 0) {
-            $this->error = 'email不得為空值';
+        if (strlen($input['account']) == 0) {
+            $this->error = '帳號不得為空值';
             return false;
         }
         if (strlen($input['password']) == 0) {
@@ -81,19 +81,16 @@ class User
     {
         try {
             //驗證帳密
-            $sql = "SELECT *
-            		FROM users
-            		WHERE email = :email";
-            $res = $this->db->prepare($sql);
-            $res->bindParam(':email', $input['email'], PDO::PARAM_STR);
-            $res->execute();
-            $rows = $res->fetchAll();
+            $file = fopen('../userkey', 'r');
+            $account = trim(fgets($file));
+            $pass = fgets($file);
+            fclose($file);
 
-            if (count($rows) == 1) {
-                if (password_verify($input['password'], $rows[0]['password'])) {
+            if($input['account'] == $account){
+                if (password_verify($input['password'], $pass)) {
                     $_SESSION['isLogin'] = true;
                     $_SESSION['user']    = array(
-                        'email'      => $input['email'],
+                        'account'      => $input['account'],
                         'userId'     => $rows[0]['user_id'],
                         'competence' => $rows[0]['competence'],
                     );
@@ -123,6 +120,18 @@ class User
             print 'Exception : ' . $e->getMessage();
         }
     }
+
+    /**
+     * 移除 utf-8 檔案的 bom
+     */
+    public function removeBOM($str)
+    {
+        if (substr($str, 0, 3) == pack("CCC", 0xef, 0xbb, 0xbf))
+            $str = substr($str, 3);
+
+        return $str;
+    }
+
     /**
      * 顯示主畫面
      * @DateTime 2016-09-03
