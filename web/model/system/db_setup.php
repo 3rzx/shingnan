@@ -11,13 +11,16 @@ class dbSetup
     // PDO database type
     public $dbtype = 'mysql';
     // PDO database name
+    //public $dbname = 'shingnan';
     public $dbname = 'tncb_new';
     // PDO database host
     public $dbhost = '192.168.65.28';
     // PDO database username
+    //public $dbuser = 'shingnan';
     public $dbuser = 'tncb';
     // PDO database password
     public $dbpass = 'tncbuser';
+    //public $dbpass = 'uscclab';
 
     private function __construct()
     {

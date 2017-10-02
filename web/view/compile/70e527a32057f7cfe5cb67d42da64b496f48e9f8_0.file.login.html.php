@@ -1,17 +1,17 @@
 <?php
-/* Smarty version 3.1.28, created on 2017-10-01 16:22:18
+/* Smarty version 3.1.28, created on 2017-10-02 07:48:05
   from "C:\xampp\htdocs\shingnan\web\view\login.html" */
 
 if ($_smarty_tpl->smarty->ext->_validateCompiled->decodeProperties($_smarty_tpl, array (
   'has_nocache_code' => false,
   'version' => '3.1.28',
-  'unifunc' => 'content_59d0fa1aabb425_02953174',
+  'unifunc' => 'content_59d1d31589aea7_28965413',
   'file_dependency' => 
   array (
     '70e527a32057f7cfe5cb67d42da64b496f48e9f8' => 
     array (
       0 => 'C:\\xampp\\htdocs\\shingnan\\web\\view\\login.html',
-      1 => 1506865486,
+      1 => 1506923139,
       2 => 'file',
     ),
   ),
@@ -23,7 +23,7 @@ if ($_smarty_tpl->smarty->ext->_validateCompiled->decodeProperties($_smarty_tpl,
     'file:common/footer.html' => 1,
   ),
 ),false)) {
-function content_59d0fa1aabb425_02953174 ($_smarty_tpl) {
+function content_59d1d31589aea7_28965413 ($_smarty_tpl) {
 ?>
 <!DOCTYPE html>
 <html>
@@ -34,7 +34,7 @@ function content_59d0fa1aabb425_02953174 ($_smarty_tpl) {
 
 </head>
 
-<body class="hold-transition skin-blue sidebar-mini">
+<body class="hold-transition skin-yellow sidebar-mini">
   <div class="wrapper">
     <?php $_smarty_tpl->smarty->ext->_subtemplate->render($_smarty_tpl, "file:common/header.html", $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, 0, $_smarty_tpl->cache_lifetime, array(), 0, false);
 ?>

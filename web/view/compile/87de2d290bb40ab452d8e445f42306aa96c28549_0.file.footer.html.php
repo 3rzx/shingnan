@@ -1,11 +1,11 @@
 <?php
-/* Smarty version 3.1.28, created on 2017-10-01 17:13:08
+/* Smarty version 3.1.28, created on 2017-10-02 07:48:12
   from "C:\xampp\htdocs\shingnan\web\view\common\footer.html" */
 
 if ($_smarty_tpl->smarty->ext->_validateCompiled->decodeProperties($_smarty_tpl, array (
   'has_nocache_code' => false,
   'version' => '3.1.28',
-  'unifunc' => 'content_59d10604c4a4e7_06079433',
+  'unifunc' => 'content_59d1d31c460eb2_40824141',
   'file_dependency' => 
   array (
     '87de2d290bb40ab452d8e445f42306aa96c28549' => 
@@ -19,7 +19,7 @@ if ($_smarty_tpl->smarty->ext->_validateCompiled->decodeProperties($_smarty_tpl,
   array (
   ),
 ),false)) {
-function content_59d10604c4a4e7_06079433 ($_smarty_tpl) {
+function content_59d1d31c460eb2_40824141 ($_smarty_tpl) {
 ?>
 <footer class="main-footer">
     <div class="pull-right hidden-xs">
