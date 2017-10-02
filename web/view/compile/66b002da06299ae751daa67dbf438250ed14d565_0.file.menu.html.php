@@ -1,11 +1,11 @@
 <?php
-/* Smarty version 3.1.28, created on 2017-10-02 07:48:12
+/* Smarty version 3.1.28, created on 2017-10-02 08:21:44
   from "C:\xampp\htdocs\shingnan\web\view\common\menu.html" */
 
 if ($_smarty_tpl->smarty->ext->_validateCompiled->decodeProperties($_smarty_tpl, array (
   'has_nocache_code' => false,
   'version' => '3.1.28',
-  'unifunc' => 'content_59d1d31c4591b0_99196024',
+  'unifunc' => 'content_59d1daf80342e7_83615271',
   'file_dependency' => 
   array (
     '66b002da06299ae751daa67dbf438250ed14d565' => 
@@ -19,7 +19,7 @@ if ($_smarty_tpl->smarty->ext->_validateCompiled->decodeProperties($_smarty_tpl,
   array (
   ),
 ),false)) {
-function content_59d1d31c4591b0_99196024 ($_smarty_tpl) {
+function content_59d1daf80342e7_83615271 ($_smarty_tpl) {
 ?>
 <!-- Left side column. contains the logo and sidebar -->
 <aside class="main-sidebar">
