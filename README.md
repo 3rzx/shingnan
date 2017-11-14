@@ -11,6 +11,9 @@ $ chmod 744 environment.sh
 $ ./environment.sh 
 ```
 
+# Need to know
+All the picture file should put in to web/media/picture/ , and put video file in to web/media/video/
+
 # Coding Style
 Follow [PSR-2](http://www.php-fig.org/psr/psr-2/)
 
