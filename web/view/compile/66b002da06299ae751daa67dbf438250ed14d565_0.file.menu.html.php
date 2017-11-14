@@ -1,17 +1,17 @@
 <?php
-/* Smarty version 3.1.28, created on 2017-10-02 12:11:30
+/* Smarty version 3.1.28, created on 2017-11-14 10:12:18
   from "C:\xampp\htdocs\shingnan\web\view\common\menu.html" */
 
 if ($_smarty_tpl->smarty->ext->_validateCompiled->decodeProperties($_smarty_tpl, array (
   'has_nocache_code' => false,
   'version' => '3.1.28',
-  'unifunc' => 'content_59d210d274a128_24141923',
+  'unifunc' => 'content_5a0ab372ac5bb6_12239268',
   'file_dependency' => 
   array (
     '66b002da06299ae751daa67dbf438250ed14d565' => 
     array (
       0 => 'C:\\xampp\\htdocs\\shingnan\\web\\view\\common\\menu.html',
-      1 => 1506938459,
+      1 => 1510650735,
       2 => 'file',
     ),
   ),
@@ -19,7 +19,7 @@ if ($_smarty_tpl->smarty->ext->_validateCompiled->decodeProperties($_smarty_tpl,
   array (
   ),
 ),false)) {
-function content_59d210d274a128_24141923 ($_smarty_tpl) {
+function content_5a0ab372ac5bb6_12239268 ($_smarty_tpl) {
 ?>
 <!-- Left side column. contains the logo and sidebar -->
 <aside class="main-sidebar">
@@ -35,6 +35,12 @@ function content_59d210d274a128_24141923 ($_smarty_tpl) {
                     <i class="fa fa-th-list"></i><span>商品管理</span><i class="fa fa-angle-down pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
+                    <li><a href="#"><i class="fa fa-align-justify"></i>品牌管理<i class="fa fa-angle-down pull-right"></i></a>
+                        <ul class="treeview-menu">
+                            <li><a href="#"><i class="fa fa-gg-circle"></i>品牌新增</a></li>
+                            <li><a href="#"><i class="fa fa-gg-circle"></i>品牌檢視/修改</a></li>
+                        </ul>
+                    </li>
                     <li><a href="#"><i class="fa fa-align-justify"></i>風格管理<i class="fa fa-angle-down pull-right"></i></a>
                         <ul class="treeview-menu">
                             <li><a href="#"><i class="fa fa-leaf"></i>風格新增</a></li>
