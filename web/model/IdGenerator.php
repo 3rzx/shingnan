@@ -6,14 +6,17 @@
 class IdGenerator
 {
     
-    private string GetUniqID() {
-            $date = new DateTime();
-            return $date->getTimestamp();;
+    private function GetUniqID() {
+        $date = new DateTime();
+        return $date->getTimestamp();
     }
 
-    public string GetID(string Header) {
-            string id = Header . "_" . this.GetUniqID();
-            return id;
+    public function GetID($Header) {
+        $id = $Header . "_" . $this.GetUniqID();
+        return $id;
     }
     
 }
+
+
+?>
