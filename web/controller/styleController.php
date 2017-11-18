@@ -14,6 +14,9 @@ switch ($method) {
             case 'styleAdd':
                 $style->styleEdit($_POST);
                 break;
+            case 'styleEditPrepare':
+                $style->styleEditPrepare($_POST);
+                break;
             case 'styleEdit':
                 $style->styleEdit($_POST);
                 break;
@@ -22,8 +25,8 @@ switch ($method) {
     case 'GET':
         $action = isset($_GET['action']) ? $_GET['action'] : 'view';
         switch ($action) {
-            case 'styleAdd':
-                $style->styleAdd();
+            case 'styleAddPrepare':
+                $style->styleAddPrepare();
                 break;
             case 'styleList':
                 $style->styleList();
