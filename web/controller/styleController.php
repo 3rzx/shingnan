@@ -12,7 +12,7 @@ switch ($method) {
         $action = isset($_POST['action']) ? $_POST['action'] : '';
         switch ($action) {
             case 'styleAdd':
-                $style->styleEdit($_POST);
+                $style->styleAdd($_POST);
                 break;
             case 'styleEditPrepare':
                 $style->styleEditPrepare($_POST);
