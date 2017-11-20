@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>AdminLTE 2 | Log in</title>
+  <title>興南眼鏡行 | Log in</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.5 -->
@@ -36,7 +36,7 @@
       \{if $error != ''\}
       <p class="login-box-msg text-red">\{$error\}</p>
       \{/if\}
-      <form action="userController.php" method="post">
+      <form action="adminController.php" method="post">
         <div class="form-group has-feedback">
           <input name="account" type="text" class="form-control" placeholder="請輸入帳號">
           <span class="glyphicon glyphicon-user form-control-feedback"></span>
@@ -46,12 +46,10 @@
           <span class="glyphicon glyphicon-lock form-control-feedback"></span>
         </div>
         <div class="row">
-          <!-- /.col -->
           <div class="col-xs-offset-8 col-xs-4">
             <input type="hidden" name="action" value="login">
             <button type="submit" class="btn btn-primary btn-block btn-flat">登入</button>
           </div>
-          <!-- /.col -->
         </div>
       </form>
     </div>
@@ -65,15 +63,6 @@
   <script src="../theme/AdminLTE/bootstrap/js/bootstrap.min.js"></script>
   <!-- iCheck -->
   <script src="../theme/AdminLTE/plugins/iCheck/icheck.min.js"></script>
-  <script>
-    $(function () {
-      $('input').iCheck({
-        checkboxClass: 'icheckbox_square-blue',
-        radioClass: 'iradio_square-blue',
-        increaseArea: '20%' // optional
-      });
-    });
-  </script>
 </body>
 
 </html>
