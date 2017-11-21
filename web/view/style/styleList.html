@@ -3,6 +3,45 @@
 
 <head>
     \{include file="../common/resource.html"\}
+    <script>
+    function deleteStyle(styleId,imageId){
+        BootstrapDialog.show({
+            title:'提醒',
+            message: '確定刪除風格嗎?可能會造成部分眼鏡沒有風格分類',
+            buttons: [{
+                label: '確定',
+                cssClass: 'btn-danger',
+                action: function(){
+                    location='../controller/styleController.php?action=styleDelete&styleId='+ styleId + '&imageId=' + imageId ;
+                }
+            },{
+                label: '取消',
+                action: function(dialogItself){
+                    dialogItself.close();
+                }
+            }]
+        });
+    }
+
+    function deleteStyle(styleId){
+        BootstrapDialog.show({
+            title:'提醒',
+            message: '確定刪除風格嗎?可能會造成部分眼鏡沒有風格分類',
+            buttons: [{
+                label: '確定',
+                cssClass: 'btn-danger',
+                action: function(){
+                    location='../controller/styleController.php?action=styleDelete&styleId='+ styleId;
+                }
+            },{
+                label: '取消',
+                action: function(dialogItself){
+                    dialogItself.close();
+                }
+            }]
+        });
+    }
+    </script>
 </head>
 
 <body class="hold-transition skin-yellow sidebar-mini">
@@ -23,6 +62,12 @@
                             <h4 style="display: inline;">\{$error\}</h4>
                         </div>
                         \{/if\}
+                        \{if $msg != ''\}
+                        <div class="alert alert-success alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$msg\}</h4>
+                        </div>
+                        \{/if\}
                         <div class="box box-info">
                             <div class="box-header">
                                 <h3 class="box-title">風格列表</h3>
@@ -41,15 +86,21 @@
                                         \{foreach from=$allStyleData item=style\}
                                         <tr>
                                             <td>\{$style.styleName\}</td>
-                                            <td>image</td>
+                                            <td><img src="\{$style.path\}" alt="尚未上傳圖片" width="350px"></td>
                                             <td>\{$style.lastUpdateTime\}</td>
                                             <td>
-                                                <a href="../controller/styleController.php?action=styleEdit&styleId=\{$style.styleId\})">
+                                                <a href="../controller/styleController.php?action=styleEditPrepare&styleId=\{$style.styleId\}&imageId=\{$style.imageId\} ">
                                                     <button class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-pencil"></i></button>
                                                 </a>&nbsp;
+                                                \{if $style.imageId != ''\}
                                                 <a href="#">
-                                                    <button class="btn btn-sm btn-danger" onclick="deleteStyle(\{$style.styleId\});"><i class="glyphicon glyphicon-remove"></i></button>
+                                                    <button class="btn btn-sm btn-danger" onclick="deleteStyle('\{$style.styleId\}' , '\{$style.imageId\}');"><i class="glyphicon glyphicon-remove"></i></button>
                                                 </a>
+                                                \{else\}
+                                                <a href="#">
+                                                    <button class="btn btn-sm btn-danger" onclick="deleteStyle('\{$style.styleId\}');"><i class="glyphicon glyphicon-remove"></i></button>
+                                                </a>
+                                                \{/if\}
                                             </td>
                                         </tr>
                                         \{/foreach\}

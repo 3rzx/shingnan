@@ -32,30 +32,28 @@
                 reader.readAsDataURL(input.files[0]);
             }
         }
-
-        function fieldValidation(field) {
-            if ($.trim($(field).val()) == '') {
-                $(field + 'Div').addClass('has-error');
-                $(field + 'Div').val('');
-                return false;
-            } else {
-                $(field + 'Div').removeClass('has-error');
-            }
-            return true;
-        }
-
-        function formValidation() {
-            if (fieldValidation('styleName') ) {
-                return true;
-            } else {
-                BootstrapDialog.alert('請至少填寫風格名稱');
-                return false;
-            }
+        function deleteImage(imageId){
+            BootstrapDialog.show({
+                title:'提醒',
+                message: '確定刪除該風格圖片嗎?',
+                buttons: [{
+                    label: '確定',
+                    cssClass: 'btn-danger',
+                    action: function(){
+                        location='../controller/styleController.php?action=styleImageDelete&imageId=' + imageId ;
+                    }
+                },{
+                    label: '取消',
+                    action: function(dialogItself){
+                        dialogItself.close();
+                    }
+                }]
+            });
         }
     </script>
 </head>
 
-<body class="hold-transition skin-blue sidebar-mini">
+<body class="hold-transition skin-yellow sidebar-mini">
     <div class="wrapper">
         \{include file="../common/header.html"\}
         \{include file="../common/menu.html"\}
@@ -76,19 +74,26 @@
                             <div class="box-header with-border">
                                 <h3 class="box-title">修改風格</h3>
                             </div>
-                            <form class="form-horizontal" method="post" action="../controller/styleController.php" onsubmit="formValidation()"">
+                            <form class="form-horizontal" method="post"  enctype="multipart/form-data" action="../controller/styleController.php" onsubmit="formValidation()">
                                 <div class="box-body">
                                     <div id="styleNameDiv" class="form-group">
                                         <label for="styleName" class="col-sm-2 control-label">風格名稱</label>
                                         <div class="col-sm-10">
-                                            <input id="styleName" name="styleName" class="form-control" placeholder="輸入風格名稱" value="\{$styleData.styleName\}">
+                                            <input id="styleName" name="styleName" class="form-control" value="\{$styleData.styleName\}">
                                         </div>
                                     </div>
                                     <div id="styleImageDiv" class="form-group">
                                         <label class="col-sm-2 control-label">風格圖片</label>
                                         <div class="col-sm-10">
-                                            <input type="file" id="styleImage" name="styleImage" data-input="false" accept="image/*">
-                                            <img id="styleImg" class="img-thumbnail" style="display:none" src="\{$styleImg.path\}">
+                                            <div class = "form-inline" style="display:inline-block;">
+                                                <input type="file" id="styleImage" name="styleImage" data-input="false" accept="image/*" style="display: inline;">
+                                                \{if $styleData.imageId != ''\}
+                                                <a class="btn btn-sm btn-danger" onclick="deleteImage('\{$styleData.imageId\}')"><i class="glyphicon glyphicon-remove"></i>
+                                                </a> 
+                                                \{/if\}
+                                            </div> 
+                                            <img id="styleImg" class="img-thumbnail" src="\{$styleData.path\}" alt="尚未上傳圖片">
+                                            
                                         </div>
                                     </div>
                                 </div>
@@ -97,6 +102,9 @@
                                     <a href="../controller/styleController.php?action=styleList" class="btn btn-warning">取消</a>
                                     <input type="hidden" name="action" value="styleEdit">
                                     <input type="hidden" name="styleId" value="\{$styleData.styleId\}">
+                                    \{if $styleData.imageId != ''\}
+                                    <input type="hidden" name="imageId" value="\{$styleData.imageId\}">
+                                    \{/if\}
                                     <button type="submit" class="btn btn-success">更新</button>
                                 </div>
                             </form>

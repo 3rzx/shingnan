@@ -33,25 +33,6 @@
             }
         }
 
-        function fieldValidation(field) {
-            if ($.trim($(field).val()) == '') {
-                $(field + 'Div').addClass('has-error');
-                $(field + 'Div').val('');
-                return false;
-            } else {
-                $(field + 'Div').removeClass('has-error');
-            }
-            return true;
-        }
-
-        function formValidation() {
-            if (fieldValidation('styleName') ) {
-                return true;
-            } else {
-                BootstrapDialog.alert('請至少填寫風格名稱');
-                return false;
-            }
-        }
     </script>
 </head>
 
@@ -77,7 +58,7 @@
                                 <h3 class="box-title">新增風格</h3>
                             </div>
                             <!-- form-->
-                            <form class="form-horizontal" method="post" action="../controller/styleController.php" onsubmit="formValidation()">
+                            <form class="form-horizontal" method="post" enctype="multipart/form-data" action="../controller/styleController.php">
                                 <div class="box-body">
                                     <div id="styleNameDiv" class="form-group">
                                         <label for="styleName" class="col-sm-2 control-label">風格名稱</label>
@@ -86,7 +67,7 @@
                                         </div>
                                     </div>
                                     <div id="styleImageDiv" class="form-group">
-                                        <label class="col-sm-2 control-label">風格圖片</label>
+                                        <label for="styleImage" class="col-sm-2 control-label">風格圖片</label>
                                         <div class="col-sm-10">
                                             <input type="file" id="styleImage" name="styleImage" data-input="false" accept="image/*">
                                             <img id="styleImg" class="img-thumbnail" style="display:none">
@@ -96,7 +77,7 @@
                                 <div class="box-footer" style="text-align: right;">
                                     <a href="../controller/styleController.php?action=main" class="btn btn-warning">取消</a>
                                     <input type="hidden" name="action" value="styleAdd">
-                                    <button type="submit" class="btn btn-success">確定</button>
+                                    <button type="submit" class="btn btn-success" >確定</button>
                                 </div>
                             </form>
                         </div>

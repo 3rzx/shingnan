@@ -14,25 +14,32 @@ switch ($method) {
             case 'styleAdd':
                 $style->styleAdd($_POST);
                 break;
-            case 'styleEditPrepare':
-                $style->styleEditPrepare($_POST);
-                break;
             case 'styleEdit':
                 $style->styleEdit($_POST);
                 break;
         }
         break;
     case 'GET':
-        $action = isset($_GET['action']) ? $_GET['action'] : 'view';
+        $action = isset($_GET['action']) ? $_GET['action'] : '';
         switch ($action) {
             case 'styleAddPrepare':
-                $style->styleAddPrepare();
+                $style->styleAddPrepare($_GET);
                 break;
             case 'styleList':
-                $style->styleList();
+                $style->styleList($_GET);
+                break;
+            case 'styleEditPrepare':
+                $style->styleEditPrepare($_GET);
+                break;
+            case 'styleDelete':
+                $style->styleDelete($_GET);
+                break;
+            case 'styleImageDelete':
+                $style->styleImageDelete($_GET);
                 break;
             default:
                 $style->viewLogin();
+                break;
         }
         break;
 }

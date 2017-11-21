@@ -1,6 +1,7 @@
 <?php
 // initialize
 require_once HOME_DIR . 'configs/config.php';
+require_once 'upload.func.php';
 require_once 'IdGenerator.php';
 /**
  * 風格類別
@@ -55,57 +56,44 @@ class Style
      */
     public function styleAdd($input) {
         if ($_SESSION['isLogin'] == true) {
-            try{
-                $idGen = new IdGenerator();
-                $now = date('Y-m-d H:i:s');
-                $styleId = $idGen.GetID('style');
-                $this->db->beginTransaction();
-                $sql = "INSERT INTO `shingnan`.`style` (`styleId`, `styleName`, `isDelete`, `lastUpdateTime`, `createTime`) 
-                        VALUES (:styleId, :styleName, '0', :lastUpdateTime, :createTime);";
-                $res->bindParam(':styleId', $styleId, PDO::PARAM_STR);
-                $res->bindParam(':styleName', $input['styleName'], PDO::PARAM_STR);
-                $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
-                $res->bindParam(':createTime', $now, PDO::PARAM_STR);
-
-                if ($res->execute()) {
-                    //deal with insert image
-                    $this->msg = '新增成功';
-                    $uploadPath = '../media/picture';
-                    if (!file_exists($uploadPath) && !is_dir($uploadPath)) {
-                        // create project folder with 777 permissions
-                        mkdir($uploadPath);
-                        chmod($uploadPath, 0777);
-                    }
-                    if ($_FILES['styleImage']['error'] == 0) {
-                        $imgId = $idGen.GetID('image');
-                        $imgName = 'style_'.$input['styleName'];
-                        $fileInfo = $_FILES['styleImage'];
-                        $styleImage = uploadFile($fileInfo, $uploadPath);
-                        $sql = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`, 
-                                                                `itemId`, `ctr`, `path`, `link`, `crateTime`) 
-                                VALUES (:imgId, :imgName, 2, 
-                                        :styleId, 0, :filePath, '', :createTime);";
-                        $res = $this->db->prepare($sql);
-                        $res->bindParam(':imgId', $imgId, PDO::PARAM_STR);
-                        $res->bindParam(':imgName', $imgName, PDO::PARAM_STR);
-                        $res->bindParam(':styleId', $styleId, PDO::PARAM_STR);
-                        $res->bindParam(':filePath', $styleImage, PDO::PARAM_STR);
-                        $res->bindParam(':createTime', $now, PDO::PARAM_STR);
-                        $res->execute();
-                        if (!$res) { 
-                            $error = $res->errorInfo();
-                            var_dump($res->errorInfo());
-                            exit;
-                            $this->error = $error[0];
-                            $this->smarty->assign('error', $this->error);
-                        }
+            $idGen = new IdGenerator();
+            $now = date('Y-m-d H:i:s');
+            $styleId = $idGen->GetID('style');
+            $sql = "INSERT INTO `shingnan`.`style` (`styleId`, `styleName`, `isDelete`, `lastUpdateTime`, `createTime`) 
+                    VALUES (:styleId, :styleName, '0', :lastUpdateTime, :createTime);";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':styleId', $styleId, PDO::PARAM_STR);
+            $res->bindParam(':styleName', $input['styleName'], PDO::PARAM_STR);
+            $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
+            $res->bindParam(':createTime', $now, PDO::PARAM_STR);
+            if ($res->execute()) {
+                //deal with insert image
+                $this->msg = '新增成功';
+                $uploadPath = '../media/picture';
+                if ($_FILES['styleImage']['error'] == 0) {
+                    $imgId = $idGen->GetID('image');
+                    $imgName = 'style_'.$input['styleName'];
+                    $fileInfo = $_FILES['styleImage'];
+                    $styleImage = uploadFile($fileInfo, $uploadPath);
+                    $sql = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`, 
+                                                            `itemId`, `ctr`, `path`, `link`, `crateTime`) 
+                            VALUES (:imgId, :imgName, 2, 
+                                    :styleId, 0, :filePath, '', :createTime);";
+                    $res = $this->db->prepare($sql);
+                    $res->bindParam(':imgId', $imgId, PDO::PARAM_STR);
+                    $res->bindParam(':imgName', $imgName, PDO::PARAM_STR);
+                    $res->bindParam(':styleId', $styleId, PDO::PARAM_STR);
+                    $res->bindParam(':filePath', $styleImage, PDO::PARAM_STR);
+                    $res->bindParam(':createTime', $now, PDO::PARAM_STR);
+                    $res->execute();
+                    if (!$res) { 
+                        $error = $res->errorInfo();
+                        $this->error = $error[0];
+                        $this->styleList();
                     }
                 }
-                //$this->styleList();
-            } catch (PDOException $e) {
-                print "Error!: " . $e->getMessage();
-                $this->smarty->assign('error', $e->getMessage());
             }
+            $this->styleList();
         } else {
             $this->error = '請先登入!';
             $this->viewLogin();
@@ -117,25 +105,18 @@ class Style
      */
     public function styleEditPrepare($input) {
         if ($_SESSION['isLogin'] == true) {
-            $sql = 'SELECT * FROM style WHERE styleId = :styleId';
+            $sql = "SELECT `style`.`styleName`, `style`.`styleId` , `image`.`imageId` ,`image`.`path` 
+                    FROM  `style` 
+                    LEFT JOIN  `image` ON style.`styleId` = image.`itemId` 
+                    WHERE  `style`.`isDelete` = 0 AND  `style`.`styleId` = :styleId " ;
             $res = $this->db->prepare($sql);
             $res->bindParam(':styleId', $input['styleId'], PDO::PARAM_STR);
             $res->execute();
-            $styleData = $res->fetchAll();
-
-            //get image 
-            $sql = 'SELECT `path`
-                    FROM image
-                    WHERE type = 2 and itemId = :styleId';
-            $res = $this->db->prepare($sql);
-            $res->bindParam(':styleId', $input['styleId'], PDO::PARAM_STR);
-            $res->execute();
-            $styleImg = $res->fetchAll();
-
+            $styleData = $res->fetch();
             $this->smarty->assign('styleData', $styleData);
-            $this->smarty->assign('styleImg',$styleImg);
             $this->smarty->assign('error', $this->error);
-            $this->display('style/styleEdit.html');
+            //echo $styleData['path'];
+            $this->smarty->display('style/styleEdit.html');
         } else {
             $this->error = '請先登入!';
             $this->viewLogin();
@@ -147,25 +128,59 @@ class Style
      */
     public function styleEdit($input) {
         if ($_SESSION['isLogin'] == true) {
-            $sql = 'SELECT * FROM style WHERE styleId = :styleId';
+            $now = date('Y-m-d H:i:s');
+            $sql = "UPDATE  `shingnan`.`style` SET  `styleName` =  :styleName,
+                    `lastUpdateTime` =  :lastUpdateTime WHERE  `style`.`styleId` = :styleId;" ;
             $res = $this->db->prepare($sql);
             $res->bindParam(':styleId', $input['styleId'], PDO::PARAM_STR);
+            $res->bindParam(':styleName',$input['styleName'], PDO::PARAM_STR);
+            $res->bindParam(':lastUpdateTime',$now, PDO::PARAM_STR);
             $res->execute();
-            $styleData = $res->fetchAll();
 
-            //get image 
-            $sql = 'SELECT `path`
-                    FROM image
-                    WHERE type = 2 and itemId = :styleId';
-            $res = $this->db->prepare($sql);
-            $res->bindParam(':styleId', $input['styleId'], PDO::PARAM_STR);
-            $res->execute();
-            $styleImg = $res->fetchAll();
-
-            $this->smarty->assign('styleData', $styleData);
-            $this->smarty->assign('styleImg',$styleImg);
-            $this->smarty->assign('error', $this->error);
-            $this->display('style/styleEdit.html');
+            if ($res->execute()) {
+                //update image 
+                $this->msg = '更新成功';
+                if ($_FILES['styleImage']['error'] == 0) {
+                    if( isset($input['imageId']) ){
+                        
+                        $fileInfo = $_FILES['styleImage'];
+                        $styleImage = uploadFile($fileInfo, '../media/picture');
+                        $sql = "UPDATE  `shingnan`.`image` SET  `path` = :pathinfo WHERE `image`.`imageId` = :imageId;";
+                        $res = $this->db->prepare($sql);
+                        $res->bindParam(':imageId', $input['imageId'], PDO::PARAM_STR);
+                        $res->bindParam(':pathinfo', $styleImage, PDO::PARAM_STR);
+                        $res->execute();
+                        if (!$res) { 
+                            $error = $res->errorInfo();
+                            $this->error = $error[0];
+                            $this->styleList();
+                        }
+                    }else{
+                        $idGen = new IdGenerator();
+                        $imgId = $idGen->GetID('image');
+                        $imgName = 'style_'.$input['styleName'];
+                        $fileInfo = $_FILES['styleImage'];
+                        $styleImage = uploadFile($fileInfo, '../media/picture');
+                        $sql = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`, 
+                                                            `itemId`, `ctr`, `path`, `link`, `crateTime`) 
+                                VALUES (:imgId, :imgName, 2, 
+                                        :styleId, 0, :filePath, '', :createTime);";
+                        $res = $this->db->prepare($sql);
+                        $res->bindParam(':imgId', $imgId, PDO::PARAM_STR);
+                        $res->bindParam(':imgName', $imgName, PDO::PARAM_STR);
+                        $res->bindParam(':styleId', $input['styleId'], PDO::PARAM_STR);
+                        $res->bindParam(':filePath', $styleImage, PDO::PARAM_STR);
+                        $res->bindParam(':createTime', $now, PDO::PARAM_STR);
+                        $res->execute();
+                        if (!$res) { 
+                            $error = $res->errorInfo();
+                            $this->error = $error[0];
+                            $this->styleList();
+                        }
+                    }
+                }
+            }
+            $this->styleList();
         } else {
             $this->error = '請先登入!';
             $this->viewLogin();
@@ -178,24 +193,18 @@ class Style
     public function styleList() {
         if ($_SESSION['isLogin'] == true) {
             // get all data from style
-            $sql = 'SELECT *
-            		FROM style
-                    ORDER BY styleId';
+            $sql = 'SELECT `style`.`styleName`, `style`.`styleId` , `style`.`lastUpdateTime`, `image`.`imageId` ,`image`.`path` 
+                    FROM  `style` 
+                    LEFT JOIN  `image` ON `style`.`styleId` = `image`.`itemId` 
+                    WHERE  `style`.`isDelete` = 0
+                    ORDER BY `style`.`styleId`';
             $res = $this->db->prepare($sql);
             $res->execute();
             $allStyleData = $res->fetchAll();
 
-            $sql = 'SELECT `path`,`itemId`
-                    FROM image
-                    WHERE type = 2
-                    ORDER BY itemId';
-            $res = $this->db->prepare($sql);
-            $res->execute();
-            $allStyleImg = $res->fetchAll();
-
             $this->smarty->assign('allStyleData', $allStyleData);
-            $this->smarty->assign('allStyleImg', $allStyleImg);
             $this->smarty->assign('error', $this->error);
+            $this->smarty->assign('msg', $this->msg);
             $this->smarty->display('style/styleList.html');
         } else {
             $this->error = '請先登入!';
@@ -209,21 +218,38 @@ class Style
      */
     public function styleDelete($input) {
         if ($_SESSION['isLogin'] == true) {
-            try {
-                $this->db->beginTransaction();
-                $sql    = "DELETE FROM style
-                           WHERE styleId = :styleId";
-                $res->bindParam(':styleId', $input['styleId'], PDO::PARAM_STR);
-                $this->db->exec($sql);
-                $this->db->commit();
+            if(isset($input['imageId'])){
                 //deal with img
-                $this->error = '';
-                $this->msg   = '刪除成功';
-                $this->smarty->display('style/styleList.html');
-            } catch (PDOException $e) {
-                $this->db->rollBack();
-                print "Error!: " . $e->getMessage();
+                $this->db->beginTransaction();
+                $sql    = "DELETE FROM `image` WHERE `imageId` = :imgId;";
+                $res = $this->db->prepare($sql);
+                $res->bindParam(':imgId', $input['imageId'], PDO::PARAM_STR);
+                $res->execute();
+                $this->db->commit();
             }
+            $this->db->beginTransaction();
+            $sql = "DELETE FROM `style` WHERE `styleId` = :styleId;";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':styleId', $input['styleId'], PDO::PARAM_STR);
+            $res->execute();
+            $this->db->commit();
+            $this->styleList();
+        } else {
+            $this->error = '請先登入!';
+            $this->viewLogin();
+        }
+    }
+
+    
+    public function styleImageDelete($input){
+        if ($_SESSION['isLogin'] == true) {
+            $this->db->beginTransaction();
+            $sql = "DELETE FROM `image` WHERE `image`.`imageId` = :imgId;";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':imgId', $input['imageId'], PDO::PARAM_STR);
+            $res->execute();
+            $this->db->commit();
+            $this->styleList();
         } else {
             $this->error = '請先登入!';
             $this->viewLogin();
