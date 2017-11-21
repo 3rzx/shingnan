@@ -60,10 +60,11 @@ class Brand
                 $now = date('Y-m-d H:i:s');
                 $brandId = $idGen.GetID('brand');
                 $this->db->beginTransaction();
-                $sql = "INSERT INTO `shingnan`.`brand` (`brandId`, `brandName`, `isDelete`, `lastUpdateTime`, `createTime`) 
-                        VALUES (:brandId, :brandName, '0', :lastUpdateTime, :createTime);";
+                $sql = "INSERT INTO `shingnan`.`brand` (`brandId`, `brandName`,  `description`, `isDelete`, `lastUpdateTime`, `createTime`) 
+                        VALUES (:brandId, :brandName, :description, '0', :lastUpdateTime, :createTime);";
                 $res->bindParam(':brandId', $brandId, PDO::PARAM_STR);
                 $res->bindParam(':brandName', $input['brandName'], PDO::PARAM_STR);
+                $res->bindParam(':description', $input['description'], PDO::PARAM_STR);
                 $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
                 $res->bindParam(':createTime', $now, PDO::PARAM_STR);
 
