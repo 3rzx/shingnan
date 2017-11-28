@@ -4,7 +4,7 @@
 <head>
     \{include file="../common/resource.html"\}
     <script>
-    function deleteStyle(styleId,imageId){
+    function deleteStyleWithImg(styleId,imageId){
         BootstrapDialog.show({
             title:'提醒',
             message: '確定刪除風格嗎?可能會造成部分眼鏡沒有風格分類',
@@ -94,7 +94,7 @@
                                                 </a>&nbsp;
                                                 \{if $style.imageId != ''\}
                                                 <a href="#">
-                                                    <button class="btn btn-sm btn-danger" onclick="deleteStyle('\{$style.styleId\}' , '\{$style.imageId\}');"><i class="glyphicon glyphicon-remove"></i></button>
+                                                    <button class="btn btn-sm btn-danger" onclick="deleteStyleWithImg('\{$style.styleId\}' , '\{$style.imageId\}');"><i class="glyphicon glyphicon-remove"></i></button>
                                                 </a>
                                                 \{else\}
                                                 <a href="#">

@@ -14,9 +14,6 @@ switch ($method) {
             case 'brandAdd':
                 $brand->brandAdd($_POST);
                 break;
-            case 'brandEditPrepare':
-                $brand0->brandEditPrepare($_POST);
-                break;
             case 'brandEdit':
                 $brand->brandEdit($_POST);
                 break;
@@ -26,13 +23,22 @@ switch ($method) {
         $action = isset($_GET['action']) ? $_GET['action'] : 'view';
         switch ($action) {
             case 'brandAddPrepare':
-                $brand->brandAddPrepare();
+                $brand->brandAddPrepare($_GET);
+                break;
+            case 'brandEditPrepare':
+                $brand->brandEditPrepare($_GET);
                 break;
             case 'brandList':
-                $brand->brandList();
+                $brand->brandList($_GET);
+                break;
+            case 'brandDelete':
+                $brand->brandDelete($_GET);
+                break;
+            case 'brandImageDelete':
+                $brand->brandImageDelete($_GET);
                 break;
             default:
-                $sbrand->viewLogin();
+                $brand->viewLogin();
         }
         break;
 }
