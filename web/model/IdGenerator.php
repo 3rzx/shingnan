@@ -12,7 +12,7 @@ class IdGenerator
     }
 
     public function GetID($Header) {
-        $id = $Header . "_" . $this.GetUniqID();
+        $id = $Header . "_" . $this->GetUniqID();
         return $id;
     }
     
