@@ -22,6 +22,14 @@ class Statistic
         $this->db = dbSetup::getDbConn();
         // instantiate the template object
         $this->smarty = new SmartyConfig();
+
+        if (PHP_VERSION_ID < 50400) {
+            // 登記 Session 變數名稱
+            session_register('isLogin');
+            session_register('user');
+            session_register('error');
+            session_register('msg');
+        }
     }
 
     /**
