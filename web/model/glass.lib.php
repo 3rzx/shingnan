@@ -46,6 +46,11 @@ class Glass
             $this->error = '請先登入!';
             $this->viewLogin();
         }
+        $sql = "SELECT `brandId`, `brandName` FROM `brand` WHERE `isDelete` = 0 ;" ;
+        $res = $this->db->prepare($sql);
+        $res->execute();
+        $brandData = $res->fetchAll();
+        $this->smarty->assign('brandData',$brandData);
         $this->smarty->assign('error', $this->error);
         $this->smarty->display('glass/glassAdd.html');
     }
@@ -61,40 +66,24 @@ class Glass
         $idGen = new IdGenerator();
         $now = date('Y-m-d H:i:s');
         $glassId = $idGen->GetID('glass');
-        $sql = "INSERT INTO `shingnan`.`glass` (`glassId`, `glassName`, `isDelete`, `description`,`lastUpdateTime`, `createTime`) 
-                    VALUES (:glassId, :glassName, '0', :description, :lastUpdateTime, :createTime);";
+        $sql = "INSERT INTO `shingnan`.`glass` (`glassId`, `no`, `glassName`, `brandId`, `type`, `memo`, 
+                                                `isDelete`, `lastUpdateTime`, `createTime`) 
+                VALUES (:glassId, :glassNo, :glassName, :glassBrand, :glassType, :memo, 
+                        '0', :lastUpdateTime, :createTime);";
         $res = $this->db->prepare($sql);
         $res->bindParam(':glassId', $glassId, PDO::PARAM_STR);
+        $res->bindParam(':glassNo', $input['glassNo'], PDO::PARAM_STR);
         $res->bindParam(':glassName', $input['glassName'], PDO::PARAM_STR);
-        $res->bindParam(':description', $input['description'], PDO::PARAM_STR);
+        $res->bindParam(':glassBrand', $input['glassBrand'], PDO::PARAM_STR);
+        $res->bindParam(':glassType', $input['type'], PDO::PARAM_STR);
+        $res->bindParam(':memo', $input['memo'], PDO::PARAM_STR);
         $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
         $res->bindParam(':createTime', $now, PDO::PARAM_STR);
-        if ($res->execute()) {
-        //deal with insert image
-            $this->msg = '新增成功';
-            $uploadPath = '../media/picture';
-            if ($_FILES['glassImage']['error'] == 0) {
-                $imgId = $idGen->GetID('image');
-                $imgName = 'glass_'.$input['glassName'];
-                $fileInfo = $_FILES['glassImage'];
-                $glassImage = uploadFile($fileInfo, $uploadPath);
-                $sql = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`, 
-                                                        `itemId`, `ctr`, `path`, `link`, `createTime`) 
-                        VALUES (:imgId, :imgName, 3, 
-                                :glassId, 0, :filePath, '', :createTime);";
-                $res = $this->db->prepare($sql);
-                $res->bindParam(':imgId', $imgId, PDO::PARAM_STR);
-                $res->bindParam(':imgName', $imgName, PDO::PARAM_STR);
-                $res->bindParam(':glassId', $glassId, PDO::PARAM_STR);
-                $res->bindParam(':filePath', $glassImage, PDO::PARAM_STR);
-                $res->bindParam(':createTime', $now, PDO::PARAM_STR);
-                $res->execute();
-                if (!$res) { 
-                    $error = $res->errorInfo();
-                    $this->error = $error[0];
-                    $this->glassList();
-                }
-            }
+        $res->execute();
+        if (!$res) { 
+            $error = $res->errorInfo();
+            $this->error = $error[0];
+            $this->glassList();
         }
        $this->glassList();
     }
@@ -107,16 +96,20 @@ class Glass
             $this->error = '請先登入!';
             $this->viewLogin();
         }
-         $sql = "SELECT `glass`.`glassName`, `glass`.`glassId` , `glass`.`description`, `image`.`imageId` ,`image`.`path` 
+         $sql = "SELECT `glass`.`glassId`, `glass`.`glassName`, `glass`.`no`, `glass`.`brandId`, `glass`.`type`, `glass`.`memo` 
                 FROM  `glass` 
-                LEFT JOIN  `image` ON glass.`glassId` = image.`itemId` 
-                WHERE  `glass`.`isDelete` = 0 AND  `glass`.`glassId` = :glassId" ;
+                WHERE  `glass`.`isDelete` = 0 AND  `glass`.`glassId` = :glassId;" ;
         $res = $this->db->prepare($sql);
         $res->bindParam(':glassId', $input['glassId'], PDO::PARAM_STR);
         $res->execute();
         $glassData = $res->fetch();
-
         $this->smarty->assign('glassData', $glassData);
+        
+        $sql = "SELECT `brandId`, `brandName` FROM `brand` WHERE `isDelete` = 0 ;" ;
+        $res = $this->db->prepare($sql);
+        $res->execute();
+        $brandData = $res->fetchAll();
+        $this->smarty->assign('brandData',$brandData);
         $this->smarty->assign('error', $this->error);
         $this->smarty->display('glass/glassEdit.html');
     }
@@ -130,56 +123,22 @@ class Glass
             $this->viewLogin();
         }
         $now = date('Y-m-d H:i:s');
-        $sql = "UPDATE  `shingnan`.`glass` SET  `glassName` = :glassName, `description` = :description, 
-                `lastUpdateTime` =  :lastUpdateTime WHERE  `glass`.`glassId` = :glassId;" ;
+        $sql = "UPDATE  `shingnan`.`glass` SET  `glassName` = :glassName, `brandId`= :brandId, `no` = :no, `type` = :type, `memo` = :memo,
+                `lastUpdateTime` =  :lastUpdateTime WHERE `glass`.`glassId` = :glassId;" ;
         $res = $this->db->prepare($sql);
-        $res->bindParam(':glassId', $input['glassId'], PDO::PARAM_STR);
-        $res->bindParam(':glassName',$input['glassName'], PDO::PARAM_STR);
-        $res->bindParam(':description',$input['description'], PDO::PARAM_STR);
-        $res->bindParam(':lastUpdateTime',$now, PDO::PARAM_STR);
+        $res->bindParam(':glassId', $input['glassId'], PDO::PARAM_STR);        
+        $res->bindParam(':no', $input['glassNo'], PDO::PARAM_STR);
+        $res->bindParam(':glassName', $input['glassName'], PDO::PARAM_STR);
+        $res->bindParam(':brandId', $input['glassBrand'], PDO::PARAM_STR);
+        $res->bindParam(':type', $input['type'], PDO::PARAM_STR);
+        $res->bindParam(':memo', $input['memo'], PDO::PARAM_STR);
+        $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
         $res->execute();
 
-        if ($res->execute()) {
-        //update image 
-            $this->msg = '更新成功';
-            if ($_FILES['glassImage']['error'] == 0) {
-                if( isset($input['imageId']) ){                
-                    $fileInfo = $_FILES['glassImage'];
-                    $glassImage = uploadFile($fileInfo, '../media/picture');
-                    $sql = "UPDATE  `shingnan`.`image` SET  `path` = :pathinfo WHERE `image`.`imageId` = :imageId;";
-                    $res = $this->db->prepare($sql);
-                    $res->bindParam(':imageId', $input['imageId'], PDO::PARAM_STR);
-                    $res->bindParam(':pathinfo', $glassImage, PDO::PARAM_STR);
-                    $res->execute();
-                    if (!$res) { 
-                        $error = $res->errorInfo();
-                        $this->error = $error[0];
-                        $this->glassList();
-                    }
-                }else{
-                    $idGen = new IdGenerator();
-                    $imgId = $idGen->GetID('image');
-                    $imgName = 'glass_'.$input['glassName'];
-                    $fileInfo = $_FILES['glassImage'];
-                    $glassImage = uploadFile($fileInfo, '../media/picture');
-                    $sql = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`, 
-                                                            `itemId`, `ctr`, `path`, `link`, `createTime`) 
-                            VALUES (:imgId, :imgName, 3, 
-                                    :glassId, 0, :filePath, '', :createTime);";
-                    $res = $this->db->prepare($sql);
-                    $res->bindParam(':imgId', $imgId, PDO::PARAM_STR);
-                    $res->bindParam(':imgName', $imgName, PDO::PARAM_STR);
-                    $res->bindParam(':glassId', $input['glassId'], PDO::PARAM_STR);
-                    $res->bindParam(':filePath', $glassImage, PDO::PARAM_STR);
-                    $res->bindParam(':createTime', $now, PDO::PARAM_STR);
-                    $res->execute();
-                    if (!$res) { 
-                        $error = $res->errorInfo();
-                        $this->error = $error[0];
-                        $this->glassList();
-                    }
-                }
-            }
+        if (!$res) { 
+            $error = $res->errorInfo();
+            $this->error = $error[0];
+            $this->glassList();
         }
         $this->glassList();
     }
@@ -193,17 +152,17 @@ class Glass
             $this->viewLogin();
         }
         // get all data from glass
-        $sql = 'SELECT `glass`.`glassName`, `glass`.`glassId` , `glass`.`description`, `glass`.`lastUpdateTime`,
-                        `image`.`imageId`,`image`.`path` 
-                FROM  `glass` 
-                LEFT JOIN  `image` ON `glass`.`glassId` = `image`.`itemId` 
-                WHERE  `glass`.`isDelete` = 0
+        $sql = 'SELECT `glass`.`glassId`, `glass`.`no`, `glass`.`glassName`, `glass`.`type`, `glass`.`memo`, `glass`.`lastUpdateTime`, 
+                        `brand`.`brandName` 
+                FROM `glass`,  `brand` 
+                WHERE `glass`.`isDelete`= 0 
+                AND `brand`.`brandId` = `glass`.`brandId` 
                 ORDER BY `glass`.`glassId`';
         $res = $this->db->prepare($sql);
         $res->execute();
-        $allglassData = $res->fetchAll();
+        $allGlassData = $res->fetchAll();
 
-        $this->smarty->assign('allglassData', $allglassData);
+        $this->smarty->assign('allGlassData', $allGlassData);
         $this->smarty->assign('error', $this->error);
         $this->smarty->assign('msg', $this->msg);
         $this->smarty->display('glass/glassList.html');
@@ -219,23 +178,23 @@ class Glass
             $this->error = '請先登入!';
             $this->viewLogin();
         }
-        if(isset($input['imageId'])){
-        //deal with img
-            $this->db->beginTransaction();
-            $sql    = "DELETE FROM `image` WHERE `imageId` = :imgId;";
-            $res = $this->db->prepare($sql);
-            $res->bindParam(':imgId', $input['imageId'], PDO::PARAM_STR);
-            $res->execute();
-            $this->db->commit();
-        }
-        $this->db->beginTransaction();
-        $sql = "DELETE FROM glass WHERE glassId = :glassId;";
+        $now = date('Y-m-d H:i:s');
+        $sql = "UPDATE `shingnan`.`glass` SET  `isDelete` = 1, `lastUpdateTime` = :lastUpdateTime WHERE `glass`.`glassId` = :glassId;";
         $res = $this->db->prepare($sql);
         $res->bindParam(':glassId', $input['glassId'], PDO::PARAM_STR);
+        $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
         $res->execute();
-        $this->db->commit();
         $this->glassList();
     }
 
+    /**
+     * 顯示登入畫面
+     */
+    public function viewLogin(){
+        $_SESSION['isLogin'] = false;
+        $this->smarty->assign('error', $this->error);
+        $this->smarty->assign('homePath', APP_ROOT_DIR);
+        $this->smarty->display('login.html');
+    }
 
 }
