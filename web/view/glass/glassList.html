@@ -9,11 +9,10 @@
     <script src="../plugins/datatables/dataTables.bootstrap.min.js"></script>
     <script>
     $(function () {
-        $('#brandListTable').DataTable({
+        $('#glassListTable').DataTable({
             "columnDefs": [
-                { "orderable": false, "targets": 1 },
-                { "orderable": false, "targets": 2 },
-                { "orderable": false, "targets": 4 }
+                { "orderable": false, "targets": 4 },
+                { "orderable": false, "targets": 6 }
             ],
             "paging": false,
             "lengthChange": false,
@@ -23,34 +22,16 @@
             "autoWidth": false
         });
     });
-    function deleteBrandWithImg(brandId,imageId){
-        BootstrapDialog.show({
-            title:'提醒',
-            message: '確定刪除風格嗎?可能會造成部分眼鏡沒有品牌分類',
-            buttons: [{
-                label: '確定',
-                cssClass: 'btn-danger',
-                action: function(){
-                    location='../controller/brandController.php?action=brandDelete&brandId='+ brandId + '&imageId=' + imageId ;
-                }
-            },{
-                label: '取消',
-                action: function(dialogItself){
-                    dialogItself.close();
-                }
-            }]
-        });
-    }
 
-    function deleteBrand(brandId){
+    function deleteGlass(glassId){
         BootstrapDialog.show({
             title:'提醒',
-            message: '確定刪除風格嗎?可能會造成部分眼鏡沒有風格分類',
+            message: '確定刪除鏡片嗎?',
             buttons: [{
                 label: '確定',
                 cssClass: 'btn-danger',
                 action: function(){
-                    location='../controller/brandController.php?action=brandDelete&brandId='+ brandId;
+                    location='../controller/glassController.php?action=glassDelete&glassId='+ glassId;
                 }
             },{
                 label: '取消',
@@ -69,7 +50,7 @@
         \{include file="../common/menu.html"\}
         <div class="content-wrapper">
             <section class="content-header">
-                <h1>品牌檢視修改</h1>
+                <h1>鏡片檢視修改</h1>
             </section>
             <!-- Main content -->
             <section class="content">
@@ -86,36 +67,34 @@
                                 <h3 class="box-title">品牌列表</h3>
                             </div>
                             <div class="box-body">
-                                <table class="table table-striped" id="brandListTable">
+                                <table class="table table-striped" id="glassListTable">
                                     <thead>
                                         <tr style="background-color: #00c0ef; color: #fff;">
-                                            <th>品牌名稱</th>
-                                            <th>品牌描述</th>
-                                            <th>使用圖片</th>
+                                            <th>鏡片名稱</th>
+                                            <th>鏡片型號</th>
+                                            <th>鏡片品牌</th>
+                                            <th>鏡片種類</th>
+                                            <th>鏡片備註</th>
                                             <th>最後更新時間</th>
                                             <th>操作選項</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        \{foreach from=$allbrandData item=brand\}
+                                        \{foreach from=$allGlassData item=glass\}
                                         <tr>
-                                            <td>\{$brand.brandName\}</td>
-                                            <td>\{$brand.description\}</td>
-                                            <td><img src="\{$brand.path\}" alt="尚未上傳圖片" width="350px"></td>
-                                            <td>\{$brand.lastUpdateTime\}</td>
+                                            <td>\{$glass.glassName\}</td>
+                                            <td>\{$glass.no\}</td>
+                                            <td>\{$glass.brandName\}</td>
+                                            <td>\{$glass.type\}</td>
+                                            <td>\{$glass.memo\}</td>
+                                            <td>\{$glass.lastUpdateTime\}</td>
                                             <td>
-                                                <a href="../controller/brandController.php?action=brandEditPrepare&brandId=\{$brand.brandId\}&imageId=\{$brand.imageId\} ">
+                                                <a href="../controller/glassController.php?action=glassEditPrepare&glassId=\{$glass.glassId\} ">
                                                     <button class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-pencil"></i></button>
                                                 </a>&nbsp;
-                                                \{if $brand.imageId != ''\}
                                                 <a href="#">
-                                                    <button class="btn btn-sm btn-danger" onclick="deleteBrandWithImg('\{$brand.brandId\}' , '\{$brand.imageId\}');"><i class="glyphicon glyphicon-remove"></i></button>
-                                                </a>&nbsp;
-                                                \{else\}
-                                                <a href="#">
-                                                    <button class="btn btn-sm btn-danger" onclick="deleteBrand('\{$brand.brandId\}');"><i class="glyphicon glyphicon-remove"></i></button>
+                                                    <button class="btn btn-sm btn-danger" onclick="deleteGlass('\{$glass.glassId\}');"><i class="glyphicon glyphicon-remove"></i></button>
                                                 </a>
-                                                \{/if\}
                                             </td>
                                         </tr>
                                         \{/foreach\}
