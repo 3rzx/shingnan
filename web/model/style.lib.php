@@ -223,12 +223,12 @@ class Style
             $res->execute();
             $this->db->commit();
         }
-        $this->db->beginTransaction();
-        $sql = "DELETE FROM `style` WHERE `styleId` = :styleId;";
+        $now = date('Y-m-d H:i:s');
+        $sql = "UPDATE `shingnan`.`style` SET  `isDelete` = 1, `lastUpdateTime` = :lastUpdateTime WHERE `styleId` = :styleId;";
         $res = $this->db->prepare($sql);
         $res->bindParam(':styleId', $input['styleId'], PDO::PARAM_STR);
+        $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
         $res->execute();
-        $this->db->commit();
         $this->styleList();
     }
 

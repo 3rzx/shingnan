@@ -228,12 +228,12 @@ class Brand
             $res->execute();
             $this->db->commit();
         }
-        $this->db->beginTransaction();
-        $sql = "DELETE FROM brand WHERE brandId = :brandId;";
+        $now = date('Y-m-d H:i:s');
+        $sql = "UPDATE `shingnan`.`brand` SET  `isDelete` = 1, `lastUpdateTime` = :lastUpdateTime WHERE brandId = :brandId;";
         $res = $this->db->prepare($sql);
         $res->bindParam(':brandId', $input['brandId'], PDO::PARAM_STR);
+        $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
         $res->execute();
-        $this->db->commit();
         $this->brandList();
     }
 
