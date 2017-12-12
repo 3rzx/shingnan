@@ -21,7 +21,7 @@
 		\{include file="../common/menu.html"\}
 		<div class="content-wrapper">
 			<section class="content-header">
-				<h1>興南生活文章</h1>
+				<h1>衛教文章</h1>
 			</section>
 			<section class="content">
 				<div class="row">
@@ -37,7 +37,7 @@
 								<h3 class="box-title">新增文章</h3>
 							</div>
 							<!-- form-->
-							<form class="form-horizontal" method="post" action="../controller/articleController.php" onsubmit="formValidation()">
+							<form class="form-horizontal" method="post" action="../controller/educationController.php" onsubmit="formValidation()">
 								<div class="box-body">
 									<div id="educationTitle" class="form-group">
 										<label for="educationTitle" class="col-sm-2 control-label">標題</label>
@@ -56,8 +56,8 @@
 									</div>
 								</div>
 								<div class="box-footer" style="text-align: right;">
-									<a href="../controller/articleController.php?action=main" class="btn btn-warning">取消</a>
-									<input type="hidden" name="action" value="lifeAdd">
+									<a href="../controller/educationController.php?action=main" class="btn btn-warning">取消</a>
+									<input type="hidden" name="action" value="educationAdd">
 									<button type="submit" class="btn btn-success">確定</button>
 								</div>
 							</form>

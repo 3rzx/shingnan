@@ -4,7 +4,7 @@ require_once HOME_DIR . 'configs/config.php';
 /**
  * 風格類別
  */
-class Article
+class Education
 {
     // database object
     public $db = null;
@@ -43,35 +43,7 @@ class Article
     {
         if ($_SESSION['isLogin'] == true) {
             $this->smarty->assign('error', $this->error);
-            $this->smarty->display('article/educationAdd.html');
-        } else {
-            $this->error = '請先登入!';
-            $this->viewLogin();
-        }
-    }
-
-    /**
-     * 新增風格格式
-     */
-    public function newsAddPrepare()
-    {
-        if ($_SESSION['isLogin'] == true) {
-            $this->smarty->assign('error', $this->error);
-            $this->smarty->display('article/newsAdd.html');
-        } else {
-            $this->error = '請先登入!';
-            $this->viewLogin();
-        }
-    }
-
-    /**
-     * 新增風格格式
-     */
-    public function lifeAddPrepare()
-    {
-        if ($_SESSION['isLogin'] == true) {
-            $this->smarty->assign('error', $this->error);
-            $this->smarty->display('article/lifeAdd.html');
+            $this->smarty->display('education/educationAdd.html');
         } else {
             $this->error = '請先登入!';
             $this->viewLogin();
@@ -87,12 +59,12 @@ class Article
             try {
                 $idGen = new IdGenerator();
                 $now = date('Y-m-d H:i:s');
-                $brandId = $idGen . GetID('brand');
+                $educationId = $idGen . GetID('education');
                 $this->db->beginTransaction();
-                $sql = "INSERT INTO `shingnan`.`brand` (`brandId`, `brandName`,  `description`, `isDelete`, `lastUpdateTime`, `createTime`)
-                        VALUES (:brandId, :brandName, :description, '0', :lastUpdateTime, :createTime);";
-                $res->bindParam(':brandId', $brandId, PDO::PARAM_STR);
-                $res->bindParam(':brandName', $input['brandName'], PDO::PARAM_STR);
+                $sql = "INSERT INTO `shingnan`.`education` (`educationId`, `educationName`,  `description`, `isDelete`, `lastUpdateTime`, `createTime`)
+                        VALUES (:educationId, :educationName, :description, '0', :lastUpdateTime, :createTime);";
+                $res->bindParam(':educationId', $educationId, PDO::PARAM_STR);
+                $res->bindParam(':educationName', $input['educationName'], PDO::PARAM_STR);
                 $res->bindParam(':description', $input['description'], PDO::PARAM_STR);
                 $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
                 $res->bindParam(':createTime', $now, PDO::PARAM_STR);
@@ -106,20 +78,20 @@ class Article
                         mkdir($uploadPath);
                         chmod($uploadPath, 0777);
                     }
-                    if ($_FILES['brandImage']['error'] == 0) {
+                    if ($_FILES['educationImage']['error'] == 0) {
                         $imgId = $idGen . GetID('image');
-                        $imgName = 'brand_' . $input['brandName'];
-                        $fileInfo = $_FILES['brandImage'];
-                        $brandImage = uploadFile($fileInfo, $uploadPath);
+                        $imgName = 'education_' . $input['educationName'];
+                        $fileInfo = $_FILES['educationImage'];
+                        $educationImage = uploadFile($fileInfo, $uploadPath);
                         $sql = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`,
                                                                 `itemId`, `ctr`, `path`, `link`, `crateTime`)
                                 VALUES (:imgId, :imgName, 2,
-                                        :brandId, 0, :filePath, '', :createTime);";
+                                        :educationId, 0, :filePath, '', :createTime);";
                         $res = $this->db->prepare($sql);
                         $res->bindParam(':imgId', $imgId, PDO::PARAM_STR);
                         $res->bindParam(':imgName', $imgName, PDO::PARAM_STR);
-                        $res->bindParam(':brandId', $brandId, PDO::PARAM_STR);
-                        $res->bindParam(':filePath', $brandImage, PDO::PARAM_STR);
+                        $res->bindParam(':educationId', $educationId, PDO::PARAM_STR);
+                        $res->bindParam(':filePath', $educationImage, PDO::PARAM_STR);
                         $res->bindParam(':createTime', $now, PDO::PARAM_STR);
                         $res->execute();
                         if (!$res) {
@@ -131,7 +103,7 @@ class Article
                         }
                     }
                 }
-                //$this->brandList();
+                //$this->educationList();
             } catch (PDOException $e) {
                 print "Error!: " . $e->getMessage();
                 $this->smarty->assign('error', $e->getMessage());
@@ -145,28 +117,19 @@ class Article
     /**
      * 編輯風格前置
      */
-    public function brandEditPrepare($input)
+    public function educationEditPrepare($input)
     {
         if ($_SESSION['isLogin'] == true) {
-            $sql = 'SELECT * FROM brand WHERE brandId = :brandId';
+            $sql = 'SELECT * FROM education WHERE educationId = :educationId';
             $res = $this->db->prepare($sql);
-            $res->bindParam(':brandId', $input['brandId'], PDO::PARAM_STR);
+            $res->bindParam(':educationId', $input['educationId'], PDO::PARAM_STR);
             $res->execute();
-            $brandData = $res->fetchAll();
+            $educationData = $res->fetchAll();
 
-            //get image
-            $sql = 'SELECT `path`
-                    FROM image
-                    WHERE type = 2 and itemId = :brandId';
-            $res = $this->db->prepare($sql);
-            $res->bindParam(':brandId', $input['brandId'], PDO::PARAM_STR);
-            $res->execute();
-            $brandImg = $res->fetchAll();
-
-            $this->smarty->assign('brandData', $brandData);
-            $this->smarty->assign('brandImg', $brandImg);
+            $this->smarty->assign('educationData', $educationData);
+            $this->smarty->assign('educationImg', $educationImg);
             $this->smarty->assign('error', $this->error);
-            $this->display('brand/brandEdit.html');
+            $this->display('education/educationEdit.html');
         } else {
             $this->error = '請先登入!';
             $this->viewLogin();
@@ -176,28 +139,28 @@ class Article
     /**
      * 編輯風格
      */
-    public function brandEdit($input)
+    public function educationEdit($input)
     {
         if ($_SESSION['isLogin'] == true) {
-            $sql = 'SELECT * FROM brand WHERE brandId = :brandId';
+            $sql = 'SELECT * FROM education WHERE educationId = :educationId';
             $res = $this->db->prepare($sql);
-            $res->bindParam(':brandId', $input['brandId'], PDO::PARAM_STR);
+            $res->bindParam(':educationId', $input['educationId'], PDO::PARAM_STR);
             $res->execute();
-            $brandData = $res->fetchAll();
+            $educationData = $res->fetchAll();
 
             //get image
             $sql = 'SELECT `path`
                     FROM image
-                    WHERE type = 2 and itemId = :brandId';
+                    WHERE type = 2 and itemId = :educationId';
             $res = $this->db->prepare($sql);
-            $res->bindParam(':brandId', $input['brandId'], PDO::PARAM_STR);
+            $res->bindParam(':educationId', $input['educationId'], PDO::PARAM_STR);
             $res->execute();
-            $brandImg = $res->fetchAll();
+            $educationImg = $res->fetchAll();
 
-            $this->smarty->assign('brandData', $brandData);
-            $this->smarty->assign('brandImg', $brandImg);
+            $this->smarty->assign('educationData', $educationData);
+            $this->smarty->assign('educationImg', $educationImg);
             $this->smarty->assign('error', $this->error);
-            $this->display('brand/brandEdit.html');
+            $this->display('education/educationEdit.html');
         } else {
             $this->error = '請先登入!';
             $this->viewLogin();
@@ -207,29 +170,20 @@ class Article
     /**
      * 顯示所有風格列表
      */
-    public function brandList()
+    public function educationList()
     {
         if ($_SESSION['isLogin'] == true) {
-            // get all data from brand
+            // get all data from education
             $sql = 'SELECT *
-            		FROM brand
-                    ORDER BY brandId';
+            		FROM article
+                    ORDER BY articleId';
             $res = $this->db->prepare($sql);
             $res->execute();
-            $allbrandData = $res->fetchAll();
+            $alleducationData = $res->fetchAll();
 
-            $sql = 'SELECT `path`,`itemId`
-                    FROM image
-                    WHERE type = 2
-                    ORDER BY itemId';
-            $res = $this->db->prepare($sql);
-            $res->execute();
-            $allbrandImg = $res->fetchAll();
-
-            $this->smarty->assign('allbrandData', $allbrandData);
-            $this->smarty->assign('allbrandImg', $allbrandImg);
+            $this->smarty->assign('alleducationData', $alleducationData);
             $this->smarty->assign('error', $this->error);
-            $this->smarty->display('brand/brandList.html');
+            $this->smarty->display('education/educationList.html');
         } else {
             $this->error = '請先登入!';
             $this->viewLogin();
@@ -239,20 +193,20 @@ class Article
     /**
      * 刪除風格
      */
-    public function brandDelete($input)
+    public function educationDelete($input)
     {
         if ($_SESSION['isLogin'] == true) {
             try {
                 $this->db->beginTransaction();
-                $sql = "DELETE FROM brand
-                           WHERE brandId = :brandId";
-                $res->bindParam(':brandId', $input['brandId'], PDO::PARAM_STR);
+                $sql = "DELETE FROM education
+                           WHERE educationId = :educationId";
+                $res->bindParam(':educationId', $input['educationId'], PDO::PARAM_STR);
                 $this->db->exec($sql);
                 $this->db->commit();
                 //deal with img
                 $this->error = '';
                 $this->msg = '刪除成功';
-                $this->smarty->display('brand/brandList.html');
+                $this->smarty->display('education/educationList.html');
             } catch (PDOException $e) {
                 $this->db->rollBack();
                 print "Error!: " . $e->getMessage();
