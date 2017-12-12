@@ -1,8 +1,28 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     \{include file="../common/resource.html"\}
+
+    <script>
+        function deleteEducation(articleId){
+        BootstrapDialog.show({
+            title:'提醒',
+            message: '確定刪除嗎? 文章刪除後將無法回復。',
+            buttons: [{
+                label: '確定',
+                cssClass: 'btn-danger',
+                action: function(){
+                    location='../controller/educationController.php?action=educationDelete&educationId='+ articleId;
+                }
+            },{
+                label: '取消',
+                action: function(dialogItself){
+                    dialogItself.close();
+                }
+            }]
+        });
+    }
+    </script>
 </head>
 
 <body class="hold-transition skin-yellow sidebar-mini">
@@ -21,6 +41,12 @@
                         <div class="alert alert-warning alert-dismissable text-center">
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                             <h4 style="display: inline;">\{$error\}</h4>
+                        </div>
+                        \{/if\}
+                        \{if $msg != ''\}
+                        <div class="alert alert-success alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$msg\}</h4>
                         </div>
                         \{/if\}
                         <div class="box box-info">
@@ -44,11 +70,11 @@
                                             <td>\{$article.ctr\}</td>
                                             <td>\{$article.lastUpdateTime\}</td>
                                             <td>
-                                                <a href="../controller/educationController.php?action=educationEdit&educationId=\{$article.articleId\})">
+                                                <a href="../controller/educationController.php?action=educationEdit&articleId=\{$article.articleId\})">
                                                     <button class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-pencil"></i></button>
                                                 </a>&nbsp;
                                                 <a href="#">
-                                                    <button class="btn btn-sm btn-danger" onclick="deletebrand(\{$brand.brandId\});"><i class="glyphicon glyphicon-remove"></i></button>
+                                                    <button class="btn btn-sm btn-danger" onclick="deleteEducation('\{$article.articleId\}');"><i class="glyphicon glyphicon-remove"></i></button>
                                                 </a>
                                             </td>
                                         </tr>

@@ -13,25 +13,6 @@
         // instance, using default configuration.
         CKEDITOR.replace('educationEditor');
     });
-    function fieldValidation(field) {
-            if ($.trim($(field).val()) == '') {
-                $(field + 'Div').addClass('has-error');
-                $(field + 'Div').val('');
-                return false;
-            } else {
-                $(field + 'Div').removeClass('has-error');
-            }
-            return true;
-        }
-
-        function formValidation() {
-            if (fieldValidation('brandName') ) {
-                return true;
-            } else {
-                BootstrapDialog.alert('請至少填寫風格名稱');
-                return false;
-            }
-        }
     </script>
 </head>
 
@@ -45,32 +26,24 @@
             <section class="content">
                 <div class="row">
                     <div class="col-md-10">
-                        \{if $error != ''\}
-                        <div class="alert alert-warning alert-dismissable text-center">
-                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                            <h4 style="display: inline;">\{$error\}</h4>
-                        </div>
-                        \{/if\}
                         <div class="box box-primary">
                             <div class="box-header with-border">
                                 <h3 class="box-title">新增文章</h3>
                             </div>
                             <!-- form-->
-                            <form class="form-horizontal" method="post" action="../controller/educationController.php" onsubmit="formValidation()">
+                            <form class="form-horizontal" method="post" action="../controller/educationController.php">
                                 <div class="box-body">
-                                    <div id="educationTitle" class="form-group">
-                                        <label for="educationTitle" class="col-sm-2 control-label">標題</label>
+                                    <div id="educationTitleDiv" class="form-group">
+                                        <label for="educationName" class="col-sm-2 control-label">標題</label>
                                         <div class="col-sm-10">
-                                            <input id="educationTitle" name="educationTitle" class="form-control" placeholder="輸入文章標題">
+                                            <input id="educationName" name="educationName" class="form-control" placeholder="輸入文章標題">
                                         </div>
                                     </div>
-                                    <div id="educationContent" class="form-group">
+                                    <div id="educationEditorDiv" class="form-group">
                                         <label for="educationEditor" class="col-sm-2 control-label">內容</label>
                                         <div class="col-sm-10">
-                                            <form>
-                                                <textarea id="educationEditor" name="educationEditor" rows="10" cols="80">
-                                                </textarea>
-                                            </form>
+                                            <textarea id="educationEditor" name="educationEditor" rows="10" cols="80">
+                                            </textarea>
                                         </div>
                                     </div>
                                 </div>
