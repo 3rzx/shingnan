@@ -13,6 +13,25 @@
         // instance, using default configuration.
         CKEDITOR.replace('educationEditor');
     });
+    function fieldValidation(field) {
+            if ($.trim($(field).val()) == '') {
+                $(field + 'Div').addClass('has-error');
+                $(field + 'Div').val('');
+                return false;
+            } else {
+                $(field + 'Div').removeClass('has-error');
+            }
+            return true;
+        }
+
+        function formValidation() {
+            if (fieldValidation('brandName') ) {
+                return true;
+            } else {
+                BootstrapDialog.alert('請至少填寫風格名稱');
+                return false;
+            }
+        }
     </script>
 </head>
 

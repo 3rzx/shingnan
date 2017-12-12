@@ -59,20 +59,44 @@ class Education {
 		$idGen = new IdGenerator();
 		$now = date('Y-m-d H:i:s');
 		$educationId = $idGen->GetID('education');
-		$sql = "INSERT INTO `shingnan`.`article` (`articleId`, `title`, `content`, `type`, `ctr`, `isDelete`, `lastUpdateTime`, `createTime`)
-                        VALUES (:articleId, :title, :content, '1', '0', '0' ,:lastUpdateTime, :createTime);";
+		$sql = "INSERT INTO `shingnan`.`article` (`articleId`, `title`, `content`, `type`, `ctr`, `isDelete`, `lastUpdateTime`,`createTime`)VALUES (:articleId, :title, :content, '1', '0', '0' ,:lastUpdateTime, :createTime);";
 		$res = $this->db->prepare($sql);
 		$res->bindParam(':articleId', $educationId, PDO::PARAM_STR);
 		$res->bindParam(':title', $input['educationTitle'], PDO::PARAM_STR);
 		$res->bindParam(':content', $input['educationEditor'], PDO::PARAM_STR);
 		$res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
 		$res->bindParam(':createTime', $now, PDO::PARAM_STR);
-		$res->execute();
-		$this->msg = '新增成功';
-		if (!$res) {
-			$error = $res->errorInfo();
-			$this->error = $error[0];
-			$this->educationList();
+		if ($res->execute()) {
+			//deal with insert image
+			$this->msg = '新增成功';
+			$uploadPath = '../media/picture';
+			if (!file_exists($uploadPath) && !is_dir($uploadPath)) {
+				// create project folder with 777 permissions
+				mkdir($uploadPath);
+				chmod($uploadPath, 0777);
+			}
+			if ($_FILES['brandImage']['error'] == 0) {
+				$imgId = $idGen . GetID('image');
+				$imgName = 'brand_' . $input['brandName'];
+				$fileInfo = $_FILES['brandImage'];
+				$brandImage = uploadFile($fileInfo, $uploadPath);
+				$sql = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`, `itemId`, `ctr`, `path`, `link`, `crateTime`)
+                        VALUES (:imgId, :imgName, 2,:brandId, 0, :filePath, '', :createTime);";
+				$res = $this->db->prepare($sql);
+				$res->bindParam(':imgId', $imgId, PDO::PARAM_STR);
+				$res->bindParam(':imgName', $imgName, PDO::PARAM_STR);
+				$res->bindParam(':brandId', $brandId, PDO::PARAM_STR);
+				$res->bindParam(':filePath', $brandImage, PDO::PARAM_STR);
+				$res->bindParam(':createTime', $now, PDO::PARAM_STR);
+				$res->execute();
+				if (!$res) {
+					$error = $res->errorInfo();
+					var_dump($res->errorInfo());
+					exit;
+					$this->error = $error[0];
+					$this->smarty->assign('error', $this->error);
+				}
+			}
 		}
 		$this->educationList();
 	}
