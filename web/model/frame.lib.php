@@ -4,7 +4,7 @@ require_once HOME_DIR . 'configs/config.php';
 require_once 'upload.func.php';
 require_once 'IdGenerator.php';
 /**
- * 風格類別
+ * 鏡框類別
  */
 class Frame
 {
@@ -39,19 +39,29 @@ class Frame
    
 
     /**
-     * 新增風格格式
+     * 新增鏡框格式
      */
     public function frameAddPrepare() {
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
         }
+        $sql = "SELECT `brandId`, `brandName` FROM `brand` WHERE `isDelete` = 0 ;" ;
+        $res = $this->db->prepare($sql);
+        $res->execute();
+        $brandData = $res->fetchAll();
+        $this->smarty->assign('brandData',$brandData);
+        $sql = "SELECT `styleId`, `styleName` FROM `style` WHERE `isDelete` = 0 ;" ;
+        $res = $this->db->prepare($sql);
+        $res->execute();
+        $styleData = $res->fetchAll();
+        $this->smarty->assign('styleData',$styleData);
         $this->smarty->assign('error', $this->error);
         $this->smarty->display('frame/frameAdd.html');
     }
 
     /**
-     * 新增風格
+     * 新增鏡框
      */
     public function frameAdd($input) {
         if ($_SESSION['isLogin'] == false) {
@@ -61,12 +71,19 @@ class Frame
         $idGen = new IdGenerator();
         $now = date('Y-m-d H:i:s');
         $frameId = $idGen->GetID('frame');
-        $sql = "INSERT INTO `shingnan`.`frame` (`frameId`, `frameName`, `isDelete`, `description`,`lastUpdateTime`, `createTime`) 
-                    VALUES (:frameId, :frameName, '0', :description, :lastUpdateTime, :createTime);";
+        $sql = "INSERT INTO `shingnan`.`frame` (`frameId`, `no`, `frameName`, `brandId`, `shape`, `material`, 
+                                                `color`, `isLaunch`, `ctr`, `isDelete`, `lastUpdateTime`, `createTime`) 
+                VALUES (:frameId, :no, :frameName, :frameBrand, :shape, :material, 
+                        :color, :isLaunch, 0, 0, :lastUpdateTime, :createTime);";
         $res = $this->db->prepare($sql);
         $res->bindParam(':frameId', $frameId, PDO::PARAM_STR);
+        $res->bindParam(':no', $input['no'], PDO::PARAM_STR);
         $res->bindParam(':frameName', $input['frameName'], PDO::PARAM_STR);
-        $res->bindParam(':description', $input['description'], PDO::PARAM_STR);
+        $res->bindParam(':frameBrand', $input['frameBrand'], PDO::PARAM_STR);
+        $res->bindParam(':shape', $input['shape'], PDO::PARAM_INT);
+        $res->bindParam(':material', $input['material'], PDO::PARAM_STR);
+        $res->bindParam(':color', $input['color'], PDO::PARAM_STR);
+        $res->bindParam(':isLaunch', $input['isLaunch'], PDO::PARAM_INT);
         $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
         $res->bindParam(':createTime', $now, PDO::PARAM_STR);
         if ($res->execute()) {
@@ -100,7 +117,7 @@ class Frame
     }
 
     /**
-     * 編輯風格前置
+     * 編輯鏡框前置
      */
     public function frameEditPrepare($input) {
         if ($_SESSION['isLogin'] == false) {
@@ -122,7 +139,7 @@ class Frame
     }
 
     /**
-     * 編輯風格
+     * 編輯鏡框
      */
     public function frameEdit($input) {
         if ($_SESSION['isLogin'] == false) {
@@ -185,7 +202,7 @@ class Frame
     }
 
     /**
-     * 顯示所有風格列表
+     * 顯示所有鏡框列表
      */
     public function frameList() {
         if ($_SESSION['isLogin'] == false) {
@@ -193,11 +210,10 @@ class Frame
             $this->viewLogin();
         }
         // get all data from frame
-        $sql = 'SELECT `frame`.`frameName`, `frame`.`frameId` , `frame`.`description`, `frame`.`lastUpdateTime`,
-                        `image`.`imageId`,`image`.`path` 
-                FROM  `frame` 
-                LEFT JOIN  `image` ON `frame`.`frameId` = `image`.`itemId` 
-                WHERE  `frame`.`isDelete` = 0
+        $sql = 'SELECT `frame`.`frameId`, `frame`.`no`, `frame`.`frameName`, `frame`.`brandId`, `frame`.`shape`, `frame`.`material`, 
+                     `frame`.`color`, `frame`.`isLaunch`, `frame`.`lastUpdateTime`, `brand`.`brandName` 
+                FROM `frame`, `brand` 
+                WHERE `frame`.`brandId` = `brand`.`brandId` AND `frame`.`isDelete` = 0 
                 ORDER BY `frame`.`frameId`';
         $res = $this->db->prepare($sql);
         $res->execute();
@@ -212,7 +228,7 @@ class Frame
     
 
     /**
-     * 刪除風格
+     * 刪除鏡框
      */
     public function frameDelete($input) {
         if ($_SESSION['isLogin'] == false) {

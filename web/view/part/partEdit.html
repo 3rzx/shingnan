@@ -4,9 +4,11 @@
 <head>
     \{include file="../common/resource.html"\}
     <script type="text/javascript" src="../plugins/bootstrap-filestyle/src/bootstrap-filestyle.min.js"> </script>
+    <script type="text/javascript" src="../plugins/bootstrap-toggle/js/bootstrap2-toggle.js"></script>
+    <link rel="stylesheet" href="../plugins/bootstrap-toggle/css/bootstrap2-toggle.css"/>
     <script>
         $(document).ready(function() {
-            $("#brandImage").filestyle({
+            $("#partImage").filestyle({
                 size: "nr",
                 input: false,
                 buttonText: "上傳圖片",
@@ -15,8 +17,8 @@
             });
            
 
-            $("#brandImage").change(function() {
-                readURL(this, '#brandImg');
+            $("#partImage").change(function() {
+                readURL(this, '#partImg');
             });
             
         });
@@ -36,12 +38,12 @@
         function deleteImage(imageId){
             BootstrapDialog.show({
                 title:'提醒',
-                message: '確定刪除該品牌圖片嗎?',
+                message: '確定刪除該張圖片嗎?',
                 buttons: [{
                     label: '確定',
                     cssClass: 'btn-danger',
                     action: function(){
-                        location='../controller/brandController.php?action=brandImageDelete&imageId=' + imageId ;
+                        location='../controller/partController.php?action=partImageDelete&imageId=' + imageId ;
                     }
                 },{
                     label: '取消',
@@ -60,7 +62,7 @@
         \{include file="../common/menu.html"\}
         <div class="content-wrapper">
             <section class="content-header">
-                <h1>品牌檢視修改</h1>
+                <h1>零件檢視修改</h1>
             </section>
             <section class="content">
                 <div class="row">
@@ -73,44 +75,61 @@
                         \{/if\}
                         <div class="box box-primary">
                             <div class="box-header with-border">
-                                <h3 class="box-title">品牌修改</h3>
+                                <h3 class="box-title">編輯零件</h3>
                             </div>
-                            <form class="form-horizontal" method="post"  enctype="multipart/form-data" action="../controller/brandController.php" >
+                            <form class="form-horizontal" method="post"  enctype="multipart/form-data" action="../controller/partController.php" >
                                 <div class="box-body">
-                                    <div id="brandNameDiv" class="form-group">
-                                        <label for="brandName" class="col-sm-2 control-label">品牌名稱</label>
+                                    <div id="partNameDiv" class="form-group">
+                                        <label for="partName" class="col-sm-2 control-label">零件名稱</label>
                                         <div class="col-sm-10">
-                                            <input id="brandName" name="brandName" class="form-control" value="\{$brandData.brandName\}">
+                                            <input id="partName" name="partName" class="form-control" value="\{$partData.partName\}">
                                         </div>
                                     </div>
-                                    <div id="descriptionDiv" class="form-group">
-                                        <label for="description" class="col-sm-2 control-label">品牌描述</label>
-                                        <div class="col-sm-10">
-                                            <input id="description" name="description" class="form-control" value="\{$brandData.description\}">
+                                    <div id="partTypeDiv" class="form-group">
+                                        <label for="partTypeDiv" class="col-sm-2 control-label">零件類別</label>
+                                        <div class="col-sm-3">
+                                            <select class="selectpicker" name="partType" id="partType">
+                                                <option value=1>鼻墊</option>
+                                                <option value=2>角套</option>
+                                                <option value=3>耳勾</option>
+                                                <option value=4>運動帶</option>
+                                                <option value=5>維修</option>
+                                                <option value=6>其他</option>
+                                            </select>
                                         </div>
                                     </div>
-                                    <div id="brandImageDiv" class="form-group">
+                                    <div id="partSizeDiv" class="form-group">
+                                        <label for="partSize" class="col-sm-2 control-label">零件大小</label>
+                                        <div class="col-sm-6">
+                                            <input id="partSize" name="partSize" class="form-control" placeholder="輸入零件大小">
+                                        </div>
+                                    </div>
+                                    <div id="partImageDiv" class="form-group">
                                         <label class="col-sm-2 control-label">品牌圖片</label>
                                         <div class="col-sm-10">
                                             <div class = "form-inline" style="display:inline-block;">
-                                                <input type="file" id="brandImage" name="brandImage" data-input="false" accept="image/*" style="display: inline;">
-                                                \{if $brandData.imageId != ''\}
-                                                <a class="btn btn-sm btn-danger" onclick="deleteImage('\{$brandData.imageId\}')"><i class="glyphicon glyphicon-remove"></i>
+                                                <input type="file" id="partImage" name="partImage" data-input="false" accept="image/*" style="display: inline;">
+                                                \{if $partData.imageId != ''\}
+                                                <a class="btn btn-sm btn-danger" onclick="deleteImage('\{$partData.imageId\}')"><i class="glyphicon glyphicon-remove"></i>
                                                 </a> 
                                                 \{/if\}
                                             </div> 
-                                            <img id="brandImg" class="img-thumbnail" src="\{$brandData.path\}" alt="尚未上傳圖片">
+                                            <img id="partImg" class="img-thumbnail" src="\{$partData.path\}" alt="尚未上傳圖片">
                                             
                                         </div>
+                                    </div>
+                                    <div id="isLaunceDiv" class="form-group">
+                                        <label for="isLaunce" class="col-sm-2 control-label">上架到網路上</label>
+                                        &nbsp&nbsp&nbsp&nbsp&nbsp<input type="checkbox" checked data-toggle="toggle" data-size="mini">
                                     </div>
                                 </div>
                                 <!-- /.box-body -->
                                 <div class="box-footer" style="text-align: right;">
-                                    <a href="../controller/brandController.php?action=brandList" class="btn btn-warning">取消</a>
-                                    <input type="hidden" name="action" value="brandEdit">
-                                    <input type="hidden" name="brandId" value="\{$brandData.brandId\}">
-                                    \{if $brandData.imageId != ''\}
-                                    <input type="hidden" name="imageId" value="\{$brandData.imageId\}">
+                                    <a href="../controller/partController.php?action=partList" class="btn btn-warning">取消</a>
+                                    <input type="hidden" name="action" value="partEdit">
+                                    <input type="hidden" name="partId" value="\{$partData.partId\}">
+                                    \{if $partData.imageId != ''\}
+                                    <input type="hidden" name="imageId" value="\{$partData.imageId\}">
                                     \{/if\}
                                     <button type="submit" class="btn btn-success">更新</button>
                                 </div>

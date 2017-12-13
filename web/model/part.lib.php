@@ -4,7 +4,7 @@ require_once HOME_DIR . 'configs/config.php';
 require_once 'upload.func.php';
 require_once 'IdGenerator.php';
 /**
- * 風格類別
+ * 零件類別
  */
 class Part
 {
@@ -39,7 +39,7 @@ class Part
    
 
     /**
-     * 新增風格格式
+     * 新增零件格式
      */
     public function partAddPrepare() {
         if ($_SESSION['isLogin'] == false) {
@@ -51,7 +51,7 @@ class Part
     }
 
     /**
-     * 新增風格
+     * 新增零件
      */
     public function partAdd($input) {
         if ($_SESSION['isLogin'] == false) {
@@ -62,7 +62,7 @@ class Part
         $now = date('Y-m-d H:i:s');
         $partId = $idGen->GetID('part');
         $sql = "INSERT INTO `shingnan`.`part` (`partId`, `partName`, `isDelete`, `description`,`lastUpdateTime`, `createTime`) 
-                    VALUES (:partId, :partName, '0', :description, :lastUpdateTime, :createTime);";
+                    VALUES (:partId, :partName, '0', :description, :lastUpdateTime, :createTime);INSERT INTO `shingnan`.`part` (`partId`, `partName`, `type`, `size`, `isLaunch`, `isDelete`, `lastUpdateTime`, `createTime`) VALUES ('tset01', '螺絲', '1', 'normal', '0', '0', '2017-12-13 14:00:00', '2017-12-13 14:00:00');";
         $res = $this->db->prepare($sql);
         $res->bindParam(':partId', $partId, PDO::PARAM_STR);
         $res->bindParam(':partName', $input['partName'], PDO::PARAM_STR);
@@ -100,7 +100,7 @@ class Part
     }
 
     /**
-     * 編輯風格前置
+     * 編輯零件前置
      */
     public function partEditPrepare($input) {
         if ($_SESSION['isLogin'] == false) {
@@ -122,7 +122,7 @@ class Part
     }
 
     /**
-     * 編輯風格
+     * 編輯零件
      */
     public function partEdit($input) {
         if ($_SESSION['isLogin'] == false) {
@@ -185,7 +185,7 @@ class Part
     }
 
     /**
-     * 顯示所有風格列表
+     * 顯示所有零件列表
      */
     public function partList() {
         if ($_SESSION['isLogin'] == false) {
@@ -193,11 +193,9 @@ class Part
             $this->viewLogin();
         }
         // get all data from part
-        $sql = 'SELECT `part`.`partName`, `part`.`partId` , `part`.`description`, `part`.`lastUpdateTime`,
-                        `image`.`imageId`,`image`.`path` 
-                FROM  `part` 
-                LEFT JOIN  `image` ON `part`.`partId` = `image`.`itemId` 
-                WHERE  `part`.`isDelete` = 0
+        $sql = 'SELECT `part`.`partId`, `part`.`partName`, `part`.`type`, `part`.`size`, `part`.`isLaunch`, `part`.`lastUpdateTime` 
+                FROM `part` 
+                WHERE `part`.`isDelete` = 0 
                 ORDER BY `part`.`partId`';
         $res = $this->db->prepare($sql);
         $res->execute();
@@ -212,7 +210,7 @@ class Part
     
 
     /**
-     * 刪除風格
+     * 刪除零件
      */
     public function partDelete($input) {
         if ($_SESSION['isLogin'] == false) {
@@ -235,6 +233,16 @@ class Part
         $res->execute();
         $this->db->commit();
         $this->partList();
+    }
+
+    /**
+     * 顯示登入畫面
+     */
+    public function viewLogin(){
+        $_SESSION['isLogin'] = false;
+        $this->smarty->assign('error', $this->error);
+        $this->smarty->assign('homePath', APP_ROOT_DIR);
+        $this->smarty->display('login.html');
     }
 
 }

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    \{include file="../common/resource.html"\}
+    <script type="text/javascript" src="../plugins/bootstrap-filestyle/src/bootstrap-filestyle.min.js"> </script>
+    <script>
+        $(document).ready(function() {
+            $("#frameImage").filestyle({
+                size: "nr",
+                input: false,
+                buttonText: "上傳圖片",
+                buttonName: "btn-info",
+                iconName: "glyphicon glyphicon-camera"
+            });
+           
+
+            $("#frameImage").change(function() {
+                readURL(this, '#frameImg');
+            });
+            
+        });
+
+        function readURL(input, id) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    $(id).attr('src', e.target.result);
+                    $(id).css('display', '');
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function deleteImage(imageId){
+            BootstrapDialog.show({
+                title:'提醒',
+                message: '確定刪除該鏡框圖片嗎?',
+                buttons: [{
+                    label: '確定',
+                    cssClass: 'btn-danger',
+                    action: function(){
+                        location='../controller/frameController.php?action=frameImageDelete&imageId=' + imageId ;
+                    }
+                },{
+                    label: '取消',
+                    action: function(dialogItself){
+                        dialogItself.close();
+                    }
+                }]
+            });
+        }
+    </script>
+</head>
+
+<body class="hold-transition skin-yellow sidebar-mini">
+    <div class="wrapper">
+        \{include file="../common/header.html"\}
+        \{include file="../common/menu.html"\}
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1>鏡框檢視修改</h1>
+            </section>
+            <section class="content">
+                <div class="row">
+                    <div class="col-md-6">
+                        \{if $error != ''\}
+                        <div class="alert alert-warning alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$error\}</h4>
+                        </div>
+                        \{/if\}
+                        <div class="box box-primary">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">鏡框修改</h3>
+                            </div>
+                            <form class="form-horizontal" method="post"  enctype="multipart/form-data" action="../controller/frameController.php" >
+                                <div class="box-body">
+                                    <div id="frameNameDiv" class="form-group">
+                                        <label for="frameName" class="col-sm-2 control-label">鏡框名稱</label>
+                                        <div class="col-sm-6">
+                                            <input id="frameName" name="frameName" class="form-control" placeholder="輸入鏡框名稱">
+                                        </div>
+                                    </div>
+                                    <div id="frameNoDiv" class="form-group">
+                                        <label for="frameNo" class="col-sm-2 control-label">鏡框型號</label>
+                                        <div class="col-sm-6">
+                                            <input id="frameNo" name="frameNo" class="form-control" placeholder="輸入鏡框型號">
+                                        </div>
+                                    </div>
+                                    <div id="frameNameDiv" class="form-group">
+                                        <label for="frameName" class="col-sm-2 control-label">鏡框品牌</label>
+                                        <div class="col-sm-6">
+                                            <select class="selectpicker" name="frameBrand" id="frameBrand">
+                                                <option value=1>鼻墊</option>
+                                                <option value=2>角套</option>
+                                                <option value=3>耳勾</option>
+                                                <option value=4>運動帶</option>
+                                                <option value=5>維修</option>
+                                                <option value=6>其他</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div id="frameShapeDiv" class="form-group">
+                                        <label for="frameShape" class="col-sm-2 control-label">鏡框框形</label>
+                                        <div class="col-sm-6">
+                                            <select class="selectpicker" name="frameShape" id="frameShape">
+                                                <option value=1>圓</option>
+                                                <option value=2>方</option>
+                                                <option value=3>全</option>
+                                                <option value=4>半</option>
+                                                <option value=5>無</option>
+                                                <option value=6>混和</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div id="frameMaterialDiv" class="form-group">
+                                        <label for="frameMaterial" class="col-sm-2 control-label">鏡框材質</label>
+                                        <div class="col-sm-6">
+                                            <input id="frameMaterial" name="frameMaterial" class="form-control" placeholder="輸入鏡框材質">
+                                        </div>
+                                    </div>
+                                    <div id="frameNameDiv" class="form-group">
+                                        <label for="frameName" class="col-sm-2 control-label">鏡框名稱</label>
+                                        <div class="col-sm-6">
+                                            <input id="frameName" name="frameName" class="form-control" placeholder="輸入鏡框名稱">
+                                        </div>
+                                    </div>
+                                    <div id="frameImageDiv" class="form-group">
+                                        <label class="col-sm-2 control-label">鏡框顏色</label>
+                                        <div class="col-sm-10">
+                                            <input type="file" id="frameImage" name="frameImage" data-input="false" accept="image/*">
+                                            <img id="frameImg" class="img-thumbnail" style="display:none">
+                                        </div>
+                                    </div>
+                                    <div id="isLaunceDiv" class="form-group">
+                                        <label for="isLaunce" class="col-sm-2 control-label">上架到網路上</label>
+                                        &nbsp&nbsp&nbsp&nbsp&nbsp<input type="checkbox" checked data-toggle="toggle" data-size="mini">
+                                    </div>
+                                </div>
+                                <div class="box-footer" style="text-align: right;">
+                                    <a href="../controller/frameController.php?action=frameList" class="btn btn-warning">取消</a>
+                                    <input type="hidden" name="action" value="frameEdit">
+                                    <input type="hidden" name="frameId" value="\{$frameData.frameId\}">
+                                    \{if $frameData.imageId != ''\}
+                                    <input type="hidden" name="imageId" value="\{$frameData.imageId\}">
+                                    \{/if\}
+                                    <button type="submit" class="btn btn-success">更新</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        \{include file="../common/footer.html"\}
+    </div>
+    <script src="../javascript/userEdit.js"></script>
+</body>
+
+</html>

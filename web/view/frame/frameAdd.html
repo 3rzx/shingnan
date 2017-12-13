@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    \{include file="../common/resource.html"\}
+    <script type="text/javascript" src="../plugins/bootstrap-filestyle/src/bootstrap-filestyle.min.js"> </script>
+    <script type="text/javascript" src="../plugins/bootstrap-toggle/js/bootstrap2-toggle.js"></script>
+    <link rel="stylesheet" href="../plugins/bootstrap-toggle/css/bootstrap2-toggle.css"/>
+    <script>
+        var imgCount = 1;
+        $(document).ready(function() {
+            $("#frameImage1").filestyle({
+                size: "nr",
+                input: false,
+                buttonText: "上傳圖片",
+                buttonName: "btn-info",
+                iconName: "glyphicon glyphicon-camera"
+            });
+           
+
+            $("#frameImage1").change(function() {
+                readURL(this, '#frameImg1');
+            });
+            
+        });
+
+        function readURL(input, id) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    $(id).attr('src', e.target.result);
+                    $(id).css('display', '');
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function fieldValidation(field) {
+            if ($.trim($(field).val()) == '') {
+                $(field + 'Div').addClass('has-error');
+                $(field + 'Div').val('');
+                return false;
+            } else {
+                $(field + 'Div').removeClass('has-error');
+            }
+            return true;
+        }
+
+        function formValidation() {
+            if (fieldValidation('frameName') ) {
+                return true;
+            } else {
+                BootstrapDialog.alert('請至少填寫鏡框名稱');
+                return false;
+            }
+        }
+
+        function addFrameImg(i){
+            str = '<div id = "image' + i +'"><div class = "form-inline" style="display:inline-block;">';
+            str += '<input type="file" id="frameImage' + i + '" name="frameImage' + i +'" data-input="false" accept="image/*">&nbsp';
+            str += '<a class="btn btn-sm btn-danger" onclick="deleteFrameImg(' + i + ')"><i class="glyphicon glyphicon-remove"></i></a>';
+            str += '</div>';
+            str += '<img id="frameImg' + i +'" class="img-thumbnail" style="display:none"><br></div>'
+                                            
+            $("#addImgStart").after(str);
+
+            $("#frameImage"+ i).filestyle({
+                size: "nr",
+                input: false,
+                buttonText: "上傳圖片",
+                buttonName: "btn-info",
+                iconName: "glyphicon glyphicon-camera"
+            });
+           
+            $("#frameImage"+ i).change(function() {
+                readURL(this, "#frameImg"+ i);
+            });
+            
+        }
+
+        function deleteFrameImg(i){
+            $("#image"+i).remove();
+        }
+
+    </script>
+</head>
+
+<body class="hold-transition skin-yellow sidebar-mini">
+    <div class="wrapper">
+        \{include file="../common/header.html"\}
+        \{include file="../common/menu.html"\}
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1>鏡框新增</h1>
+            </section>
+            <section class="content">
+                <div class="row">
+                    <div class="col-md-6">
+                        \{if $error != ''\}
+                        <div class="alert alert-warning alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$error\}</h4>
+                        </div>
+                        \{/if\}
+                        <div class="box box-primary">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">新增鏡框</h3>
+                            </div>
+                            <!-- form-->
+                            <form class="form-horizontal" method="post" enctype="multipart/form-data" action="../controller/frameController.php" onsubmit="formValidation()">
+                                <div class="box-body">
+                                    <div id="frameNameDiv" class="form-group">
+                                        <label for="frameName" class="col-sm-2 control-label">鏡框名稱</label>
+                                        <div class="col-sm-6">
+                                            <input id="frameName" name="frameName" class="form-control" placeholder="輸入鏡框名稱">
+                                        </div>
+                                    </div>
+                                    <div id="noDiv" class="form-group">
+                                        <label for="no" class="col-sm-2 control-label">鏡框型號</label>
+                                        <div class="col-sm-6">
+                                            <input id="no" name="no" class="form-control" placeholder="輸入鏡框型號">
+                                        </div>
+                                    </div>
+                                    <div id="frameBrandDiv" class="form-group">
+                                        <label for="frameBrand" class="col-sm-2 control-label">鏡框品牌</label>
+                                        <div class="col-sm-6">
+                                            <select class="selectpicker" name="frameBrand" id="frameBrand" data-live-search="true" title="請選擇品牌">
+                                                \{foreach from=$brandData item=brand \}
+                                                <option value='\{$brand.brandId\}'>\{$brand.brandName\}</option>
+                                                \{/foreach\}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div id="shapeDiv" class="form-group">
+                                        <label for="shape" class="col-sm-2 control-label">鏡框框形</label>
+                                        <div class="col-sm-6">
+                                            <select class="selectpicker" name="shape" id="shape">
+                                                <option value=1>圓</option>
+                                                <option value=2>方</option>
+                                                <option value=3>全</option>
+                                                <option value=4>半</option>
+                                                <option value=5>無</option>
+                                                <option value=6>混和</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div id="materialDiv" class="form-group">
+                                        <label for="material" class="col-sm-2 control-label">鏡框材質</label>
+                                        <div class="col-sm-6">
+                                            <input id="material" name="material" class="form-control" placeholder="輸入鏡框材質">
+                                        </div>
+                                    </div>
+                                    <div id="frameColorDiv" class="form-group">
+                                        <label for="frameColor" class="col-sm-2 control-label">鏡框顏色</label>
+                                        <div class="col-sm-6">
+                                            <input id="color" name="color" class="form-control" placeholder="輸入鏡框顏色">
+                                        </div>
+                                    </div>
+                                    <div id="frameStyleDiv" class="form-group">
+                                        <label for="frameStyle" class="col-sm-2 control-label">鏡框所屬風格</label>
+                                        <div class="col-sm-6">
+                                            <select class="selectpicker" name="frameStyle" id="frameStyle" multiple title="請選擇風格(多選)">
+                                                \{foreach from=$styleData item=style \}
+                                                <option value='\{$style.styleId\}'>\{$style.styleName\}</option>
+                                                \{/foreach\}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div id="frameImageDiv" class="form-group">
+                                        <label class="col-sm-2 control-label">鏡框圖片</label>
+                                        <div class="col-sm-10" >
+                                            <div id="image1">
+                                            <div class = "form-inline" style="display:inline-block;">
+                                                <input type="file" id="frameImage1" name="frameImage1" data-input="false" accept="image/*">
+                                                <a class="btn btn-sm btn-primary" onclick="addFrameImg(++imgCount)"><i class="glyphicon glyphicon-plus"></i></a>
+                                            </div>
+                                            <img id="frameImg1" class="img-thumbnail" style="display:none"><br>
+                                            </div>
+                                            <div id="addImgStart" name="addImgStart"></div>
+                                        </div>
+                                        
+                                    </div>
+                                    <div id="isLaunceDiv" class="form-group">
+                                        <label for="isLaunce" class="col-sm-2 control-label">上架到網路上</label>
+                                        &nbsp&nbsp&nbsp&nbsp&nbsp<input type="checkbox" checked data-toggle="toggle" data-size="mini">
+                                    </div>
+                                </div>
+                                <div class="box-footer" style="text-align: right;">
+                                    <a href="../controller/frameController.php?action=frameAddPrepare" class="btn btn-warning">取消</a>
+                                    <input type="hidden" name="action" value="frameAdd">
+                                    <button type="submit" class="btn btn-success">確定</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        \{include file="../common/footer.html"\}
+    </div>
+</body>
+
+</html>
