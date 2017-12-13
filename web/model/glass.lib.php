@@ -4,7 +4,7 @@ require_once HOME_DIR . 'configs/config.php';
 require_once 'upload.func.php';
 require_once 'IdGenerator.php';
 /**
- * 風格類別
+ * 鏡片類別
  */
 class Glass
 {
@@ -39,7 +39,7 @@ class Glass
    
 
     /**
-     * 新增風格格式
+     * 新增鏡片格式
      */
     public function glassAddPrepare() {
         if ($_SESSION['isLogin'] == false) {
@@ -56,7 +56,7 @@ class Glass
     }
 
     /**
-     * 新增風格
+     * 新增鏡片
      */
     public function glassAdd($input) {
         if ($_SESSION['isLogin'] == false) {
@@ -89,7 +89,7 @@ class Glass
     }
 
     /**
-     * 編輯風格前置
+     * 編輯鏡片前置
      */
     public function glassEditPrepare($input) {
         if ($_SESSION['isLogin'] == false) {
@@ -115,7 +115,7 @@ class Glass
     }
 
     /**
-     * 編輯風格
+     * 編輯鏡片
      */
     public function glassEdit($input) {
         if ($_SESSION['isLogin'] == false) {
@@ -144,7 +144,7 @@ class Glass
     }
 
     /**
-     * 顯示所有風格列表
+     * 顯示所有鏡片列表
      */
     public function glassList() {
         if ($_SESSION['isLogin'] == false) {
@@ -171,7 +171,7 @@ class Glass
     
 
     /**
-     * 刪除風格
+     * 刪除鏡片
      */
     public function glassDelete($input) {
         if ($_SESSION['isLogin'] == false) {
