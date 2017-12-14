@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    \{include file="../common/resource.html"\}
+</head>
+
+<body class="hold-transition skin-yellow sidebar-mini">
+    <div class="wrapper">
+        \{include file="../common/header.html"\}
+        \{include file="../common/menu.html"\}
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1>店家資訊檢視修改</h1>
+            </section>
+            <!-- Main content -->
+            <section class="content">
+                <div class="row">
+                    <div class="col-md-8">
+                        \{if $error != ''\}
+                        <div class="alert alert-warning alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$error\}</h4>
+                        </div>
+                        \{/if\}
+                        <div class="box box-info">
+                            <div class="box-header">
+                                <h3 class="box-title">店家列表</h3>
+                            </div>
+                            <div class="box-body">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr style="background-color: #00c0ef; color: #fff;">
+                                            <th>店家名稱</th>
+                                            <th>地址</th>
+                                            <th>電話</th>
+                                            <th>營業時間</th>
+                                            <th>額外說明</th>
+                                            <th>最後更新時間</th>
+                                            <th>操作選項</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        \{foreach from=$allstoreData item=store\}
+                                        <tr>
+                                            <td>\{$store.storeName\}</td>
+                                            <td>\{$store.address\}</td>
+                                            <td>\{$store.phoneNumber\}</td>
+                                            <td>\{$store.businessHours\}</td>
+                                            <td>\{$store.description\}</td>
+                                            <td>\{$store.lastUpdateTime\}</td>
+                                            <td>
+                                                <a href="../controller/storeController.php?action=storeEdit&storeId=\{$store.storeId\})">
+                                                    <button class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-pencil"></i></button>
+                                                </a>&nbsp;
+                                                <a href="#">
+                                                    <button class="btn btn-sm btn-danger" onclick="deletebrand(\{$brand.brandId\});"><i class="glyphicon glyphicon-remove"></i></button>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        \{/foreach\}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        \{include file="../common/footer.html"\}
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    \{include file="../common/resource.html"\}
+    <script type="text/javascript" src="../plugins/bootstrap-filestyle/src/bootstrap-filestyle.min.js">
+    </script>
+    <!-- CK Editor -->
+    <script type="text/javascript" src="../plugins/ckeditor/ckeditor.js"></script>
+    <script>
+    $(function() {
+        // Replace the <textarea id="editor"> with a CKEditor
+        // instance, using default configuration.
+        CKEDITOR.replace('educationEditor');
+    });
+    </script>
+</head>
+
+<body class="hold-transition skin-yellow sidebar-mini">
+    <div class="wrapper">
+        \{include file="../common/header.html"\} \{include file="../common/menu.html"\}
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1>衛教文章</h1>
+            </section>
+            <section class="content">
+                <div class="row">
+                    <div class="col-md-10">
+                        <div class="box box-primary">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">新增文章</h3>
+                            </div>
+                            <!-- form-->
+                            <form class="form-horizontal" method="post" action="../controller/educationController.php">
+                                <div class="box-body">
+                                    <div id="educationTitleDiv" class="form-group">
+                                        <label for="educationName" class="col-sm-2 control-label">標題</label>
+                                        <div class="col-sm-10">
+                                            <input id="educationName" name="educationName" class="form-control" placeholder="輸入文章標題">
+                                        </div>
+                                    </div>
+                                    <div id="educationEditorDiv" class="form-group">
+                                        <label for="educationEditor" class="col-sm-2 control-label">內容</label>
+                                        <div class="col-sm-10">
+                                            <textarea id="educationEditor" name="educationEditor" rows="10" cols="80">
+                                            </textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="box-footer" style="text-align: right;">
+                                    <a href="../controller/educationController.php?action=educationAddPrepare" class="btn btn-warning">取消</a>
+                                    <input type="hidden" name="action" value="educationAdd">
+                                    <button type="submit" class="btn btn-success">確定</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        \{include file="../common/footer.html"\}
+    </div>
+</body>
+
+</html>
