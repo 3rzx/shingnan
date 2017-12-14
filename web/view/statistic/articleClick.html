@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    \{include file="../common/resource.html"\}
+    <!-- data table -->
+    <script src="../theme/AdminLTE/plugins/datatables/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" href="../theme/AdminLTE/plugins/datatables/jquery.dataTables.min.css">
+    <!-- column order -->
+    <script src="../theme/AdminLTE/plugins/datatables/dataTables.bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../theme/AdminLTE/plugins/datatables/dataTables.bootstrap.css">
+    <!-- datepicker -->
+    <link rel="stylesheet" href="../theme/adminlte/plugins/datepicker/datepicker3.css">
+    <script src="../theme/adminlte/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <script src="../theme/adminlte/plugins/datepicker/locales/bootstrap-datepicker.zh-TW.js"></script>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        \{include file="../common/header.html"\} \{include file="../common/menu.html"\}
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1>文章點擊率</h1>
+            </section>
+            <section class="content">
+                <!-- <div class="row">
+                    <div class="col-md-12">
+                        <div class="box box-info" style="padding: 5px;">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">篩選條件</h3>
+                            </div>
+                            <div class="box-body row">
+                                <div id="errDiv" class="form-group has-error" style="display: none;">
+                                    <label id="errMsg" class="col-sm-12">查無資料</label>
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label class="control-label col-md-2" for="startDatePicker">開始日期</label>
+                                    <div class="input-group col-md-8">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-clock-o"></i>
+                                        </div>
+                                        <input type="text" class="form-control pull-right" id="startDatePicker">
+                                    </div>
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label class="control-label col-md-2" for="endDatePicker">結束日期</label>
+                                    <div class="input-group col-md-8">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-clock-o"></i>
+                                        </div>
+                                        <input type="text" class="form-control pull-right" id="endDatePicker">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box-footer">
+                                <button class="btn btn-success" onclick="query()">確定</button>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+                <!-- Main content -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="box box-info">
+                            <div class="box-body">
+                                <table id="manTable" class="row-border" cellspacing="0" style="width: 100%;">
+                                    <thead>
+                                        <tr>
+                                            <th>點擊率</th>
+                                            <th>文章標題</th>
+                                            <th>文章分類</th>
+                                            <th>文章內容</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>60%</td>
+                                            <td>隱形眼鏡</td>
+                                            <td>新知趨勢</td>
+                                            <td>研究顯示，每 100 個近視的人之中就有一個人戴著隱形眼鏡!</td>
+                                        </tr>
+                                        <tr>
+                                            <td>40%</td>
+                                            <td>粗框眼鏡</td>
+                                            <td>新知趨勢</td>
+                                            <td>研究顯示，每 100 個近視的人之中就有一個人戴著粗框眼鏡!</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        \{include file="../common/footer.html"\}
+    </div>
+    <script>
+        var startDate = null;
+        var endDate = null;
+
+        $(document).ready(function () {
+            $('#manTable').DataTable({
+                "paging": true,
+                "info": false,
+                "searching": true,
+                "columnDefs": [
+                    { "targets": 0, "width": "10%", "orderable": true },
+                    { "targets": 1, "width": "15%", "orderable": true },
+                    { "targets": 2, "width": "15%", "orderable": true },
+                    { "targets": 3, "width": "60%", "orderable": true }
+                ]
+            });
+
+            // single Date picker
+            $('#startDatePicker, #endDatePicker').datepicker({
+                language: 'zh-TW',
+                format: 'yyyy/mm/dd',
+                autoclose: true
+            }).on('changeDate', function (ev) {
+                startDate = $('#startDatePicker').val();
+                endDate = $('#endDatePicker').val();
+                if (ev.target.id === 'startDatePicker') {
+                    $('#endDatePicker').datepicker('setStartDate', startDate);
+                } else {
+                    $('#startDatePicker').datepicker('setEndDate', endDate);
+                }
+            });
+
+        });
+
+        function query() {
+            if (startDate === null || startDate === "") {
+                alert('請選擇開始日期!');
+            } else if (endDate === null || endDate === "") {
+                alert('請選擇結束日期!');
+            } else if ($('#facilitySelect').val() === '#') {
+                alert('請選擇體驗設施');
+            } else {
+                setInspectTable('man');
+                setInspectTable('auto');
+            }
+        }
+    </script>
+</body>
+
+</html>
