@@ -13,7 +13,7 @@ class dbSetup
     // PDO database name
     public $dbname = 'shingnan';
     // PDO database host
-    public $dbhost = '127.0.0.1';
+    public $dbhost = '192.168.65.3';
     // PDO database username
     public $dbuser = 'shingnan';
     // PDO database password
