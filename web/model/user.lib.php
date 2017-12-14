@@ -51,6 +51,7 @@ class User
         }
         
         $this->smarty->assign('error', $this->error);
+        $this->smarty->assign('msg', $this->msg);
         $this->smarty->display('user/userAdd.html');
     }
 
