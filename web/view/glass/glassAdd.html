@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    \{include file="../common/resource.html"\}
+    <script type="text/javascript" src="../plugins/bootstrap-filestyle/src/bootstrap-filestyle.min.js"> </script>
+    <script>
+        function fieldValidation(field) {
+            if ($.trim($(field).val()) == '') {
+                $(field + 'Div').addClass('has-error');
+                $(field + 'Div').val('');
+                return false;
+            } else {
+                $(field + 'Div').removeClass('has-error');
+            }
+            return true;
+        }
+
+        function formValidation() {
+            if (fieldValidation('glassName') ) {
+                return true;
+            } else {
+                BootstrapDialog.alert('請至少填寫鏡片名稱');
+                return false;
+            }
+        }
+    </script>
+</head>
+
+<body class="hold-transition skin-yellow sidebar-mini">
+    <div class="wrapper">
+        \{include file="../common/header.html"\}
+        \{include file="../common/menu.html"\}
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1>鏡片新增</h1>
+            </section>
+            <section class="content">
+                <div class="row">
+                    <div class="col-md-6">
+                        \{if $error != ''\}
+                        <div class="alert alert-warning alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$error\}</h4>
+                        </div>
+                        \{/if\}
+                        <div class="box box-primary">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">新增鏡片</h3>
+                            </div>
+                            <!-- form-->
+                            <form class="form-horizontal" method="post" enctype="multipart/form-data" action="../controller/glassController.php" onsubmit="formValidation()">
+                                <div class="box-body">
+                                    <div id="glassNameDiv" class="form-group">
+                                        <label for="glassName" class="col-sm-2 control-label">鏡片名稱</label>
+                                        <div class="col-sm-6">
+                                            <input id="glassName" name="glassName" class="form-control" placeholder="輸入鏡片名稱">
+                                        </div>
+                                    </div>
+                                    <div id="glassNoDiv" class="form-group">
+                                        <label for="glassNo" class="col-sm-2 control-label">鏡片型號</label>
+                                        <div class="col-sm-6">
+                                            <input id="glassNo" name="glassNo" class="form-control" placeholder="輸入鏡片型號">
+                                        </div>
+                                    </div>
+                                    <div id="glassBrandDiv" class="form-group">
+                                        <label for="glassBrand" class="col-sm-2 control-label">鏡片品牌</label>
+                                        <div class="col-sm-6">
+                                            <select class="selectpicker" name="glassBrand" id="glassBrand" data-live-search="true" title="請選擇品牌">
+                                                \{foreach from=$brandData item=brand \}
+                                                <option value='\{$brand.brandId\}'>\{$brand.brandName\}</option>
+                                                \{/foreach\}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div id="glassTypeDiv" class="form-group">
+                                        <label for="glassType" class="col-sm-2 control-label">鏡片種類</label>
+                                        <div class="col-sm-6">
+                                            <input id="type" name="type" class="form-control" placeholder="輸入鏡片種類">
+                                        </div>
+                                    </div>
+                                    <div id="memoDiv" class="form-group">
+                                        <label for="memo" class="col-sm-2 control-label">備註</label>
+                                        <div class="col-sm-10">
+                                            <textarea id="memo" name="memo" class="form-control" placeholder="輸入備註" style="overflow:hidden;"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="box-footer" style="text-align: right;">
+                                    <a href="../controller/glassController.php?action=glassAddPrepare" class="btn btn-warning">取消</a>
+                                    <input type="hidden" name="action" value="glassAdd">
+                                    <button type="submit" class="btn btn-success">確定</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        \{include file="../common/footer.html"\}
+    </div>
+</body>
+
+</html>

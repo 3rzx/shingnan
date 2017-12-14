@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    \{include file="../common/resource.html"\}
+     <!-- DataTables -->
+    <link rel="stylesheet" href="../plugins/datatables/dataTables.bootstrap.css">
+    <script src="../plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="../plugins/datatables/dataTables.bootstrap.min.js"></script>
+    <script>
+    $(function () {
+        $('#lenListTable').DataTable({
+            "columnDefs": [
+                { "orderable": false, "targets": 7 }
+            ],
+            "paging": false,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false
+        });
+    });
+
+    function deletelen(lenId){
+        BootstrapDialog.show({
+            title:'提醒',
+            message: '確定刪除隱形眼鏡嗎?',
+            buttons: [{
+                label: '確定',
+                cssClass: 'btn-danger',
+                action: function(){
+                    location='../controller/lenController.php?action=lenDelete&lenId='+ lenId;
+                }
+            },{
+                label: '取消',
+                action: function(dialogItself){
+                    dialogItself.close();
+                }
+            }]
+        });
+    }
+    </script>
+</head>
+
+<body class="hold-transition skin-yellow sidebar-mini">
+    <div class="wrapper">
+        \{include file="../common/header.html"\}
+        \{include file="../common/menu.html"\}
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1>隱形眼鏡檢視修改</h1>
+            </section>
+            <!-- Main content -->
+            <section class="content">
+                <div class="row">
+                    <div class="col-md-10">
+                        \{if $error != ''\}
+                        <div class="alert alert-warning alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$error\}</h4>
+                        </div>
+                        \{/if\}
+                        <div class="box box-info">
+                            <div class="box-header">
+                                <h3 class="box-title">隱形眼鏡列表</h3>
+                            </div>
+                            <div class="box-body">
+                                <table class="table table-striped" id="lenListTable">
+                                    <thead>
+                                        <tr style="background-color: #00c0ef; color: #fff;">
+                                            <th>隱形眼鏡名稱</th>
+                                            <th>品牌</th>
+                                            <th>片數</th>
+                                            <th>大小</th>
+                                            <th>使用天數</th>
+                                            <th>顏色</th>
+                                            <th>最後更新時間</th>
+                                            <th>操作選項</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        \{foreach from=$allLenData item=len\}
+                                        <tr>
+                                            <td>\{$len.lenName\}</td>
+                                            <td>\{$len.brandName\}</td>
+                                            <td>\{$len.quantity\}</td>
+                                            <td>\{$len.size\}</td>
+                                            \{if $len.period == 1\}
+                                                <td>日拋</td>
+                                            \{else if $len.period == 1\}
+                                                <td>月拋</td>
+                                            \{else if $len.period == 2\}
+                                                <td>周拋</td>
+                                            \{else if $len.period == 3\}
+                                                <td>周拋</td>
+                                            \{else if $len.period == 4\}
+                                                <td>雙周拋</td>
+                                            \{else if $len.period == 5\}
+                                                <td>季拋</td>
+                                            \{else if $len.period == 6\}
+                                                <td>硬式</td>
+                                            \{/if\}
+                                            <td>\{$len.color\}</td>
+                                            <td>\{$len.lastUpdateTime\}</td>
+                                            <td>
+                                                <a href="../controller/lenController.php?action=lenEditPrepare&lenId=\{$len.lenId\} ">
+                                                    <button class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-pencil"></i></button>
+                                                </a>
+                                                <a href="#">
+                                                    <button class="btn btn-sm btn-danger" onclick="deletelen('\{$len.lenId\}');"><i class="glyphicon glyphicon-remove"></i></button>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        \{/foreach\}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        \{include file="../common/footer.html"\}
+    </div>
+</body>
+
+</html>

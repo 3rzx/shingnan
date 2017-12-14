@@ -48,7 +48,7 @@
             if (fieldValidation('brandName') ) {
                 return true;
             } else {
-                BootstrapDialog.alert('請至少填寫風格名稱');
+                BootstrapDialog.alert('請至少填寫品牌名稱');
                 return false;
             }
         }
@@ -61,7 +61,7 @@
         \{include file="../common/menu.html"\}
         <div class="content-wrapper">
             <section class="content-header">
-                <h1>風格新增</h1>
+                <h1>品牌新增</h1>
             </section>
             <section class="content">
                 <div class="row">
@@ -74,10 +74,10 @@
                         \{/if\}
                         <div class="box box-primary">
                             <div class="box-header with-border">
-                                <h3 class="box-title">新增風格</h3>
+                                <h3 class="box-title">新增品牌</h3>
                             </div>
                             <!-- form-->
-                            <form class="form-horizontal" method="post" action="../controller/brandController.php" onsubmit="formValidation()">
+                            <form class="form-horizontal" method="post" enctype="multipart/form-data" action="../controller/brandController.php" onsubmit="formValidation()">
                                 <div class="box-body">
                                     <div id="brandNameDiv" class="form-group">
                                         <label for="brandName" class="col-sm-2 control-label">品牌名稱</label>
@@ -100,7 +100,7 @@
                                     </div>
                                 </div>
                                 <div class="box-footer" style="text-align: right;">
-                                    <a href="../controller/brandController.php?action=main" class="btn btn-warning">取消</a>
+                                    <a href="../controller/brandController.php?action=brandAddPrepare" class="btn btn-warning">取消</a>
                                     <input type="hidden" name="action" value="brandAdd">
                                     <button type="submit" class="btn btn-success">確定</button>
                                 </div>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    \{include file="../common/resource.html"\}
+    <script type="text/javascript" src="../plugins/bootstrap-filestyle/src/bootstrap-filestyle.min.js"></script>
+    <script type="text/javascript" src="../plugins/bootstrap-toggle/js/bootstrap2-toggle.js"></script>
+    <link rel="stylesheet" href="../plugins/bootstrap-toggle/css/bootstrap2-toggle.css"/>
+    <script>
+        var imgCount = 1;
+        $(document).ready(function() {
+            $("#partImage1").filestyle({
+                size: "nr",
+                input: false,
+                buttonText: "上傳圖片",
+                buttonName: "btn-info",
+                iconName: "glyphicon glyphicon-camera"
+            });
+            
+            $("#partImage1").change(function() {
+                readURL(this, '#partImg1');
+            });
+        });
+
+        function readURL(input, id) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    $(id).attr('src', e.target.result);
+                    $(id).css('display', '');
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function fieldValidation(field) {
+            if ($.trim($(field).val()) == '') {
+                $(field + 'Div').addClass('has-error');
+                $(field + 'Div').val('');
+                return false;
+            } else {
+                $(field + 'Div').removeClass('has-error');
+            }
+            return true;
+        }
+
+        function formValidation() {
+            if (fieldValidation('Name') ) {
+                return true;
+            } else {
+                BootstrapDialog.alert('請至少填寫零件名稱');
+                return false;
+            }
+        }
+
+        function addPartImg(i){
+            str = '<div id = "image' + i +'"><div class = "form-inline" style="display:inline-block;">';
+            str += '<input type="file" id="partImage' + i + '" name="partImage' + i +'" data-input="false" accept="image/*">&nbsp';
+            str += '<a class="btn btn-sm btn-danger" onclick="deletePartImg(' + i + ')"><i class="glyphicon glyphicon-remove"></i></a>';
+            str += '</div>';
+            str += '<img id="partImg' + i +'" class="img-thumbnail" style="display:none"><br></div>'
+                                            
+            $("#addImgStart").after(str);
+
+            $("#partImage"+ i).filestyle({
+                size: "nr",
+                input: false,
+                buttonText: "上傳圖片",
+                buttonName: "btn-info",
+                iconName: "glyphicon glyphicon-camera"
+            });
+           
+            $("#partImage"+ i).change(function() {
+                readURL(this, "#partImg"+ i);
+            });
+            
+        }
+
+        function deletePartImg(i){
+            $("#image"+i).remove();
+        }
+
+    </script>
+</head>
+
+<body class="hold-transition skin-yellow sidebar-mini">
+    <div class="wrapper">
+        \{include file="../common/header.html"\}
+        \{include file="../common/menu.html"\}
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1>零件新增</h1>
+            </section>
+            <section class="content">
+                <div class="row">
+                    <div class="col-md-6">
+                        \{if $error != ''\}
+                        <div class="alert alert-warning alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$error\}</h4>
+                        </div>
+                        \{/if\}
+                        <div class="box box-primary">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">新增零件</h3>
+                            </div>
+                            <!-- form-->
+                            <form class="form-horizontal" method="post" enctype="multipart/form-data" action="../controller/productController.php" onsubmit="formValidation()">
+                                <div class="box-body">
+                                    <div id="partNameDiv" class="form-group">
+                                        <label for="partName" class="col-sm-2 control-label">零件名稱</label>
+                                        <div class="col-sm-6">
+                                            <input id="partName" name="partName" class="form-control" placeholder="輸入零件名稱">
+                                        </div>
+                                    </div>
+                                    <div id="partTypeDiv" class="form-group">
+                                        <label for="partTypeDiv" class="col-sm-2 control-label">零件類別</label>
+                                        <div class="col-sm-3">
+                                            <select class="selectpicker" name="partType" id="partType">
+                                                <option value=1>鼻墊</option>
+                                                <option value=2>角套</option>
+                                                <option value=3>耳勾</option>
+                                                <option value=4>運動帶</option>
+                                                <option value=5>維修</option>
+                                                <option value=6>其他</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div id="partSizeDiv" class="form-group">
+                                        <label for="partSize" class="col-sm-2 control-label">零件大小</label>
+                                        <div class="col-sm-6">
+                                            <input id="partSize" name="partSize" class="form-control" placeholder="輸入零件大小">
+                                        </div>
+                                    </div>
+                                    <div id="partImagesDiv" class="form-group">
+                                        <label class="col-sm-2 control-label">零件圖片</label>
+                                        <div class="col-sm-10">
+                                            <div id="image1">
+                                            <div class = "form-inline" style="display:inline-block;">
+                                                <input type="file" id="partImage1" name="partImage1" data-input="false" accept="image/*">
+                                                <a class="btn btn-sm btn-primary" onclick="addPartImg(++imgCount)"><i class="glyphicon glyphicon-plus"></i></a>
+                                            </div>
+                                            <img id="partImg1" class="img-thumbnail" style="display:none">
+                                            </div>
+                                            <div id="addImgStart" name="addImgStart"></div>
+                                        </div>
+                                    </div>
+                                    <div id="isLaunceDiv" class="form-group">
+                                        <label for="isLaunce" class="col-sm-2 control-label">上架到網路上</label>
+                                        &nbsp&nbsp&nbsp&nbsp&nbsp<input type="checkbox" checked data-toggle="toggle" data-size="mini">
+                                    </div>
+                                </div>
+                                <div class="box-footer" style="text-align: right;">
+                                    <a href="../controller/partController.php?action=partAddPrepare" class="btn btn-warning">取消</a>
+                                    <input type="hidden" name="action" value="partAdd">
+                                    <button type="submit" class="btn btn-success">確定</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        \{include file="../common/footer.html"\}
+    </div>
+</body>
+
+</html>

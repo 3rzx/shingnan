@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    \{include file="../common/resource.html"\}
+     <!-- DataTables -->
+    <link rel="stylesheet" href="../plugins/datatables/dataTables.bootstrap.css">
+    <script src="../plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="../plugins/datatables/dataTables.bootstrap.min.js"></script>
+    <script>
+    $(function () {
+        $('#partListTable').DataTable({
+            "columnDefs": [
+                { "orderable": false, "targets": 5 }
+            ],
+            "paging": false,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false
+        });
+    });
+
+    function deletePart(partId){
+        BootstrapDialog.show({
+            title:'提醒',
+            message: '確定刪除零件嗎?',
+            buttons: [{
+                label: '確定',
+                cssClass: 'btn-danger',
+                action: function(){
+                    location='../controller/partController.php?action=partDelete&partId='+ partId;
+                }
+            },{
+                label: '取消',
+                action: function(dialogItself){
+                    dialogItself.close();
+                }
+            }]
+        });
+    }
+    </script>
+</head>
+
+<body class="hold-transition skin-yellow sidebar-mini">
+    <div class="wrapper">
+        \{include file="../common/header.html"\}
+        \{include file="../common/menu.html"\}
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1>品牌檢視修改</h1>
+            </section>
+            <!-- Main content -->
+            <section class="content">
+                <div class="row">
+                    <div class="col-md-10">
+                        \{if $error != ''\}
+                        <div class="alert alert-warning alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$error\}</h4>
+                        </div>
+                        \{/if\}
+                        <div class="box box-info">
+                            <div class="box-header">
+                                <h3 class="box-title">品牌列表</h3>
+                            </div>
+                            <div class="box-body">
+                                <table class="table table-striped" id="partListTable">
+                                    <thead>
+                                        <tr style="background-color: #00c0ef; color: #fff;">
+                                            <th>零件名稱</th>
+                                            <th>零件類別</th>
+                                            <th>零件大小</th>
+                                            <th>是否上架到網路上</th>
+                                            <th>最後更新時間</th>
+                                            <th>操作選項</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        \{foreach from=$allpartData item=part\}
+                                        <tr>
+                                            <td>\{$part.partName\}</td>
+                                            \{if $part.type == 1\}
+                                                <td>鼻墊</td>
+                                            \{else if $part.type == 2\}
+                                                <td>角套</td>
+                                            \{else if $part.type == 3\}
+                                                <td>耳勾</td>
+                                            \{else if $part.type == 4\}
+                                                <td>運動帶</td>
+                                            \{else if $part.type == 5\}
+                                                <td>維修</td>
+                                            \{else if $part.type == 6\}
+                                                <td>其他</td>
+                                            \{/if\}
+                                            <td>\{$part.size\}</td>
+                                            \{if $part.isLaunch == 1\}
+                                            <td>是</td>
+                                            \{else\}
+                                            <td>否</td>
+                                            \{/if\}
+                                            <td>\{$part.lastUpdateTime\}</td>
+                                            <td>
+                                                <a href="../controller/partController.php?action=partEditPrepare&partId=\{$part.partId\}">
+                                                    <button class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-pencil"></i></button>
+                                                </a>
+                                                <a href="#">
+                                                    <button class="btn btn-sm btn-danger" onclick="deletePart('\{$part.partId\}');"><i class="glyphicon glyphicon-remove"></i></button>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        \{/foreach\}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        \{include file="../common/footer.html"\}
+    </div>
+</body>
+
+</html>

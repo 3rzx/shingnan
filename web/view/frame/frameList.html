@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    \{include file="../common/resource.html"\}
+     <!-- DataTables -->
+    <link rel="stylesheet" href="../plugins/datatables/dataTables.bootstrap.css">
+    <script src="../plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="../plugins/datatables/dataTables.bootstrap.min.js"></script>
+    <script>
+    $(function () {
+        $('#frameListTable').DataTable({
+            "columnDefs": [
+                { "orderable": false, "targets": 6 },
+                { "orderable": false, "targets": 8 }
+            ],
+            "paging": false,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false
+        });
+    });
+
+    function deleteframe(frameId){
+        BootstrapDialog.show({
+            title:'提醒',
+            message: '確定刪除鏡框嗎?',
+            buttons: [{
+                label: '確定',
+                cssClass: 'btn-danger',
+                action: function(){
+                    location='../controller/frameController.php?action=frameDelete&frameId='+ frameId;
+                }
+            },{
+                label: '取消',
+                action: function(dialogItself){
+                    dialogItself.close();
+                }
+            }]
+        });
+    }
+    </script>
+</head>
+
+<body class="hold-transition skin-yellow sidebar-mini">
+    <div class="wrapper">
+        \{include file="../common/header.html"\}
+        \{include file="../common/menu.html"\}
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1>鏡框檢視修改</h1>
+            </section>
+            <!-- Main content -->
+            <section class="content">
+                <div class="row">
+                    <div class="col-md-10">
+                        \{if $error != ''\}
+                        <div class="alert alert-warning alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$error\}</h4>
+                        </div>
+                        \{/if\}
+                        <div class="box box-info">
+                            <div class="box-header">
+                                <h3 class="box-title">鏡框列表</h3>
+                            </div>
+                            <div class="box-body">
+                                <table class="table table-striped" id="frameListTable">
+                                    <thead>
+                                        <tr style="background-color: #00c0ef; color: #fff;">
+                                            <th>鏡框名稱</th>
+                                            <th>鏡框型號</th>                                            
+                                            <th>鏡框品牌</th>                                            
+                                            <th>鏡框框形</th>                                            
+                                            <th>鏡框材質</th>                                            
+                                            <th>鏡框顏色</th>                         
+                                            <th>是否上架到網路上</th>
+                                            <th>最後更新時間</th>
+                                            <th>操作選項</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        \{foreach from=$allframeData item=frame\}
+                                        <tr>
+                                            <td>\{$frame.frameName\}</td>
+                                            <td>\{$frame.no\}</td>
+                                            <td>\{$frame.brandName\}</td>
+                                            \{if $frame.shape == 1\}
+                                                <td>圓</td>
+                                            \{else if $frame.shape == 2\}
+                                                <td>方</td>
+                                            \{else if $frame.shape == 3\}
+                                                <td>全</td>
+                                            \{else if $frame.shape == 4\}
+                                                <td>半</td>
+                                            \{else if $frame.shape == 5\}
+                                                <td>無</td>
+                                            \{else if $frame.shape == 6\}
+                                                <td>混和</td>
+                                            \{/if\}
+                                            <td>\{$frame.material\}</td>
+                                            <td>\{$frame.color\}</td>
+                                            \{if $frame.isLaunch == 1\}
+                                            <td>是</td>
+                                            \{else\}
+                                            <td>否</td>
+                                            \{/if\}
+                                            <td>\{$frame.lastUpdateTime\}</td>
+                                            <td>
+                                                <a href="../controller/frameController.php?action=frameEditPrepare&frameId=\{$frame.frameId\}">
+                                                    <button class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-pencil"></i></button>
+                                                </a>&nbsp;
+                                                <a href="#">
+                                                    <button class="btn btn-sm btn-danger" onclick="deleteframe('\{$frame.frameId\}');"><i class="glyphicon glyphicon-remove"></i></button>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        \{/foreach\}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        \{include file="../common/footer.html"\}
+    </div>
+</body>
+
+</html>
