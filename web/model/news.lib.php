@@ -3,7 +3,7 @@
 require_once HOME_DIR . 'configs/config.php';
 require_once 'IdGenerator.php';
 /**
- * 風格類別
+ * 趨勢類別
  */
 class News {
 	// database object
@@ -36,7 +36,7 @@ class News {
 	}
 
 	/**
-	 * 新增風格格式
+	 * 新增趨勢格式
 	 */
 	public function newsAddPrepare() {
 		if ($_SESSION['isLogin'] == true) {
@@ -49,70 +49,37 @@ class News {
 	}
 
 	/**
-	 * 新增風格
+	 * 新增趨勢
 	 */
 	public function newsAdd($input) {
-		if ($_SESSION['isLogin'] == true) {
-			try {
-				$idGen = new IdGenerator();
-				$now = date('Y-m-d H:i:s');
-				$newsId = $idGen . GetID('news');
-				$this->db->beginTransaction();
-				$sql = "INSERT INTO `shingnan`.`news` (`newsId`, `newsName`,  `description`, `isDelete`, `lastUpdateTime`, `createTime`)
-                        VALUES (:newsId, :newsName, :description, '0', :lastUpdateTime, :createTime);";
-				$res->bindParam(':newsId', $newsId, PDO::PARAM_STR);
-				$res->bindParam(':newsName', $input['newsName'], PDO::PARAM_STR);
-				$res->bindParam(':description', $input['description'], PDO::PARAM_STR);
-				$res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
-				$res->bindParam(':createTime', $now, PDO::PARAM_STR);
-
-				if ($res->execute()) {
-					//deal with insert image
-					$this->msg = '新增成功';
-					$uploadPath = '../media/picture';
-					if (!file_exists($uploadPath) && !is_dir($uploadPath)) {
-						// create project folder with 777 permissions
-						mkdir($uploadPath);
-						chmod($uploadPath, 0777);
-					}
-					if ($_FILES['newsImage']['error'] == 0) {
-						$imgId = $idGen . GetID('image');
-						$imgName = 'news_' . $input['newsName'];
-						$fileInfo = $_FILES['newsImage'];
-						$newsImage = uploadFile($fileInfo, $uploadPath);
-						$sql = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`,
-                                                                `itemId`, `ctr`, `path`, `link`, `crateTime`)
-                                VALUES (:imgId, :imgName, 2,
-                                        :newsId, 0, :filePath, '', :createTime);";
-						$res = $this->db->prepare($sql);
-						$res->bindParam(':imgId', $imgId, PDO::PARAM_STR);
-						$res->bindParam(':imgName', $imgName, PDO::PARAM_STR);
-						$res->bindParam(':newsId', $newsId, PDO::PARAM_STR);
-						$res->bindParam(':filePath', $newsImage, PDO::PARAM_STR);
-						$res->bindParam(':createTime', $now, PDO::PARAM_STR);
-						$res->execute();
-						if (!$res) {
-							$error = $res->errorInfo();
-							var_dump($res->errorInfo());
-							exit;
-							$this->error = $error[0];
-							$this->smarty->assign('error', $this->error);
-						}
-					}
-				}
-				//$this->newsList();
-			} catch (PDOException $e) {
-				print "Error!: " . $e->getMessage();
-				$this->smarty->assign('error', $e->getMessage());
-			}
-		} else {
+		//
+		if ($_SESSION['isLogin'] == false) {
 			$this->error = '請先登入!';
 			$this->viewLogin();
 		}
+		$idGen = new IdGenerator();
+		$now = date('Y-m-d H:i:s');
+		$newsId = $idGen->GetID('news');
+		$sql = "INSERT INTO `shingnan`.`article` (`articleId`, `title`, `content`, `type`, `ctr`, `isDelete`, `lastUpdateTime`, `createTime`) VALUES (:articleId, :title, :content, '2', '0', '0', :lastUpdateTime, :createTime);";
+		$res = $this->db->prepare($sql);
+		$res->bindParam(':articleId', $newsId, PDO::PARAM_STR);
+		$res->bindParam(':title', $input['newsTitle'], PDO::PARAM_STR);
+		$res->bindParam(':content', $input['newsEditor'], PDO::PARAM_STR);
+		$res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
+		$res->bindParam(':createTime', $now, PDO::PARAM_STR);
+		if ($res->execute()) {
+			$this->msg = '新增成功';
+		} else {
+			$error = $res->errorInfo();
+			$this->error = $error[0];
+			$this->newsList();
+		}
+
+		$this->newsList();
 	}
 
 	/**
-	 * 編輯風格前置
+	 * 編輯趨勢前置
 	 */
 	public function newsEditPrepare($input) {
 		if ($_SESSION['isLogin'] == true) {
@@ -142,7 +109,7 @@ class News {
 	}
 
 	/**
-	 * 編輯風格
+	 * 編輯趨勢
 	 */
 	public function newsEdit($input) {
 		if ($_SESSION['isLogin'] == true) {
@@ -172,7 +139,7 @@ class News {
 	}
 
 	/**
-	 * 顯示所有風格列表
+	 * 顯示所有趨勢列表
 	 */
 	public function newsList() {
 		if ($_SESSION['isLogin'] == true) {
@@ -187,6 +154,7 @@ class News {
 
 			$this->smarty->assign('allnewsData', $allnewsData);
 			$this->smarty->assign('error', $this->error);
+			$this->smarty->assign('msg', $this->msg);
 			$this->smarty->display('news/newsList.html');
 		} else {
 			$this->error = '請先登入!';
@@ -195,25 +163,19 @@ class News {
 	}
 
 	/**
-	 * 刪除風格
+	 * 刪除趨勢
 	 */
 	public function newsDelete($input) {
 		if ($_SESSION['isLogin'] == true) {
-			try {
-				$this->db->beginTransaction();
-				$sql = "DELETE FROM news
-                           WHERE newsId = :newsId";
-				$res->bindParam(':newsId', $input['newsId'], PDO::PARAM_STR);
-				$this->db->exec($sql);
-				$this->db->commit();
-				//deal with img
-				$this->error = '';
-				$this->msg = '刪除成功';
-				$this->smarty->display('news/newsList.html');
-			} catch (PDOException $e) {
-				$this->db->rollBack();
-				print "Error!: " . $e->getMessage();
-			}
+			$this->db->beginTransaction();
+			$sql = "DELETE FROM `article` WHERE `articleId` = :newsId;";
+			$res = $this->db->prepare($sql);
+			$res->bindParam(':newsId', $input['newsId'], PDO::PARAM_STR);
+			$res->execute();
+			$this->db->commit();
+			$this->error = '';
+			$this->msg = '刪除成功';
+			$this->newsList();
 		} else {
 			$this->error = '請先登入!';
 			$this->viewLogin();

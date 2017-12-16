@@ -3,6 +3,26 @@
 
 <head>
     \{include file="../common/resource.html"\}
+    <script>
+        function deleteStore(storeId){
+        BootstrapDialog.show({
+            title:'提醒',
+            message: '確定刪除嗎? 店家資訊刪除後將無法回復。',
+            buttons: [{
+                label: '確定',
+                cssClass: 'btn-danger',
+                action: function(){
+                    location='../controller/storeController.php?action=storeDelete&storeId='+ storeId;
+                }
+            },{
+                label: '取消',
+                action: function(dialogItself){
+                    dialogItself.close();
+                }
+            }]
+        });
+    }
+    </script>
 </head>
 
 <body class="hold-transition skin-yellow sidebar-mini">
@@ -23,6 +43,12 @@
                             <h4 style="display: inline;">\{$error\}</h4>
                         </div>
                         \{/if\}
+                        \{if $msg != ''\}
+                        <div class="alert alert-success alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$msg\}</h4>
+                        </div>
+                        \{/if\}
                         <div class="box box-info">
                             <div class="box-header">
                                 <h3 class="box-title">店家列表</h3>
@@ -37,6 +63,7 @@
                                             <th>營業時間</th>
                                             <th>額外說明</th>
                                             <th>最後更新時間</th>
+                                            <th>最後更新時間</th>
                                             <th>操作選項</th>
                                         </tr>
                                     </thead>
@@ -48,13 +75,14 @@
                                             <td>\{$store.phoneNumber\}</td>
                                             <td>\{$store.businessHours\}</td>
                                             <td>\{$store.description\}</td>
+                                            <td>\{$store.createTime\}</td>
                                             <td>\{$store.lastUpdateTime\}</td>
                                             <td>
                                                 <a href="../controller/storeController.php?action=storeEdit&storeId=\{$store.storeId\})">
                                                     <button class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-pencil"></i></button>
                                                 </a>&nbsp;
                                                 <a href="#">
-                                                    <button class="btn btn-sm btn-danger" onclick="deletebrand(\{$brand.brandId\});"><i class="glyphicon glyphicon-remove"></i></button>
+                                                    <button class="btn btn-sm btn-danger" onclick="deleteStore('\{$store.storeId\}');"><i class="glyphicon glyphicon-remove"></i></button>
                                                 </a>
                                             </td>
                                         </tr>

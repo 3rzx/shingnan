@@ -3,12 +3,31 @@
 
 <head>
     \{include file="../common/resource.html"\}
+    <script>
+    function deleteLife(articleId) {
+        BootstrapDialog.show({
+            title: '提醒',
+            message: '確定刪除嗎? 文章刪除後將無法回復。',
+            buttons: [{
+                label: '確定',
+                cssClass: 'btn-danger',
+                action: function() {
+                    location = '../controller/lifeController.php?action=lifeDelete&lifeId=' + articleId;
+                }
+            }, {
+                label: '取消',
+                action: function(dialogItself) {
+                    dialogItself.close();
+                }
+            }]
+        });
+    }
+    </script>
 </head>
 
 <body class="hold-transition skin-yellow sidebar-mini">
     <div class="wrapper">
-        \{include file="../common/header.html"\}
-        \{include file="../common/menu.html"\}
+        \{include file="../common/header.html"\} \{include file="../common/menu.html"\}
         <div class="content-wrapper">
             <section class="content-header">
                 <h1>趨勢新知檢視修改</h1>
@@ -21,6 +40,11 @@
                         <div class="alert alert-warning alert-dismissable text-center">
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                             <h4 style="display: inline;">\{$error\}</h4>
+                        </div>
+                        \{/if\} \{if $msg != ''\}
+                        <div class="alert alert-success alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$msg\}</h4>
                         </div>
                         \{/if\}
                         <div class="box box-info">
@@ -48,7 +72,7 @@
                                                     <button class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-pencil"></i></button>
                                                 </a>&nbsp;
                                                 <a href="#">
-                                                    <button class="btn btn-sm btn-danger" onclick="deletebrand(\{$brand.brandId\});"><i class="glyphicon glyphicon-remove"></i></button>
+                                                    <button class="btn btn-sm btn-danger" onclick="deleteLife('\{$article.articleId\}');"><i class="glyphicon glyphicon-remove"></i></button>
                                                 </a>
                                             </td>
                                         </tr>

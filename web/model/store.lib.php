@@ -1,8 +1,9 @@
 <?php
 // initialize
 require_once HOME_DIR . 'configs/config.php';
+require_once 'IdGenerator.php';
 /**
- * 風格類別
+ * 店家類別
  */
 class Store {
 	// database object
@@ -35,7 +36,7 @@ class Store {
 	}
 
 	/**
-	 * 新增風格格式
+	 * 新增店家格式
 	 */
 	public function storeAddPrepare() {
 		if ($_SESSION['isLogin'] == true) {
@@ -48,70 +49,40 @@ class Store {
 	}
 
 	/**
-	 * 新增風格
+	 * 新增店家
 	 */
 	public function storeAdd($input) {
-		if ($_SESSION['isLogin'] == true) {
-			try {
-				$idGen = new IdGenerator();
-				$now = date('Y-m-d H:i:s');
-				$storeId = $idGen . GetID('store');
-				$this->db->beginTransaction();
-				$sql = "INSERT INTO `shingnan`.`store` (`storeId`, `storeName`,  `description`, `isDelete`, `lastUpdateTime`, `createTime`)
-                        VALUES (:storeId, :storeName, :description, '0', :lastUpdateTime, :createTime);";
-				$res->bindParam(':storeId', $storeId, PDO::PARAM_STR);
-				$res->bindParam(':storeName', $input['storeName'], PDO::PARAM_STR);
-				$res->bindParam(':description', $input['description'], PDO::PARAM_STR);
-				$res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
-				$res->bindParam(':createTime', $now, PDO::PARAM_STR);
-
-				if ($res->execute()) {
-					//deal with insert image
-					$this->msg = '新增成功';
-					$uploadPath = '../media/picture';
-					if (!file_exists($uploadPath) && !is_dir($uploadPath)) {
-						// create project folder with 777 permissions
-						mkdir($uploadPath);
-						chmod($uploadPath, 0777);
-					}
-					if ($_FILES['storeImage']['error'] == 0) {
-						$imgId = $idGen . GetID('image');
-						$imgName = 'store_' . $input['storeName'];
-						$fileInfo = $_FILES['storeImage'];
-						$storeImage = uploadFile($fileInfo, $uploadPath);
-						$sql = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`,
-                                                                `itemId`, `ctr`, `path`, `link`, `crateTime`)
-                                VALUES (:imgId, :imgName, 2,
-                                        :storeId, 0, :filePath, '', :createTime);";
-						$res = $this->db->prepare($sql);
-						$res->bindParam(':imgId', $imgId, PDO::PARAM_STR);
-						$res->bindParam(':imgName', $imgName, PDO::PARAM_STR);
-						$res->bindParam(':storeId', $storeId, PDO::PARAM_STR);
-						$res->bindParam(':filePath', $storeImage, PDO::PARAM_STR);
-						$res->bindParam(':createTime', $now, PDO::PARAM_STR);
-						$res->execute();
-						if (!$res) {
-							$error = $res->errorInfo();
-							var_dump($res->errorInfo());
-							exit;
-							$this->error = $error[0];
-							$this->smarty->assign('error', $this->error);
-						}
-					}
-				}
-				//$this->storeList();
-			} catch (PDOException $e) {
-				print "Error!: " . $e->getMessage();
-				$this->smarty->assign('error', $e->getMessage());
-			}
-		} else {
+		//
+		if ($_SESSION['isLogin'] == false) {
 			$this->error = '請先登入!';
 			$this->viewLogin();
 		}
+		$idGen = new IdGenerator();
+		$now = date('Y-m-d H:i:s');
+		$storeId = $idGen->GetID('store');
+		$sql = "INSERT INTO `shingnan`.`store` (`storeId`, `storeName`, `phoneNumber`, `address`, `businessHours`, `description`, `isDelete`, `lastUpdateTime`, `createTime`) VALUES (:storeId, :storeName, :phoneNumber, :address, :businessHours, :description, '0', :lastUpdateTime, :createTime);";
+		$res = $this->db->prepare($sql);
+		$res->bindParam(':storeId', $storeId, PDO::PARAM_STR);
+		$res->bindParam(':storeName', $input['storeName'], PDO::PARAM_STR);
+		$res->bindParam(':phoneNumber', $input['storePhone'], PDO::PARAM_STR);
+		$res->bindParam(':address', $input['storeAddress'], PDO::PARAM_STR);
+		$res->bindParam(':businessHours', $input['businessHours'], PDO::PARAM_STR);
+		$res->bindParam(':description', $input['description'], PDO::PARAM_STR);
+		$res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
+		$res->bindParam(':createTime', $now, PDO::PARAM_STR);
+		if ($res->execute()) {
+			$this->msg = '新增成功';
+		} else {
+			$error = $res->errorInfo();
+			$this->error = $error[0];
+			$this->storeList();
+		}
+
+		$this->storeList();
 	}
 
 	/**
-	 * 編輯風格前置
+	 * 編輯店家前置
 	 */
 	public function storeEditPrepare($input) {
 		if ($_SESSION['isLogin'] == true) {
@@ -141,7 +112,7 @@ class Store {
 	}
 
 	/**
-	 * 編輯風格
+	 * 編輯店家
 	 */
 	public function storeEdit($input) {
 		if ($_SESSION['isLogin'] == true) {
@@ -171,12 +142,12 @@ class Store {
 	}
 
 	/**
-	 * 顯示所有風格列表
+	 * 顯示所有店家列表
 	 */
 	public function storeList() {
 		if ($_SESSION['isLogin'] == true) {
 			// get all data from store
-			$sql = 'SELECT `store`.`storeId`, `store`.`storeName` , `store`.`phoneNumber`,`store`.`address` , `store`.`businessHours`, `store`.`description` ,`store`.`lastUpdateTime`
+			$sql = 'SELECT `store`.`storeId`, `store`.`storeName` , `store`.`phoneNumber`,`store`.`address` , `store`.`businessHours`, `store`.`description` ,`store`.`lastUpdateTime`,`store`.`createTime`
                 FROM  `store`
                 ORDER BY `store`.`storeId`';
 			$res = $this->db->prepare($sql);
@@ -185,6 +156,7 @@ class Store {
 
 			$this->smarty->assign('allstoreData', $allstoreData);
 			$this->smarty->assign('error', $this->error);
+			$this->smarty->assign('msg', $this->msg);
 			$this->smarty->display('store/storeList.html');
 		} else {
 			$this->error = '請先登入!';
@@ -193,25 +165,19 @@ class Store {
 	}
 
 	/**
-	 * 刪除風格
+	 * 刪除店家
 	 */
 	public function storeDelete($input) {
 		if ($_SESSION['isLogin'] == true) {
-			try {
-				$this->db->beginTransaction();
-				$sql = "DELETE FROM store
-                           WHERE storeId = :storeId";
-				$res->bindParam(':storeId', $input['storeId'], PDO::PARAM_STR);
-				$this->db->exec($sql);
-				$this->db->commit();
-				//deal with img
-				$this->error = '';
-				$this->msg = '刪除成功';
-				$this->smarty->display('store/storeList.html');
-			} catch (PDOException $e) {
-				$this->db->rollBack();
-				print "Error!: " . $e->getMessage();
-			}
+			$this->db->beginTransaction();
+			$sql = "DELETE FROM `store` WHERE `storeId` = :storeId;";
+			$res = $this->db->prepare($sql);
+			$res->bindParam(':storeId', $input['storeId'], PDO::PARAM_STR);
+			$res->execute();
+			$this->db->commit();
+			$this->error = '';
+			$this->msg = '刪除成功';
+			$this->storeList();
 		} else {
 			$this->error = '請先登入!';
 			$this->viewLogin();
