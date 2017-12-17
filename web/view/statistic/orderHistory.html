@@ -53,7 +53,7 @@
                                 </div>
                             </div>
                             <div class="box-footer">
-                                <button class="btn btn-success" onclick="query()">確定</button>
+                                <button class="btn btn-success" onclick="queryByDate()">確定</button>
                             </div>
                         </div>
                     </div>
@@ -155,7 +155,7 @@
 
         });
 
-        function query() {
+        function queryByDate() {
             if (startDate === null || startDate === "") {
                 alert('請選擇開始日期!');
             } else if (endDate === null || endDate === "") {
@@ -163,9 +163,37 @@
             } else if ($('#facilitySelect').val() === '#') {
                 alert('請選擇體驗設施');
             } else {
-                setInspectTable('man');
-                setInspectTable('auto');
+                getQueryResult();
             }
+        }
+
+        function getQueryResult() {
+            $.get(
+                'url',
+                {
+                    startDate: startDate,
+                    endDate: endDate,
+                },
+                function (data) {
+                    $('#' + type + 'Table').DataTable().clear().draw();
+                    if (data.length != 0) {
+                        data.forEach(function (record, index) {
+                            $('#' + type + 'Table').DataTable().row.add([
+                                record.dispatchDate,
+                                record.total,
+                                record.normal,
+                                record.prob + '%'
+                            ]).draw(false);
+                        });
+                        $('#errDiv').css('display', 'none');
+                    } else {
+                        $('#errDiv').css('display', 'block');
+                    }
+                },
+                'json'
+            ).fail(function () {
+                alert("抱歉! 伺服器無法接受您的查詢!");
+            });
         }
     </script>
 </body>
