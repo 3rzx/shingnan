@@ -15,6 +15,8 @@ class User
     public $msg = '';
     // error messages
     public $error = '';
+    // isSearch or not search
+    public $isSearch = false;
 
     /**
      * User constructor
@@ -36,7 +38,7 @@ class User
             session_register('msg');
         }
     }
-   
+
 
     /**
      * 新增使用者頁面
@@ -49,7 +51,7 @@ class User
             $this->viewLogin();
             return ;
         }
-        
+
         $this->smarty->assign('error', $this->error);
         $this->smarty->assign('msg', $this->msg);
         $this->smarty->display('user/userAdd.html');
@@ -86,7 +88,6 @@ class User
         0,:lastUpdateTime, :createTime);";
 
         $res = $this->db->prepare($sql);
-        var_dump($now);
 
         $res->bindParam(':userId', $userId, PDO::PARAM_STR);
         $res->bindParam(':userName', $input['userName'], PDO::PARAM_STR);
@@ -103,6 +104,73 @@ class User
 
         $error = $res->errorInfo();
         $this->$error = $error[0];
+    }
+
+    public function userSearchPrepare()
+    {
+        if ($_SESSION['isLogin'] == false) {
+            $this->error = '請先登入!';
+            $this->viewLogin();
+            return ;
+        }
+
+        $this->smarty->assign('error', $this->error);
+        $this->smarty->assign('msg', $this->msg);
+        $this->smarty->display('user/userSearch.html');
+    }
+
+
+    public function userSearch($input)
+    {
+        if ($_SESSION['isLogin'] == false) {
+            $this->error = '請先登入!';
+            $this->viewLogin();
+        }
+
+        $sql = "SELECT `user`.`userId`, `user`.`userName` , `user`.`gender`, `user`.`phone` ,`user`.`downlineNum`, `user`.`lastUpdateTime`
+                FROM  `user`
+                WHERE  `user`.`isDelete` = 0 And `user`.`userName`=:userName And `user`.`phone`=:phone
+                ORDER BY `user`.`userId`";
+
+        $res = $this->db->prepare($sql);
+        $res->bindParam(':userName', $input['userName'], PDO::PARAM_STR);
+        $res->bindParam(':phone', $input['phone'], PDO::PARAM_STR);
+
+        $res->execute();
+        $searchResult = $res->fetchAll();
+        $this->smarty->assign('searchResult', $searchResult);
+        $this->userSearchPrepare();
+
+        $error = $res->errorInfo();
+        $this->$error = $error[0];
+    }
+
+    public function userDelete($input)
+    {
+        if ($_SESSION['isLogin'] == false) {
+            $this->error = '請先登入!';
+            $this->viewLogin();
+        }
+        
+        if (!isset($input['userId'])) {
+            return;
+        }
+
+        $this->db->beginTransaction();
+        $sql    = "DELETE FROM `user` WHERE `userId` = :userId;";
+        $res = $this->db->prepare($sql);
+        $res->bindParam(':userId', $input['userId'], PDO::PARAM_STR);
+        $res->execute();
+        $this->db->commit();
+
+        $now = date('Y-m-d H:i:s');
+        $sql = "UPDATE `shingnan`.`user` SET  `isDelete` = 1, `lastUpdateTime` = :lastUpdateTime WHERE `userId` = :userId;";
+        $res = $this->db->prepare($sql);
+        $res->bindParam(':userId', $input['userId'], PDO::PARAM_STR);
+        $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
+        $res->execute();
+
+        $this->userSearchPrepare();
     }
 
     /**
