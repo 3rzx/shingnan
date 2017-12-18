@@ -19,45 +19,16 @@
     <div class="wrapper">
         \{include file="../common/header.html"\} \{include file="../common/menu.html"\}
         <div class="content-wrapper">
+            \{if $msg == 'failure'\}
+            <div class="alert alert-warning alert-dismissable text-center">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <h4 style="display: inline;">\{$error\}</h4>
+            </div>
+            \{/if\}
             <section class="content-header">
-                <h1>商品點擊率</h1>
+                <h1>鏡框點擊率</h1>
             </section>
             <section class="content">
-                <!-- <div class="row">
-                    <div class="col-md-12">
-                        <div class="box box-info" style="padding: 5px;">
-                            <div class="box-header with-border">
-                                <h3 class="box-title">篩選條件</h3>
-                            </div>
-                            <div class="box-body row">
-                                <div id="errDiv" class="form-group has-error" style="display: none;">
-                                    <label id="errMsg" class="col-sm-12">查無資料</label>
-                                </div>
-                                <div class="col-md-6 form-group">
-                                    <label class="control-label col-md-2" for="startDatePicker">開始日期</label>
-                                    <div class="input-group col-md-8">
-                                        <div class="input-group-addon">
-                                            <i class="fa fa-clock-o"></i>
-                                        </div>
-                                        <input type="text" class="form-control pull-right" id="startDatePicker">
-                                    </div>
-                                </div>
-                                <div class="col-md-6 form-group">
-                                    <label class="control-label col-md-2" for="endDatePicker">結束日期</label>
-                                    <div class="input-group col-md-8">
-                                        <div class="input-group-addon">
-                                            <i class="fa fa-clock-o"></i>
-                                        </div>
-                                        <input type="text" class="form-control pull-right" id="endDatePicker">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="box-footer">
-                                <button class="btn btn-success" onclick="query()">確定</button>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
                 <!-- Main content -->
                 <div class="row">
                     <div class="col-xs-12">
@@ -66,39 +37,31 @@
                                 <table id="manTable" class="row-border" cellspacing="0" style="width: 100%;">
                                     <thead>
                                         <tr>
-                                            <th>點擊率</th>
-                                            <th>商品名稱</th>
-                                            <th>商品型號</th>
-                                            <th>商品品牌</th>
-                                            <th>商品種類</th>
+                                            <th>點閱數</th>
+                                            <th>鏡框名稱</th>
+                                            <th>鏡框型號</th>
+                                            <th>鏡框框形</th>
+                                            <th>鏡框顏色</th>
+                                            <th>鏡框材質</th>
                                             <th>詳細內容</th>
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        \{foreach from=$frameList item=frame\}
                                         <tr>
-                                            <td>60%</td>
-                                            <td>掙錢眼鏡</td>
-                                            <td>A-glasses</td>
-                                            <td>世紀</td>
-                                            <td>隱形眼鏡</td>
+                                            <td>\{$frame.ctr\}</td>
+                                            <td>\{$frame.frameName\}</td>
+                                            <td>\{$frame.no\}</td>
+                                            <td>\{$shapeMap[$frame.shape]\}</td>
+                                            <td>\{$frame.color\}</td>
+                                            <td>\{$frame.material\}</td>
                                             <td>
                                                 <button class="btn btn-sm btn-info" onclick="">
                                                     <i class="glyphicon glyphicon-menu-hamburger"></i>
                                                 </button>
                                             </td>
                                         </tr>
-                                        <tr>
-                                            <td>40%</td>
-                                            <td>寒酸眼鏡</td>
-                                            <td>B-glasses</td>
-                                            <td>仁愛</td>
-                                            <td>粗框眼鏡</td>
-                                            <td>
-                                                <button class="btn btn-sm btn-info" onclick="">
-                                                    <i class="glyphicon glyphicon-menu-hamburger"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
+                                        \{/foreach\}
                                     </tbody>
                                 </table>
                             </div>
@@ -120,11 +83,12 @@
                 "searching": true,
                 "columnDefs": [
                     { "targets": 0, "width": "10%", "orderable": true },
-                    { "targets": 1, "width": "20%", "orderable": true },
-                    { "targets": 2, "width": "20%", "orderable": true },
+                    { "targets": 1, "width": "15%", "orderable": true },
+                    { "targets": 2, "width": "15%", "orderable": true },
                     { "targets": 3, "width": "15%", "orderable": true },
                     { "targets": 4, "width": "15%", "orderable": true },
-                    { "targets": 5, "width": "20%", "orderable": true }
+                    { "targets": 5, "width": "15%", "orderable": true },
+                    { "targets": 6, "width": "15%", "orderable": true }
                 ]
             });
 
