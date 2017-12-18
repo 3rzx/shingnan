@@ -27,6 +27,9 @@ switch ($method) {
             case 'orderHistory':
                 $statistic->viewOrderHistory();
                 break;
+            case 'getQueryResult':
+                $statistic->queryOrderHistoryByDate($_GET);
+                break;
             default:
                 $statistic->viewLogin();
         }
