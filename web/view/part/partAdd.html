@@ -34,26 +34,6 @@
             }
         }
 
-        function fieldValidation(field) {
-            if ($.trim($(field).val()) == '') {
-                $(field + 'Div').addClass('has-error');
-                $(field + 'Div').val('');
-                return false;
-            } else {
-                $(field + 'Div').removeClass('has-error');
-            }
-            return true;
-        }
-
-        function formValidation() {
-            if (fieldValidation('Name') ) {
-                return true;
-            } else {
-                BootstrapDialog.alert('請至少填寫零件名稱');
-                return false;
-            }
-        }
-
         function addPartImg(i){
             str = '<div id = "image' + i +'"><div class = "form-inline" style="display:inline-block;">';
             str += '<input type="file" id="partImage' + i + '" name="partImage' + i +'" data-input="false" accept="image/*">&nbsp';
@@ -106,7 +86,7 @@
                                 <h3 class="box-title">新增零件</h3>
                             </div>
                             <!-- form-->
-                            <form class="form-horizontal" method="post" enctype="multipart/form-data" action="../controller/productController.php" onsubmit="formValidation()">
+                            <form class="form-horizontal" method="post" enctype="multipart/form-data" action="../controller/productController.php">
                                 <div class="box-body">
                                     <div id="partNameDiv" class="form-group">
                                         <label for="partName" class="col-sm-2 control-label">零件名稱</label>

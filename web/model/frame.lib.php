@@ -68,9 +68,18 @@ class Frame
             $this->error = '請先登入!';
             $this->viewLogin();
         }
+        if(!isset($input['no']) || !isset($input['frameName'])){
+            $this->error = '請至少填入鏡框編號與鏡框名稱';
+            $this->brandAddPrepare();
+        }
         $idGen = new IdGenerator();
         $now = date('Y-m-d H:i:s');
         $frameId = $idGen->GetID('frame');
+        $isLaunch = 0;
+        if (isset($input['isLaunch']))
+            $isLaunch = 1;                        
+
+
         $sql = "INSERT INTO `shingnan`.`frame` (`frameId`, `no`, `frameName`, `brandId`, `shape`, `material`, 
                                                 `color`, `isLaunch`, `ctr`, `isDelete`, `lastUpdateTime`, `createTime`) 
                 VALUES (:frameId, :no, :frameName, :frameBrand, :shape, :material, 
@@ -87,30 +96,43 @@ class Frame
         $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
         $res->bindParam(':createTime', $now, PDO::PARAM_STR);
         if ($res->execute()) {
-        //deal with insert image
-            $this->msg = '新增成功';
+            //deal with style
+            $this->msg = '資料新增成功';
+            $frameStyle = $input['frameStyle'];
+            $sql = "INSERT INTO `shingnan`.`frameStyle` (`styleId`, `frameId`, `createTime`) VALUES";
+            foreach($frameStyle as $s){
+                $sql += "'" + $s + "', '" + $frameId + "', '" + $now + "'),";
+            }
+            substr_replace($sql, ';', -1);
+            $res = $this->db->prepare($sql);
+            $res->execute();
+            if($res){
+                $error = $res->errorInfo();
+                $this->error = ' 風格設定錯誤 '.$error[0];
+            }
+
+            //deal with image
             $uploadPath = '../media/picture';
-            if ($_FILES['frameImage']['error'] == 0) {
-                $imgId = $idGen->GetID('image');
-                $imgName = 'frame_'.$input['frameName'];
-                $fileInfo = $_FILES['frameImage'];
-                $frameImage = uploadFile($fileInfo, $uploadPath);
-                $sql = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`, 
-                                                        `itemId`, `ctr`, `path`, `link`, `createTime`) 
-                        VALUES (:imgId, :imgName, 3, 
-                                :frameId, 0, :filePath, '', :createTime);";
-                $res = $this->db->prepare($sql);
-                $res->bindParam(':imgId', $imgId, PDO::PARAM_STR);
-                $res->bindParam(':imgName', $imgName, PDO::PARAM_STR);
-                $res->bindParam(':frameId', $frameId, PDO::PARAM_STR);
-                $res->bindParam(':filePath', $frameImage, PDO::PARAM_STR);
-                $res->bindParam(':createTime', $now, PDO::PARAM_STR);
-                $res->execute();
-                if (!$res) { 
-                    $error = $res->errorInfo();
-                    $this->error = $error[0];
-                    $this->frameList();
+            $sql = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`,`itemId`, `ctr`, `path`, `link`, `createTime`) VALUES";
+            for($i=0;$i<$input['imgCount'];$i++){
+                $imgCount = 'frameImage'.(string)($i+1);
+                //echo $divName."<br>";
+                if (isset($_FILES[$imgCount]['error']) && $_FILES[$imgCount]['error'] == 0){
+                    $imgId = $idGen->GetID('image');
+                    $imgName = 'frame_'.$input['frameName'];
+                    $fileInfo = $_FILES[$imgCount];
+                    $imagePath = uploadFile($fileInfo, $uploadPath);
+                    //echo $imagePath."<br>";
+                    $sql += "('" + $imgId + "', '" + $imgName + "' , 3, '" + $frameId + "', 0, '" + $imagePath + "', '', '" + $now + "'),";
                 }
+            }
+            substr_replace($sql, ';', -1);
+            $res = $this->db->prepare($sql);
+            $res->execute();
+            if (!$res) { 
+                $error = $res->errorInfo();
+                $this->error = $this->error.' 圖片新增錯誤 '.$error[0];
+                $this->frameList();
             }
         }
        $this->frameList();

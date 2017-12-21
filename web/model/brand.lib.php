@@ -4,7 +4,7 @@ require_once HOME_DIR . 'configs/config.php';
 require_once 'upload.func.php';
 require_once 'IdGenerator.php';
 /**
- * 風格類別
+ * 品牌類別
  */
 class Brand
 {
@@ -39,7 +39,7 @@ class Brand
    
 
     /**
-     * 新增風格格式
+     * 新增品牌格式
      */
     public function brandAddPrepare() {
         if ($_SESSION['isLogin'] == false) {
@@ -51,12 +51,16 @@ class Brand
     }
 
     /**
-     * 新增風格
+     * 新增品牌
      */
     public function brandAdd($input) {
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
+        }
+        if(!isset($input['brandName'])){
+            $this->error = '請至少填入品牌名稱';
+            $this->brandAddPrepare();
         }
         $idGen = new IdGenerator();
         $now = date('Y-m-d H:i:s');
@@ -100,7 +104,7 @@ class Brand
     }
 
     /**
-     * 編輯風格前置
+     * 編輯品牌前置
      */
     public function brandEditPrepare($input) {
         if ($_SESSION['isLogin'] == false) {
@@ -122,7 +126,7 @@ class Brand
     }
 
     /**
-     * 編輯風格
+     * 編輯品牌
      */
     public function brandEdit($input) {
         if ($_SESSION['isLogin'] == false) {
@@ -185,7 +189,7 @@ class Brand
     }
 
     /**
-     * 顯示所有風格列表
+     * 顯示所有品牌列表
      */
     public function brandList() {
         if ($_SESSION['isLogin'] == false) {
@@ -212,7 +216,7 @@ class Brand
     
 
     /**
-     * 刪除風格
+     * 刪除品牌
      */
     public function brandDelete($input) {
         if ($_SESSION['isLogin'] == false) {

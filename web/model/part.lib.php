@@ -58,6 +58,10 @@ class Part
             $this->error = '請先登入!';
             $this->viewLogin();
         }
+        if(!isset($input['partName'],)){
+            $this->error = '請至少填入零件名稱';
+            $this->partAddPrepare();
+        }
         $idGen = new IdGenerator();
         $now = date('Y-m-d H:i:s');
         $partId = $idGen->GetID('part');
