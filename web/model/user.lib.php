@@ -125,6 +125,7 @@ class User
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
+            return ;
         }
 
         $sql = "SELECT `user`.`userId`, `user`.`userName` , `user`.`gender`, `user`.`phone` ,`user`.`downlineNum`, `user`.`lastUpdateTime`
@@ -150,6 +151,7 @@ class User
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
+            return;
         }
         
         if (!isset($input['userId'])) {
