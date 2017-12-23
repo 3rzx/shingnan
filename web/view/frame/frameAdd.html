@@ -111,7 +111,7 @@
                                         <div class="col-sm-6">
                                             <select class="selectpicker" name="frameBrand" id="frameBrand" data-live-search="true" title="請選擇品牌">
                                                 \{foreach from=$brandData item=brand \}
-                                                <option value='\{$brand.brandId\}'>\{$brand.brandName\}</option>
+                                                <option value='\{$brand.brandId\}' selected>\{$brand.brandName\}</option>
                                                 \{/foreach\}
                                             </select>
                                         </div>
@@ -172,7 +172,7 @@
                                 </div>
                                 <div class="box-footer" style="text-align: right;">
                                     <a href="../controller/frameController.php?action=frameAddPrepare" class="btn btn-warning">取消</a>
-                                    <input type="hidden" name="imgCount" >
+                                    <input type="hidden" name="imgCount">
                                     <input type="hidden" name="action" value="frameAdd">
                                     <button type="submit" class="btn btn-success">確定</button>
                                 </div>

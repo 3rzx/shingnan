@@ -88,46 +88,46 @@ class Frame
         $res->bindParam(':frameId', $frameId, PDO::PARAM_STR);
         $res->bindParam(':no', $input['no'], PDO::PARAM_STR);
         $res->bindParam(':frameName', $input['frameName'], PDO::PARAM_STR);
-        $res->bindParam(':frameBrand', $input['frameBrand'], PDO::PARAM_STR);
+        $res->bindParam(':frameBrand',  $input['frameBrand'], PDO::PARAM_STR);
         $res->bindParam(':shape', $input['shape'], PDO::PARAM_INT);
         $res->bindParam(':material', $input['material'], PDO::PARAM_STR);
         $res->bindParam(':color', $input['color'], PDO::PARAM_STR);
-        $res->bindParam(':isLaunch', $input['isLaunch'], PDO::PARAM_INT);
+        $res->bindParam(':isLaunch', $isLaunch, PDO::PARAM_INT);
         $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
         $res->bindParam(':createTime', $now, PDO::PARAM_STR);
         if ($res->execute()) {
             //deal with style
             $this->msg = '資料新增成功';
             $frameStyle = $input['frameStyle'];
-            $sql = "INSERT INTO `shingnan`.`frameStyle` (`styleId`, `frameId`, `createTime`) VALUES";
-            foreach($frameStyle as $s){
-                $sql += "'" + $s + "', '" + $frameId + "', '" + $now + "'),";
+            if(!empty($frameStyle)){
+                $sql2 = "INSERT INTO `shingnan`.`frameStyle` (`styleId`, `frameId`, `createTime`) VALUES";
+                foreach($frameStyle as $s){
+                    $sql2 .= " ('" . $s . "', '" . $frameId . "', '" . $now . "'),";
+                }
+                $sql2 = substr_replace($sql2, ";", -1);
+                $res = $this->db->prepare($sql2);
+                $res->execute();
+                if(!$res){
+                    $error = $res->errorInfo();
+                    $this->error = ' 風格設定錯誤 '.$error[0];
+                }
             }
-            substr_replace($sql, ';', -1);
-            $res = $this->db->prepare($sql);
-            $res->execute();
-            if($res){
-                $error = $res->errorInfo();
-                $this->error = ' 風格設定錯誤 '.$error[0];
-            }
-
             //deal with image
             $uploadPath = '../media/picture';
-            $sql = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`,`itemId`, `ctr`, `path`, `link`, `createTime`) VALUES";
+            $sql3 = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`,`itemId`, `ctr`, `path`, `link`, `createTime`) VALUES ";
             for($i=0;$i<$input['imgCount'];$i++){
                 $imgCount = 'frameImage'.(string)($i+1);
-                //echo $divName."<br>";
                 if (isset($_FILES[$imgCount]['error']) && $_FILES[$imgCount]['error'] == 0){
-                    $imgId = $idGen->GetID('image');
+                    $imgId = $idGen->GetID('image').$i;
                     $imgName = 'frame_'.$input['frameName'];
                     $fileInfo = $_FILES[$imgCount];
                     $imagePath = uploadFile($fileInfo, $uploadPath);
                     //echo $imagePath."<br>";
-                    $sql += "('" + $imgId + "', '" + $imgName + "' , 3, '" + $frameId + "', 0, '" + $imagePath + "', '', '" + $now + "'),";
+                    $sql3 .= "('" . $imgId . "', '" . $imgName . "' , 1, '" . $frameId . "', 0, '" . $imagePath . "', '', '" . $now . "'),";
                 }
             }
-            substr_replace($sql, ';', -1);
-            $res = $this->db->prepare($sql);
+            $sql3 = substr_replace($sql3, ';', -1);
+            $res = $this->db->prepare($sql3);
             $res->execute();
             if (!$res) { 
                 $error = $res->errorInfo();
@@ -257,15 +257,15 @@ class Frame
             $this->error = '請先登入!';
             $this->viewLogin();
         }
-        if(isset($input['imageId'])){
         //deal with img
-            $this->db->beginTransaction();
-            $sql    = "DELETE FROM `image` WHERE `imageId` = :imgId;";
-            $res = $this->db->prepare($sql);
-            $res->bindParam(':imgId', $input['imageId'], PDO::PARAM_STR);
-            $res->execute();
-            $this->db->commit();
-        }
+        $this->db->beginTransaction();
+        $sql  = "DELETE FROM `image` WHERE `itemId` = :frameId;";
+        $res = $this->db->prepare($sql);
+        $res->bindParam(':partId', $input['frameId'], PDO::PARAM_STR);
+        $res->execute();
+        $this->db->commit();
+
+        //deal with data
         $this->db->beginTransaction();
         $sql = "DELETE FROM frame WHERE frameId = :frameId;";
         $res = $this->db->prepare($sql);
@@ -274,6 +274,24 @@ class Frame
         $this->db->commit();
         $this->frameList();
     }
+
+    /**
+     * 刪除鏡框圖片
+     */
+    public function frameImageDelete($input){
+        if ($_SESSION['isLogin'] == false) {
+            $this->error = '請先登入!';
+            $this->viewLogin();
+        }
+        $this->db->beginTransaction();
+        $sql = "DELETE FROM `image` WHERE `image`.`imageId` = :imgId;";
+        $res = $this->db->prepare($sql);
+        $res->bindParam(':imgId', $input['imageId'], PDO::PARAM_STR);
+        $res->execute();
+        $this->db->commit();
+        $this->frameEditPrepare();
+    }
+
 
     /**
      * 顯示登入畫面
