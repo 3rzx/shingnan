@@ -35,6 +35,9 @@ switch ($method) {
             case 'partDelete':
                 $part->partDelete($_GET);
                 break;
+            case 'partImageDelete':
+                $part->partDelete($_GET);
+                break;
             default:
                 $part->viewLogin();
                 break;
