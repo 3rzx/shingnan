@@ -34,9 +34,6 @@ switch ($method) {
             case 'courseDelete':
                 $course->courseDelete($_GET);
                 break;
-            case 'courseImageDelete':
-                $course->courseImageDelete($_GET);
-                break;
             default:
                 $course->viewLogin();
                 break;

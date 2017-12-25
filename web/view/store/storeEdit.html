@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    \{include file="../common/resource.html"\}
+</head>
+
+<body class="hold-transition skin-yellow sidebar-mini">
+    <div class="wrapper">
+        \{include file="../common/header.html"\} \{include file="../common/menu.html"\}
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1>店家資訊檢視修改</h1>
+            </section>
+            <section class="content">
+                <div class="row">
+                    <div class="col-md-6">
+                        \{if $error != ''\}
+                        <div class="alert alert-warning alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$error\}</h4>
+                        </div>
+                        \{/if\}
+                        <div class="box box-primary">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">店家修改</h3>
+                            </div>
+                            <!-- form-->
+                            <form class="form-horizontal" method="post" action="../controller/storeController.php">
+                                <div class="box-body">
+                                    <div id="storeNameDiv" class="form-group">
+                                        <label for="storeName" class="col-sm-2 control-label">店名</label>
+                                        <div class="col-sm-10">
+                                            <input id="storeName" name="storeName" class="form-control" value="\{$storeData.storeName\}">
+                                        </div>
+                                    </div>
+                                    <div id="storeAddressDiv" class="form-group">
+                                        <label for="address" class="col-sm-2 control-label">地址</label>
+                                        <div class="col-sm-10">
+                                            <input id="address" name="address" class="form-control" value="\{$storeData.address\}">
+                                        </div>
+                                    </div>
+                                    <div id="storePhoneDiv" class="form-group">
+                                        <label for="phoneNumber" class="col-sm-2 control-label">聯絡電話</label>
+                                        <div class="col-sm-3">
+                                            <input id="phoneNumber" name="phoneNumber" class="form-control" value="\{$storeData.phoneNumber\}">
+                                        </div>
+                                        <label for="businessHours" class="col-sm-2 control-label">營業時間</label>
+                                        <div class="col-sm-4">
+                                            <input id="businessHours" name="businessHours" class="form-control" value="\{$storeData.businessHours\}">
+                                        </div>
+                                    </div>
+                                    <div id="descriptionDiv" class="form-group">
+                                        <label for="description" class="col-sm-2 control-label">額外說明</label>
+                                        <div class="col-sm-10">
+                                            <input id="description" name="description" class="form-control" value="\{$storeData.description\}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="box-footer" style="text-align: right;">
+                                    <a href="../controller/storeController.php?action=storeList" class="btn btn-warning">取消</a>
+                                    <input type="hidden" name="action" value="storeEdit">
+                                    <input type="hidden" name="storeId" value="\{$storeData.storeId\}">
+                                    <button type="submit" class="btn btn-success">更新</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        \{include file="../common/footer.html"\}
+    </div>
+</body>
+
+</html>

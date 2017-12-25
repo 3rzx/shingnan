@@ -34,9 +34,6 @@ switch ($method) {
             case 'storeDelete':
                 $store->storeDelete($_GET);
                 break;
-            case 'storeImageDelete':
-                $store->storeImageDelete($_GET);
-                break;
             default:
                 $store->viewLogin();
                 break;

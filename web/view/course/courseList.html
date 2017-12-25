@@ -1,22 +1,40 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     \{include file="../common/resource.html"\}
-
+    <!-- DataTables -->
+    <link rel="stylesheet" href="../plugins/datatables/dataTables.bootstrap.css">
+    <script src="../plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="../plugins/datatables/dataTables.bootstrap.min.js"></script>
     <script>
-        function deleteCourse(courseId){
+    $(function() {
+        $('#courseListTable').DataTable({
+            "columnDefs": [
+                { "orderable": false, "targets": 3 }
+            ],
+            "paging": false,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false
+        });
+    });
+
+    function deleteCourse(courseId) {
         BootstrapDialog.show({
-            title:'提醒',
+            title: '提醒',
             message: '確定刪除嗎? 課程刪除後將無法回復。',
             buttons: [{
                 label: '確定',
                 cssClass: 'btn-danger',
-                action: function(){
-                    location='../controller/courseController.php?action=courseDelete&courseId='+ courseId;
+                action: function() {
+                    location = '../controller/courseController.php?action=courseDelete&courseId=' + courseId;
                 }
-            },{
+            }, {
                 label: '取消',
-                action: function(dialogItself){
+                action: function(dialogItself) {
                     dialogItself.close();
                 }
             }]
@@ -27,11 +45,10 @@
 
 <body class="hold-transition skin-yellow sidebar-mini">
     <div class="wrapper">
-        \{include file="../common/header.html"\}
-        \{include file="../common/menu.html"\}
+        \{include file="../common/header.html"\} \{include file="../common/menu.html"\}
         <div class="content-wrapper">
             <section class="content-header">
-                <h1>課程文章檢視修改</h1>
+                <h1>課程資訊檢視修改</h1>
             </section>
             <!-- Main content -->
             <section class="content">
@@ -42,8 +59,7 @@
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                             <h4 style="display: inline;">\{$error\}</h4>
                         </div>
-                        \{/if\}
-                        \{if $msg != ''\}
+                        \{/if\} \{if $msg != ''\}
                         <div class="alert alert-success alert-dismissable text-center">
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                             <h4 style="display: inline;">\{$msg\}</h4>
@@ -54,12 +70,12 @@
                                 <h3 class="box-title">課程列表</h3>
                             </div>
                             <div class="box-body">
-                                <table class="table table-striped">
+                                <table class="table table-striped" id="courseListTable">
                                     <thead>
                                         <tr style="background-color: #00c0ef; color: #fff;">
                                             <th>課程名稱</th>
-                                            <th>最後更新時間</th>
                                             <th>建立時間</th>
+                                            <th>最後更新時間</th>
                                             <th>操作選項</th>
                                         </tr>
                                     </thead>
@@ -67,10 +83,10 @@
                                         \{foreach from=$allcourseData item=course\}
                                         <tr>
                                             <td>\{$course.courseName\}</td>
-                                            <td>\{$course.lastUpdateTime\}</td>
                                             <td>\{$course.createTime\}</td>
+                                            <td>\{$course.lastUpdateTime\}</td>
                                             <td>
-                                                <a href="../controller/courseController.php?action=courseEdit&courseId=\{$course.courseId\})">
+                                                <a href="../controller/courseController.php?action=courseEditPrepare&courseId=\{$course.courseId\}">
                                                     <button class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-pencil"></i></button>
                                                 </a>&nbsp;
                                                 <a href="#">

@@ -5,183 +5,193 @@ require_once 'IdGenerator.php';
 /**
  * 生活類別
  */
-class Life {
-	// database object
-	public $db = null;
-	// smarty template object
-	public $smarty = null;
-	// success messages
-	public $msg = '';
-	// error messages
-	public $error = '';
+class Life
+{
+    // database object
+    public $db = null;
+    // smarty template object
+    public $smarty = null;
+    // success messages
+    public $msg = '';
+    // error messages
+    public $error = '';
 
-	/**
-	 * User constructor
-	 * @DateTime 2016-09-03
-	 */
-	public function __construct() {
-		session_start();
-		// instantiate the pdo object
-		$this->db = dbSetup::getDbConn();
-		// instantiate the template object
-		$this->smarty = new SmartyConfig();
-		// php version is less than 5.4.0
-		if (PHP_VERSION_ID < 50400) {
-			// 登記 Session 變數名稱
-			session_register('isLogin');
-			session_register('user');
-			session_register('error');
-			session_register('msg');
-		}
-	}
+    /**
+     * User constructor
+     * @DateTime 2016-09-03
+     */
+    public function __construct()
+    {
+        session_start();
+        // instantiate the pdo object
+        $this->db = dbSetup::getDbConn();
+        // instantiate the template object
+        $this->smarty = new SmartyConfig();
+        // php version is less than 5.4.0
+        if (PHP_VERSION_ID < 50400) {
+            // 登記 Session 變數名稱
+            session_register('isLogin');
+            session_register('user');
+            session_register('error');
+            session_register('msg');
+        }
+    }
 
-	/**
-	 * 新增生活格式
-	 */
-	public function lifeAddPrepare() {
-		if ($_SESSION['isLogin'] == true) {
-			$this->smarty->assign('error', $this->error);
-			$this->smarty->display('life/lifeAdd.html');
-		} else {
-			$this->error = '請先登入!';
-			$this->viewLogin();
-		}
-	}
+    /**
+     * 新增生活格式
+     */
+    public function lifeAddPrepare()
+    {
+        if ($_SESSION['isLogin'] == true) {
+            $this->smarty->assign('error', $this->error);
+            $this->smarty->display('life/lifeAdd.html');
+        } else {
+            $this->error = '請先登入!';
+            $this->viewLogin();
+        }
+    }
 
-	/**
-	 * 新增生活
-	 */
-	public function lifeAdd($input) {
-		//
-		if ($_SESSION['isLogin'] == false) {
-			$this->error = '請先登入!';
-			$this->viewLogin();
-		}
-		$idGen = new IdGenerator();
-		$now = date('Y-m-d H:i:s');
-		$lifeId = $idGen->GetID('life');
-		$sql = "INSERT INTO `shingnan`.`article` (`articleId`, `title`, `content`, `type`, `ctr`, `isDelete`, `lastUpdateTime`, `createTime`) VALUES (:articleId, :title, :content, '3', '0', '0', :lastUpdateTime, :createTime);";
-		$res = $this->db->prepare($sql);
-		$res->bindParam(':articleId', $lifeId, PDO::PARAM_STR);
-		$res->bindParam(':title', $input['lifeTitle'], PDO::PARAM_STR);
-		$res->bindParam(':content', $input['lifeEditor'], PDO::PARAM_STR);
-		$res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
-		$res->bindParam(':createTime', $now, PDO::PARAM_STR);
-		if ($res->execute()) {
-			$this->msg = '新增成功';
-		} else {
-			$error = $res->errorInfo();
-			$this->error = $error[0];
-			$this->lifeList();
-		}
+    /**
+     * 新增生活
+     */
+    public function lifeAdd($input)
+    {
+        //
+        if ($_SESSION['isLogin'] == false) {
+            $this->error = '請先登入!';
+            $this->viewLogin();
+        }
+        $idGen = new IdGenerator();
+        $now = date('Y-m-d H:i:s');
+        $lifeId = $idGen->GetID('life');
+        $sql = "INSERT INTO `shingnan`.`article` (`articleId`, `title`, `content`, `type`, `ctr`, `isDelete`, `lastUpdateTime`, `createTime`) VALUES (:articleId, :title, :content, '3', '0', '0', :lastUpdateTime, :createTime);";
+        $res = $this->db->prepare($sql);
+        $res->bindParam(':articleId', $lifeId, PDO::PARAM_STR);
+        $res->bindParam(':title', $input['lifeTitle'], PDO::PARAM_STR);
+        $res->bindParam(':content', $input['lifeEditor'], PDO::PARAM_STR);
+        $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
+        $res->bindParam(':createTime', $now, PDO::PARAM_STR);
+        if ($res->execute()) {
+            $this->msg = '新增成功';
+        } else {
+            $error = $res->errorInfo();
+            $this->error = $error[0];
+            $this->lifeList();
+        }
 
-		$this->lifeList();
-	}
+        $this->lifeList();
+    }
 
-	/**
-	 * 編輯生活前置
-	 */
-	public function lifeEditPrepare($input) {
-		if ($_SESSION['isLogin'] == true) {
-			$sql = 'SELECT * FROM education WHERE educationId = :educationId';
-			$res = $this->db->prepare($sql);
-			$res->bindParam(':educationId', $input['educationId'], PDO::PARAM_STR);
-			$res->execute();
-			$educationData = $res->fetchAll();
+    /**
+     * 編輯生活前置
+     */
+    public function lifeEditPrepare($input)
+    {
+        if ($_SESSION['isLogin'] == false) {
+            $this->error = '請先登入!';
+            $this->viewLogin();
+        }
+        $sql = "SELECT `article`.`articleId`, `article`.`title` , `article`.`content`
+                FROM  `article`
+                WHERE  `article`.`isDelete` = 0 and `article`.`articleId` = :lifeId";
+        $res = $this->db->prepare($sql);
+        $res->bindParam(':lifeId', $input['lifeId'], PDO::PARAM_STR);
+        $res->execute();
+        $lifeData = $res->fetch();
 
-			$this->smarty->assign('educationData', $educationData);
-			$this->smarty->assign('educationImg', $educationImg);
-			$this->smarty->assign('error', $this->error);
-			$this->display('education/educationEdit.html');
-		} else {
-			$this->error = '請先登入!';
-			$this->viewLogin();
-		}
-	}
+        $this->smarty->assign('lifeData', $lifeData);
+        $this->smarty->assign('error', $this->error);
+        $this->smarty->display('life/lifeEdit.html');
+    }
 
-	/**
-	 * 編輯生活
-	 */
-	public function lifeEdit($input) {
-		if ($_SESSION['isLogin'] == true) {
-			$sql = 'SELECT * FROM life WHERE lifeId = :lifeId';
-			$res = $this->db->prepare($sql);
-			$res->bindParam(':lifeId', $input['lifeId'], PDO::PARAM_STR);
-			$res->execute();
-			$lifeData = $res->fetchAll();
+    /**
+     * 編輯生活
+     */
+    public function lifeEdit($input)
+    {
+        //
+        if ($_SESSION['isLogin'] == false) {
+            $this->error = '請先登入!';
+            $this->viewLogin();
+        }
+        $now = date('Y-m-d H:i:s');
+        $sql = "UPDATE `shingnan`.`article` SET `title` = :title ,`content` = :content , `lastUpdateTime` =  :lastUpdateTime
+        WHERE  `article`.`articleId` = :articleId";
+        $res = $this->db->prepare($sql);
+        $res->bindParam(':articleId', $input['lifeId'], PDO::PARAM_STR);
+        $res->bindParam(':title', $input['lifeTitle'], PDO::PARAM_STR);
+        $res->bindParam(':content', $input['lifeEditor'], PDO::PARAM_STR);
+        $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
+        $res->execute();
 
-			//get image
-			$sql = 'SELECT `path`
-                    FROM image
-                    WHERE type = 3 and itemId = :lifeId';
-			$res = $this->db->prepare($sql);
-			$res->bindParam(':lifeId', $input['lifeId'], PDO::PARAM_STR);
-			$res->execute();
-			$lifeImg = $res->fetchAll();
+        if ($res->execute()) {
+            $this->msg = '更新成功';
+        } else {
+            $error = $res->errorInfo();
+            $this->error = $error[0];
+            $this->lifeList();
+        }
 
-			$this->smarty->assign('lifeData', $lifeData);
-			$this->smarty->assign('lifeImg', $lifeImg);
-			$this->smarty->assign('error', $this->error);
-			$this->display('life/lifeEdit.html');
-		} else {
-			$this->error = '請先登入!';
-			$this->viewLogin();
-		}
-	}
+        $this->lifeList();
+    }
 
-	/**
-	 * 顯示所有生活列表
-	 */
-	public function lifeList() {
-		if ($_SESSION['isLogin'] == true) {
-			// get all data from life
-			$sql = 'SELECT `article`.`title`, `article`.`articleId` , `article`.`type`,`article`.`ctr` , `article`.`lastUpdateTime`
+    /**
+     * 顯示所有生活列表
+     */
+    public function lifeList()
+    {
+        if ($_SESSION['isLogin'] == true) {
+            // get all data from life
+            $sql = 'SELECT `article`.`title`, `article`.`articleId` , `article`.`type`,`article`.`ctr` , `article`.`lastUpdateTime`
+                , `article`.`createTime`
                 FROM  `article`
                 WHERE type = 3
                 ORDER BY `article`.`articleId`';
-			$res = $this->db->prepare($sql);
-			$res->execute();
-			$alllifeData = $res->fetchAll();
+            $res = $this->db->prepare($sql);
+            $res->execute();
+            $alllifeData = $res->fetchAll();
 
-			$this->smarty->assign('alllifeData', $alllifeData);
-			$this->smarty->assign('error', $this->error);
-			$this->smarty->assign('msg', $this->msg);
-			$this->smarty->display('life/lifeList.html');
-		} else {
-			$this->error = '請先登入!';
-			$this->viewLogin();
-		}
-	}
+            $this->smarty->assign('alllifeData', $alllifeData);
+            $this->smarty->assign('error', $this->error);
+            $this->smarty->assign('msg', $this->msg);
+            $this->smarty->display('life/lifeList.html');
+        } else {
+            $this->error = '請先登入!';
+            $this->viewLogin();
+        }
+    }
 
-	/**
-	 * 刪除生活
-	 */
-	public function lifeDelete($input) {
-		if ($_SESSION['isLogin'] == true) {
-			$this->db->beginTransaction();
-			$sql = "DELETE FROM `article` WHERE `articleId` = :lifeId;";
-			$res = $this->db->prepare($sql);
-			$res->bindParam(':lifeId', $input['lifeId'], PDO::PARAM_STR);
-			$res->execute();
-			$this->db->commit();
-			$this->error = '';
-			$this->msg = '刪除成功';
-			$this->lifeList();
-		} else {
-			$this->error = '請先登入!';
-			$this->viewLogin();
-		}
-	}
+    /**
+     * 刪除生活
+     */
+    public function lifeDelete($input)
+    {
+        if ($_SESSION['isLogin'] == true) {
+            $this->db->beginTransaction();
+            $sql = "DELETE FROM `article` WHERE `articleId` = :lifeId;";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':lifeId', $input['lifeId'], PDO::PARAM_STR);
+            $res->execute();
+            $this->db->commit();
+            $this->error = '';
+            $this->msg = '刪除成功';
+            $this->lifeList();
+        } else {
+            $this->error = '請先登入!';
+            $this->viewLogin();
+        }
+    }
 
-	/**
-	 * 顯示登入畫面
-	 * @DateTime 2016-09-03
-	 */
-	public function viewLogin() {
-		$_SESSION['isLogin'] = false;
-		$this->smarty->assign('error', $this->error);
-		$this->smarty->assign('homePath', APP_ROOT_DIR);
-		$this->smarty->display('login.html');
-	}
+    /**
+     * 顯示登入畫面
+     * @DateTime 2016-09-03
+     */
+    public function viewLogin()
+    {
+        $_SESSION['isLogin'] = false;
+        $this->smarty->assign('error', $this->error);
+        $this->smarty->assign('homePath', APP_ROOT_DIR);
+        $this->smarty->display('login.html');
+    }
 
 }
