@@ -96,7 +96,6 @@ class Part
                 }
             }
             $sql3 = substr_replace($sql3, ';', -1);
-            echo $sql3;
             $res = $this->db->prepare($sql3);
             $res->execute();
             if (!$res) { 
@@ -116,9 +115,8 @@ class Part
             $this->error = '請先登入!';
             $this->viewLogin();
         }
-         $sql = "SELECT `part`.`partName`, `part`.`partId` , `part`.`description`, `image`.`imageId` ,`image`.`path` 
+         $sql = "SELECT `part`.`partName`, `part`.`partId` , `part`.`type`, `part`.`size`, `part`.`isLaunch` 
                 FROM  `part` 
-                LEFT JOIN  `image` ON part.`partId` = image.`itemId` 
                 WHERE  `part`.`isDelete` = 0 AND  `part`.`partId` = :partId" ;
         $res = $this->db->prepare($sql);
         $res->bindParam(':partId', $input['partId'], PDO::PARAM_STR);
