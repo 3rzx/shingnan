@@ -4,8 +4,13 @@
 <head>
     \{include file="../common/resource.html"\}
     <script type="text/javascript" src="../plugins/bootstrap-filestyle/src/bootstrap-filestyle.min.js"> </script>
+    <script type="text/javascript" src="../plugins/bootstrap-toggle/js/bootstrap2-toggle.js"></script>
+    <link rel="stylesheet" href="../plugins/bootstrap-toggle/css/bootstrap2-toggle.css"/>
     <script>
         $(document).ready(function() {
+            $('select[name=shape]').val('\{$frameData.shape\}');
+            $('select[name=shape]').selectpicker('refresh');
+
             $("#frameImage").filestyle({
                 size: "nr",
                 input: false,
@@ -13,12 +18,18 @@
                 buttonName: "btn-info",
                 iconName: "glyphicon glyphicon-camera"
             });
-           
 
             $("#frameImage").change(function() {
                 readURL(this, '#frameImg');
             });
-            
+
+            var style = \{$frameStyleData|json_encode\};
+            var frameStyle = new Array();
+            for(i=0;i<style.length;i++)
+               frameStyle.push(style[i][0]);
+
+            $('select[id=frameStyle]').val(frameStyle);
+            $('select[id=frameStyle]').selectpicker('refresh');
         });
 
         function readURL(input, id) {
@@ -80,32 +91,33 @@
                                     <div id="frameNameDiv" class="form-group">
                                         <label for="frameName" class="col-sm-2 control-label">鏡框名稱</label>
                                         <div class="col-sm-6">
-                                            <input id="frameName" name="frameName" class="form-control" placeholder="輸入鏡框名稱">
+                                            <input id="frameName" name="frameName" class="form-control" placeholder="輸入鏡框名稱"  value="\{$frameData.frameName\}">
                                         </div>
                                     </div>
-                                    <div id="frameNoDiv" class="form-group">
-                                        <label for="frameNo" class="col-sm-2 control-label">鏡框型號</label>
+                                    <div id="noDiv" class="form-group">
+                                        <label for="no" class="col-sm-2 control-label">鏡框型號</label>
                                         <div class="col-sm-6">
-                                            <input id="frameNo" name="frameNo" class="form-control" placeholder="輸入鏡框型號">
+                                            <input id="no" name="no" class="form-control" placeholder="輸入鏡框型號" value="\{$frameData.no\}">
                                         </div>
                                     </div>
                                     <div id="frameNameDiv" class="form-group">
                                         <label for="frameName" class="col-sm-2 control-label">鏡框品牌</label>
                                         <div class="col-sm-6">
                                             <select class="selectpicker" name="frameBrand" id="frameBrand">
-                                                <option value=1>鼻墊</option>
-                                                <option value=2>角套</option>
-                                                <option value=3>耳勾</option>
-                                                <option value=4>運動帶</option>
-                                                <option value=5>維修</option>
-                                                <option value=6>其他</option>
+                                                \{foreach from=$brandData item=brand \}
+                                                    \{if $frameData.brandId == $brand.brandId\}
+                                                        <option value='\{$brand.brandId\}' selected>\{$brand.brandName\}</option>
+                                                    \{else\}
+                                                        <option value='\{$brand.brandId\}'>\{$brand.brandName\}</option>
+                                                    \{/if\}
+                                                \{/foreach\}
                                             </select>
                                         </div>
                                     </div>
-                                    <div id="frameShapeDiv" class="form-group">
-                                        <label for="frameShape" class="col-sm-2 control-label">鏡框框形</label>
+                                    <div id="shapeDiv" class="form-group">
+                                        <label for="shape" class="col-sm-2 control-label">鏡框框形</label>
                                         <div class="col-sm-6">
-                                            <select class="selectpicker" name="frameShape" id="frameShape">
+                                            <select class="selectpicker" name="shape" id="shape">
                                                 <option value=1>圓</option>
                                                 <option value=2>方</option>
                                                 <option value=3>全</option>
@@ -115,28 +127,42 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div id="frameMaterialDiv" class="form-group">
-                                        <label for="frameMaterial" class="col-sm-2 control-label">鏡框材質</label>
+                                    <div id="materialDiv" class="form-group">
+                                        <label for="material" class="col-sm-2 control-label">鏡框材質</label>
                                         <div class="col-sm-6">
-                                            <input id="frameMaterial" name="frameMaterial" class="form-control" placeholder="輸入鏡框材質">
+                                            <input id="material" name="material" class="form-control" placeholder="輸入鏡框材質" value="\{$frameData.material\}">
                                         </div>
                                     </div>
-                                    <div id="frameNameDiv" class="form-group">
-                                        <label for="frameName" class="col-sm-2 control-label">鏡框名稱</label>
+                                    <div id="colorDiv" class="form-group">
+                                        <label for="color" class="col-sm-2 control-label">鏡框顏色</label>
                                         <div class="col-sm-6">
-                                            <input id="frameName" name="frameName" class="form-control" placeholder="輸入鏡框名稱">
+                                            <input id="color" name="color" class="form-control" placeholder="輸入鏡框名稱" value="\{$frameData.color\}">
+                                        </div>
+                                    </div>
+                                    <div id="frameStyleDiv" class="form-group">
+                                        <label for="frameStyle" class="col-sm-2 control-label">鏡框所屬風格</label>
+                                        <div class="col-sm-6">
+                                            <select class="selectpicker" name="frameStyle[]" id="frameStyle" multiple title="請選擇風格(多選)">
+                                                \{foreach from=$styleData item=style\}
+                                                <option value='\{$style.styleId\}'>\{$style.styleName\}</option>
+                                                \{/foreach\}
+                                            </select>
                                         </div>
                                     </div>
                                     <div id="frameImageDiv" class="form-group">
-                                        <label class="col-sm-2 control-label">鏡框顏色</label>
+                                        <label class="col-sm-2 control-label">鏡框圖片</label>
                                         <div class="col-sm-10">
                                             <input type="file" id="frameImage" name="frameImage" data-input="false" accept="image/*">
                                             <img id="frameImg" class="img-thumbnail" style="display:none">
                                         </div>
                                     </div>
-                                    <div id="isLaunceDiv" class="form-group">
-                                        <label for="isLaunce" class="col-sm-2 control-label">上架到網路上</label>
-                                        &nbsp&nbsp&nbsp&nbsp&nbsp<input type="checkbox" checked data-toggle="toggle" data-size="mini">
+                                    <div id="isLaunchDiv" class="form-group">
+                                        <label for="isLaunch" class="col-sm-2 control-label">上架到網路上</label>
+                                        \{if $frameData.isLaunch == 1\}
+                                        &nbsp&nbsp&nbsp&nbsp&nbsp<input type="checkbox" checked data-toggle="toggle" data-size="mini" name="isLaunch" value=1>
+                                        \{else \}
+                                        &nbsp&nbsp&nbsp&nbsp&nbsp<input type="checkbox" data-toggle="toggle" data-size="mini" name="isLaunch" value=1>
+                                        \{/if\}
                                     </div>
                                 </div>
                                 <div class="box-footer" style="text-align: right;">
@@ -156,7 +182,6 @@
         </div>
         \{include file="../common/footer.html"\}
     </div>
-    <script src="../javascript/userEdit.js"></script>
 </body>
 
 </html>

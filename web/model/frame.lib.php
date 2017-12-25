@@ -146,16 +146,38 @@ class Frame
             $this->error = '請先登入!';
             $this->viewLogin();
         }
-         $sql = "SELECT `frame`.`frameName`, `frame`.`frameId` , `frame`.`description`, `image`.`imageId` ,`image`.`path` 
+         $sql = "SELECT `frame`.`frameName`, `frame`.`frameId` , `frame`.`no`, `frame`.`brandId`, `frame`.`shape`, 
+                        `frame`.`material`, `frame`.`color`, `frame`.`isLaunch`  
                 FROM  `frame` 
-                LEFT JOIN  `image` ON frame.`frameId` = image.`itemId` 
-                WHERE  `frame`.`isDelete` = 0 AND  `frame`.`frameId` = :frameId" ;
+                WHERE  `frame`.`isDelete` = 0 AND `frame`.`frameId` = :frameId" ;
         $res = $this->db->prepare($sql);
         $res->bindParam(':frameId', $input['frameId'], PDO::PARAM_STR);
         $res->execute();
         $frameData = $res->fetch();
 
+        $sql = "SELECT `brandId`, `brandName` FROM `brand` WHERE `isDelete` = 0 ;" ;
+        $res = $this->db->prepare($sql);
+        $res->execute();
+        $brandData = $res->fetchAll();
+
+        $sql = "SELECT `styleId`, `styleName` FROM `style` WHERE `isDelete` = 0 ;" ;
+        $res = $this->db->prepare($sql);
+        $res->execute();
+        $styleData = $res->fetchAll();
+
+        $sql = "SELECT `frameStyle`.`styleId` FROM `frameStyle`,`style` 
+                WHERE `frameStyle`.`frameId` = :frameId 
+                AND `style`.`styleId` = `frameStyle`.`styleId` 
+                AND `style`.`isDelete` = 0 ;" ;
+        $res = $this->db->prepare($sql);
+        $res->bindParam(':frameId', $input['frameId'], PDO::PARAM_STR);
+        $res->execute();
+        $frameStyleData = $res->fetchAll();
+
         $this->smarty->assign('frameData', $frameData);
+        $this->smarty->assign('styleData', $styleData);
+        $this->smarty->assign('brandData',$brandData);
+        $this->smarty->assign('frameStyleData',$frameStyleData);
         $this->smarty->assign('error', $this->error);
         $this->smarty->display('frame/frameEdit.html');
     }
@@ -261,7 +283,15 @@ class Frame
         $this->db->beginTransaction();
         $sql  = "DELETE FROM `image` WHERE `itemId` = :frameId;";
         $res = $this->db->prepare($sql);
-        $res->bindParam(':partId', $input['frameId'], PDO::PARAM_STR);
+        $res->bindParam(':frameId', $input['frameId'], PDO::PARAM_STR);
+        $res->execute();
+        $this->db->commit();
+
+        //deal with style
+        $this->db->beginTransaction();
+        $sql = "DELETE FROM  `frameStyle` WHERE `frameId` = :frameId;";
+        $res = $this->db->prepare($sql);
+        $res->bindParam(':frameId', $input['frameId'], PDO::PARAM_STR);
         $res->execute();
         $this->db->commit();
 
