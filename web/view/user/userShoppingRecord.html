@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    \{include file="../common/resource.html"\}
+</head>
+
+<body class="hold-transition skin-yellow sidebar-mini">
+    <div class="wrapper">
+        \{include file="../common/header.html"\} \{include file="../common/menu.html"\}
+        <div class="content-wrapper">
+            <section class="content">
+                <div class="row">
+                    <div class="col-md-6">
+                        \{if $error != ''\}
+                        <div class="alert alert-warning alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$error\}</h4>
+                        </div>
+                        \{/if\} \{if $msg != ''\}
+                        <div class="alert alert-success alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$msg\}</h4>
+                        </div>
+                        \{/if\}
+
+                         <ul class="nav nav-tabs">
+                          <li><a href="../controller/userController.php?action=userDetailPrepare&userId=\{$userData.userId\}">會員詳細資料</a></li>
+                          <li class="active"><a href="#">會員購物資料</a></li>
+                          <li><a href="../controller/userController.php?action=userCourseRecordPrepare&userId=\{$userData.userId\}">會員課程資料</a></li>
+                        </ul> 
+
+                        <div class="box box-primary">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">會員購物資料</h3>
+                            </div>
+                            <!-- form-->
+                            <form class="form-horizontal" method="post" action="../controller/userController.php">
+                                <div class="box-body">
+                                    <!-- name -->
+                                    <div id="userNameDiv" class="form-group">
+                                        <label for="userName" class="col-sm-2 control-label">使用者姓名</label>
+                                        <div class="col-sm-10">
+                                            <input id="userName" name="userName" class="form-control" placeholder="\{$userData.userName\}">
+                                        </div>
+                                    </div>
+
+                                    <!--phoneNumber-->
+                                    <div id="phoneDiv" class="form-group">
+                                        <label for="password" class="col-sm-2 control-label">手機號碼</label>
+                                        <div class="col-sm-10">
+                                            <input id="phone" name="phone" class="form-control" placeholder="\{$userData.phone\}">
+                                        </div>
+                                    </div>
+
+                                    <!-- /.box-body -->
+                                    <div class="box-footer" style="text-align: right;">
+                                        <input type="hidden" name="action" value="userSearch">
+                                        <button type="submit" class="btn btn-primary">確定</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+
+                    </div>
+                </div>
+            </section>
+        </div>
+        \{include file="../common/footer.html"\}
+    </div>
+</body>
+
+</html>

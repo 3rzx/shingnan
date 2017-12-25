@@ -38,7 +38,7 @@
         \{include file="../common/header.html"\} \{include file="../common/menu.html"\}
         <div class="content-wrapper">
             <section class="content-header">
-                <h1>會員新增</h1>
+                <h1>會員搜尋</h1>
             </section>
             <section class="content">
                 <div class="row">
@@ -117,13 +117,11 @@
                                             <td>\{$user.downlineNum\}</td>
                                             <td>\{$user.lastUpdateTime\}</td>
                                             <td>
-                                                <!--TODO: Go to userEdit(user detail) link-->
-                                                <a href="#">
+                                                <a href="../controller/userController.php?action=userDetailPrepare&userId=\{$user.userId\}">
                                                     <button class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-pencil"></i></button>
                                                 </a>
 
 
-                                                <!--TODO: Delete this user-->
                                                 <a href="#">
                                                     <button class="btn btn-sm btn-danger" onclick="deleteUser('\{$user.userId\}');"><i class="glyphicon glyphicon-remove"></i></button>
                                                 </a>

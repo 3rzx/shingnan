@@ -31,6 +31,16 @@ switch ($method) {
             case 'userSearchPrepare':
                 $user->userSearchPrepare();
                 break;
+            case 'userDetailPrepare':
+                $user->userDetailPrepare($_GET);
+                break;
+            case 'userShoppingRecordPrepare':
+                $user->userShoppingRecordPrepare($_GET);
+                break;
+            case 'userCourseRecordPrepare':
+                $user->userCourseRecordPrepare($_GET);
+                break;
+
             default:
                 $user->viewLogin();
         }
