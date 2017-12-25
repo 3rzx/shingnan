@@ -21,6 +21,8 @@
             $("#frameImage1").change(function() {
                 readURL(this, '#frameImg1');
             });
+
+            $('input[name="imgCount"]').val(imgCount);
             
         });
 
@@ -36,25 +38,6 @@
             }
         }
 
-        function fieldValidation(field) {
-            if ($.trim($(field).val()) == '') {
-                $(field + 'Div').addClass('has-error');
-                $(field + 'Div').val('');
-                return false;
-            } else {
-                $(field + 'Div').removeClass('has-error');
-            }
-            return true;
-        }
-
-        function formValidation() {
-            if (fieldValidation('frameName') ) {
-                return true;
-            } else {
-                BootstrapDialog.alert('請至少填寫鏡框名稱');
-                return false;
-            }
-        }
 
         function addFrameImg(i){
             str = '<div id = "image' + i +'"><div class = "form-inline" style="display:inline-block;">';
@@ -76,7 +59,8 @@
             $("#frameImage"+ i).change(function() {
                 readURL(this, "#frameImg"+ i);
             });
-            
+
+            $('input[name="imgCount"]').val(imgCount);
         }
 
         function deleteFrameImg(i){
@@ -108,7 +92,7 @@
                                 <h3 class="box-title">新增鏡框</h3>
                             </div>
                             <!-- form-->
-                            <form class="form-horizontal" method="post" enctype="multipart/form-data" action="../controller/frameController.php" onsubmit="formValidation()">
+                            <form class="form-horizontal" method="post" enctype="multipart/form-data" action="../controller/frameController.php">
                                 <div class="box-body">
                                     <div id="frameNameDiv" class="form-group">
                                         <label for="frameName" class="col-sm-2 control-label">鏡框名稱</label>
@@ -127,7 +111,7 @@
                                         <div class="col-sm-6">
                                             <select class="selectpicker" name="frameBrand" id="frameBrand" data-live-search="true" title="請選擇品牌">
                                                 \{foreach from=$brandData item=brand \}
-                                                <option value='\{$brand.brandId\}'>\{$brand.brandName\}</option>
+                                                <option value='\{$brand.brandId\}' selected>\{$brand.brandName\}</option>
                                                 \{/foreach\}
                                             </select>
                                         </div>
@@ -151,8 +135,8 @@
                                             <input id="material" name="material" class="form-control" placeholder="輸入鏡框材質">
                                         </div>
                                     </div>
-                                    <div id="frameColorDiv" class="form-group">
-                                        <label for="frameColor" class="col-sm-2 control-label">鏡框顏色</label>
+                                    <div id="colorDiv" class="form-group">
+                                        <label for="color" class="col-sm-2 control-label">鏡框顏色</label>
                                         <div class="col-sm-6">
                                             <input id="color" name="color" class="form-control" placeholder="輸入鏡框顏色">
                                         </div>
@@ -160,7 +144,7 @@
                                     <div id="frameStyleDiv" class="form-group">
                                         <label for="frameStyle" class="col-sm-2 control-label">鏡框所屬風格</label>
                                         <div class="col-sm-6">
-                                            <select class="selectpicker" name="frameStyle" id="frameStyle" multiple title="請選擇風格(多選)">
+                                            <select class="selectpicker" name="frameStyle[]" id="frameStyle[]" multiple title="請選擇風格(多選)">
                                                 \{foreach from=$styleData item=style \}
                                                 <option value='\{$style.styleId\}'>\{$style.styleName\}</option>
                                                 \{/foreach\}
@@ -181,13 +165,14 @@
                                         </div>
                                         
                                     </div>
-                                    <div id="isLaunceDiv" class="form-group">
-                                        <label for="isLaunce" class="col-sm-2 control-label">上架到網路上</label>
-                                        &nbsp&nbsp&nbsp&nbsp&nbsp<input type="checkbox" checked data-toggle="toggle" data-size="mini">
+                                    <div id="isLaunchDiv" class="form-group">
+                                        <label for="isLaunch" class="col-sm-2 control-label">上架到網路上</label>
+                                        &nbsp&nbsp&nbsp&nbsp&nbsp<input type="checkbox" checked data-toggle="toggle" data-size="mini" name="isLaunch" value=1>
                                     </div>
                                 </div>
                                 <div class="box-footer" style="text-align: right;">
                                     <a href="../controller/frameController.php?action=frameAddPrepare" class="btn btn-warning">取消</a>
+                                    <input type="hidden" name="imgCount">
                                     <input type="hidden" name="action" value="frameAdd">
                                     <button type="submit" class="btn btn-success">確定</button>
                                 </div>

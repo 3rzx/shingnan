@@ -58,6 +58,10 @@ class Style
             $this->error = '請先登入!';
             $this->viewLogin();
         }
+        if(!isset($input['styleName'])){
+            $this->error = '請至少填入風格名稱';
+            $this->styleAddPrepare();
+        }
         $idGen = new IdGenerator();
         $now = date('Y-m-d H:i:s');
         $styleId = $idGen->GetID('style');

@@ -11,7 +11,7 @@ switch ($method) {
     case 'POST':
         $action = isset($_POST['action']) ? $_POST['action'] : '';
         switch ($action) {
-            case 'AddPart':
+            case 'partAdd':
                 $part->partAdd($_POST);
                 break;
             case 'partEdit':
@@ -33,6 +33,9 @@ switch ($method) {
                 $part->partEditPrepare($_GET);
                 break;
             case 'partDelete':
+                $part->partDelete($_GET);
+                break;
+            case 'partImageDelete':
                 $part->partDelete($_GET);
                 break;
             default:

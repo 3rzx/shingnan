@@ -20,6 +20,8 @@
             $("#partImage1").change(function() {
                 readURL(this, '#partImg1');
             });
+
+            $('input[name="imgCount"]').val(imgCount);
         });
 
         function readURL(input, id) {
@@ -31,26 +33,6 @@
                     $(id).css('display', '');
                 }
                 reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        function fieldValidation(field) {
-            if ($.trim($(field).val()) == '') {
-                $(field + 'Div').addClass('has-error');
-                $(field + 'Div').val('');
-                return false;
-            } else {
-                $(field + 'Div').removeClass('has-error');
-            }
-            return true;
-        }
-
-        function formValidation() {
-            if (fieldValidation('Name') ) {
-                return true;
-            } else {
-                BootstrapDialog.alert('請至少填寫零件名稱');
-                return false;
             }
         }
 
@@ -74,7 +56,8 @@
             $("#partImage"+ i).change(function() {
                 readURL(this, "#partImg"+ i);
             });
-            
+
+            $('input[name="imgCount"]').val(imgCount);
         }
 
         function deletePartImg(i){
@@ -106,7 +89,7 @@
                                 <h3 class="box-title">新增零件</h3>
                             </div>
                             <!-- form-->
-                            <form class="form-horizontal" method="post" enctype="multipart/form-data" action="../controller/productController.php" onsubmit="formValidation()">
+                            <form class="form-horizontal" method="post" enctype="multipart/form-data" action="../controller/partController.php">
                                 <div class="box-body">
                                     <div id="partNameDiv" class="form-group">
                                         <label for="partName" class="col-sm-2 control-label">零件名稱</label>
@@ -146,13 +129,14 @@
                                             <div id="addImgStart" name="addImgStart"></div>
                                         </div>
                                     </div>
-                                    <div id="isLaunceDiv" class="form-group">
-                                        <label for="isLaunce" class="col-sm-2 control-label">上架到網路上</label>
-                                        &nbsp&nbsp&nbsp&nbsp&nbsp<input type="checkbox" checked data-toggle="toggle" data-size="mini">
+                                    <div id="isLaunchDiv" class="form-group">
+                                        <label for="isLaunch" class="col-sm-2 control-label">上架到網路上</label>
+                                        &nbsp&nbsp&nbsp&nbsp&nbsp<input type="checkbox" checked data-toggle="toggle" data-size="mini" name="isLaunch" value=1>
                                     </div>
                                 </div>
                                 <div class="box-footer" style="text-align: right;">
                                     <a href="../controller/partController.php?action=partAddPrepare" class="btn btn-warning">取消</a>
+                                    <input type="hidden" name="imgCount">
                                     <input type="hidden" name="action" value="partAdd">
                                     <button type="submit" class="btn btn-success">確定</button>
                                 </div>

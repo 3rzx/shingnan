@@ -37,6 +37,9 @@ switch ($method) {
             case 'frameDelete':
                 $frame->frameDelete($_GET);
                 break;
+            case 'frameImageDelete':
+                $frame->frameImageDelete($_GET);
+                break;
             default:
                 $frame->viewLogin();
                 break;

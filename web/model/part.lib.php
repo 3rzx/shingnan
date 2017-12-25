@@ -58,42 +58,50 @@ class Part
             $this->error = '請先登入!';
             $this->viewLogin();
         }
+        if(!isset($input['partName'])){
+            $this->error = '請至少填入零件名稱';
+            $this->partAddPrepare();
+        }
         $idGen = new IdGenerator();
         $now = date('Y-m-d H:i:s');
         $partId = $idGen->GetID('part');
-        $sql = "INSERT INTO `shingnan`.`part` (`partId`, `partName`, `isDelete`, `description`,`lastUpdateTime`, `createTime`) 
-                    VALUES (:partId, :partName, '0', :description, :lastUpdateTime, :createTime);INSERT INTO `shingnan`.`part` (`partId`, `partName`, `type`, `size`, `isLaunch`, `isDelete`, `lastUpdateTime`, `createTime`) VALUES ('tset01', '螺絲', '1', 'normal', '0', '0', '2017-12-13 14:00:00', '2017-12-13 14:00:00');";
+        $isLaunch = 0;
+        if (isset($input['isLaunch']))
+            $isLaunch = 1;  
+
+        $sql = "INSERT INTO `shingnan`.`part` (`partId`, `partName`, `type`, `size`, `isLaunch`, `isDelete`, `lastUpdateTime`, `createTime`) 
+                VALUES ( :partId , :partName , :partType, :partSize, :isLaunch, '0', :lastUpdateTime, :createTime);";
         $res = $this->db->prepare($sql);
         $res->bindParam(':partId', $partId, PDO::PARAM_STR);
         $res->bindParam(':partName', $input['partName'], PDO::PARAM_STR);
-        $res->bindParam(':description', $input['description'], PDO::PARAM_STR);
+        $res->bindParam(':partType', $input['partType'], PDO::PARAM_INT);
+        $res->bindParam(':partSize', $input['partSize'], PDO::PARAM_STR);
+        $res->bindParam(':isLaunch', $isLaunch, PDO::PARAM_INT);
         $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
         $res->bindParam(':createTime', $now, PDO::PARAM_STR);
         if ($res->execute()) {
-        //deal with insert image
-            $this->msg = '新增成功';
+            $this->msg = '資料新增成功';
+
+            //deal with image
             $uploadPath = '../media/picture';
-            if ($_FILES['partImage']['error'] == 0) {
-                $imgId = $idGen->GetID('image');
-                $imgName = 'part_'.$input['partName'];
-                $fileInfo = $_FILES['partImage'];
-                $partImage = uploadFile($fileInfo, $uploadPath);
-                $sql = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`, 
-                                                        `itemId`, `ctr`, `path`, `link`, `createTime`) 
-                        VALUES (:imgId, :imgName, 3, 
-                                :partId, 0, :filePath, '', :createTime);";
-                $res = $this->db->prepare($sql);
-                $res->bindParam(':imgId', $imgId, PDO::PARAM_STR);
-                $res->bindParam(':imgName', $imgName, PDO::PARAM_STR);
-                $res->bindParam(':partId', $partId, PDO::PARAM_STR);
-                $res->bindParam(':filePath', $partImage, PDO::PARAM_STR);
-                $res->bindParam(':createTime', $now, PDO::PARAM_STR);
-                $res->execute();
-                if (!$res) { 
-                    $error = $res->errorInfo();
-                    $this->error = $error[0];
-                    $this->partList();
+            $sql3 = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`,`itemId`, `ctr`, `path`, `link`, `createTime`) VALUES ";
+            for($i=0;$i<$input['imgCount'];$i++){
+                $imgCount = 'partImage'.(string)($i+1);
+                if (isset($_FILES[$imgCount]['error']) && $_FILES[$imgCount]['error'] == 0){
+                    $imgId = $idGen->GetID('image').$i;
+                    $imgName = 'part_'.$input['partName'];
+                    $fileInfo = $_FILES[$imgCount];
+                    $imagePath = uploadFile($fileInfo, $uploadPath);
+                    $sql3 .= "('" . $imgId . "', '" . $imgName . "' , 1, '" . $partId . "', 0, '" . $imagePath . "', '', '" . $now . "'),";
                 }
+            }
+            $sql3 = substr_replace($sql3, ';', -1);
+            $res = $this->db->prepare($sql3);
+            $res->execute();
+            if (!$res) { 
+                $error = $res->errorInfo();
+                $this->error = $this->error.' 圖片新增錯誤 '.$error[0];
+                $this->frameList();
             }
         }
        $this->partList();
@@ -107,9 +115,8 @@ class Part
             $this->error = '請先登入!';
             $this->viewLogin();
         }
-         $sql = "SELECT `part`.`partName`, `part`.`partId` , `part`.`description`, `image`.`imageId` ,`image`.`path` 
+         $sql = "SELECT `part`.`partName`, `part`.`partId` , `part`.`type`, `part`.`size`, `part`.`isLaunch` 
                 FROM  `part` 
-                LEFT JOIN  `image` ON part.`partId` = image.`itemId` 
                 WHERE  `part`.`isDelete` = 0 AND  `part`.`partId` = :partId" ;
         $res = $this->db->prepare($sql);
         $res->bindParam(':partId', $input['partId'], PDO::PARAM_STR);
@@ -217,15 +224,15 @@ class Part
             $this->error = '請先登入!';
             $this->viewLogin();
         }
-        if(isset($input['imageId'])){
         //deal with img
-            $this->db->beginTransaction();
-            $sql    = "DELETE FROM `image` WHERE `imageId` = :imgId;";
-            $res = $this->db->prepare($sql);
-            $res->bindParam(':imgId', $input['imageId'], PDO::PARAM_STR);
-            $res->execute();
-            $this->db->commit();
-        }
+        $this->db->beginTransaction();
+        $sql  = "DELETE FROM `image` WHERE `itemId` = :partId;";
+        $res = $this->db->prepare($sql);
+        $res->bindParam(':partId', $input['partId'], PDO::PARAM_STR);
+        $res->execute();
+        $this->db->commit();
+
+        //deal with data
         $this->db->beginTransaction();
         $sql = "DELETE FROM part WHERE partId = :partId;";
         $res = $this->db->prepare($sql);
@@ -234,6 +241,24 @@ class Part
         $this->db->commit();
         $this->partList();
     }
+
+    /**
+     * 刪除零件圖片
+     */
+    public function partImageDelete($input){
+        if ($_SESSION['isLogin'] == false) {
+            $this->error = '請先登入!';
+            $this->viewLogin();
+        }
+        $this->db->beginTransaction();
+        $sql = "DELETE FROM `image` WHERE `image`.`imageId` = :imgId;";
+        $res = $this->db->prepare($sql);
+        $res->bindParam(':imgId', $input['imageId'], PDO::PARAM_STR);
+        $res->execute();
+        $this->db->commit();
+        $this->partEditPrepare();
+    }
+
 
     /**
      * 顯示登入畫面
