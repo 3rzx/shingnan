@@ -226,15 +226,15 @@ class Part
             $this->error = '請先登入!';
             $this->viewLogin();
         }
-        if(isset($input['imageId'])){
         //deal with img
-            $this->db->beginTransaction();
-            $sql    = "DELETE FROM `image` WHERE `imageId` = :imgId;";
-            $res = $this->db->prepare($sql);
-            $res->bindParam(':imgId', $input['imageId'], PDO::PARAM_STR);
-            $res->execute();
-            $this->db->commit();
-        }
+        $this->db->beginTransaction();
+        $sql  = "DELETE FROM `image` WHERE `itemId` = :partId;";
+        $res = $this->db->prepare($sql);
+        $res->bindParam(':partId', $input['partId'], PDO::PARAM_STR);
+        $res->execute();
+        $this->db->commit();
+
+        //deal with data
         $this->db->beginTransaction();
         $sql = "DELETE FROM part WHERE partId = :partId;";
         $res = $this->db->prepare($sql);
@@ -243,6 +243,24 @@ class Part
         $this->db->commit();
         $this->partList();
     }
+
+    /**
+     * 刪除零件圖片
+     */
+    public function partImageDelete($input){
+        if ($_SESSION['isLogin'] == false) {
+            $this->error = '請先登入!';
+            $this->viewLogin();
+        }
+        $this->db->beginTransaction();
+        $sql = "DELETE FROM `image` WHERE `image`.`imageId` = :imgId;";
+        $res = $this->db->prepare($sql);
+        $res->bindParam(':imgId', $input['imageId'], PDO::PARAM_STR);
+        $res->execute();
+        $this->db->commit();
+        $this->partEditPrepare();
+    }
+
 
     /**
      * 顯示登入畫面
