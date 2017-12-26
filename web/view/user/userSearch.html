@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    \{include file="../common/resource.html"\}
+    <script>
+        function deleteUser(userId){
+            BootstrapDialog.show({
+                title:'提醒',
+                message: '確認是否刪除使用者資料',
+                buttons: [{
+                    label: '確定',
+                    cssClass: 'btn-danger',
+                    action: function(){
+                        $.ajax({
+                            type: "POST",
+                            url: "../controller/userController.php",
+                            data: {'action': 'userDelete', 'userId': userId},
+                            success: function() {   
+                                location.reload();  
+                            }
+                        });
+                    }
+                },{
+                    label: '取消',
+                    action: function(dialogItself){
+                        dialogItself.close();
+                    }
+                }]
+            });
+        }
+    </script>
+
+</head>
+
+<body class="hold-transition skin-yellow sidebar-mini">
+    <div class="wrapper">
+        \{include file="../common/header.html"\} \{include file="../common/menu.html"\}
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1>會員搜尋</h1>
+            </section>
+            <section class="content">
+                <div class="row">
+                    <div class="col-md-6">
+                        \{if $error != ''\}
+                        <div class="alert alert-warning alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$error\}</h4>
+                        </div>
+                        \{/if\} \{if $msg != ''\}
+                        <div class="alert alert-success alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$msg\}</h4>
+                        </div>
+                        \{/if\}
+                        <div class="box box-primary">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">搜尋使用者</h3>
+                            </div>
+                            <!-- form-->
+                            <form class="form-horizontal" method="post" action="../controller/userController.php">
+                                <div class="box-body">
+                                    <!-- name -->
+                                    <div id="userNameDiv" class="form-group">
+                                        <label for="userName" class="col-sm-2 control-label">使用者姓名</label>
+                                        <div class="col-sm-10">
+                                            <input id="userName" name="userName" class="form-control" placeholder="使用者姓名">
+                                        </div>
+                                    </div>
+
+                                    <!--phoneNumber-->
+                                    <div id="phoneDiv" class="form-group">
+                                        <label for="password" class="col-sm-2 control-label">手機號碼</label>
+                                        <div class="col-sm-10">
+                                            <input id="phone" name="phone" class="form-control" placeholder="手機號碼">
+                                        </div>
+                                    </div>
+
+                                    <!-- /.box-body -->
+                                    <div class="box-footer" style="text-align: right;">
+                                        <input type="hidden" name="action" value="userSearch">
+                                        <button type="submit" class="btn btn-primary">確定</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+
+                        <div class="box box-info">
+                            <div class="box-header">
+                                <h3 class="box-title">搜尋結果</h3>
+                            </div>
+                            <div class="box-body">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr style="background-color: #00c0ef; color: #fff;">
+                                            <th>名稱</th>
+                                            <th>性別</th>
+                                            <th>電話</th>
+                                            <th>下線人數</th>
+                                            <th>最後更新時間</th>
+                                            <th>操作選項</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        \{foreach from=$searchResult item=user\}
+                                        <tr>
+                                            <td>\{$user.userName\}</td>
+                                            \{if $user.gender == 1\}
+                                                <td>男</td>
+                                            \{else\}
+                                                <td>女</td>
+                                            \{/if\}
+                                            <td>\{$user.phone\}</td>
+                                            <td>\{$user.downlineNum\}</td>
+                                            <td>\{$user.lastUpdateTime\}</td>
+                                            <td>
+                                                <a href="../controller/userController.php?action=userDetailPrepare&userId=\{$user.userId\}">
+                                                    <button class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-pencil"></i></button>
+                                                </a>
+
+
+                                                <a href="#">
+                                                    <button class="btn btn-sm btn-danger" onclick="deleteUser('\{$user.userId\}');"><i class="glyphicon glyphicon-remove"></i></button>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        \{/foreach\}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+        \{include file="../common/footer.html"\}
+    </div>
+</body>
+</html>

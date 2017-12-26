@@ -15,6 +15,8 @@ class User
     public $msg = '';
     // error messages
     public $error = '';
+    // isSearch or not search
+    public $isSearch = false;
 
     /**
      * User constructor
@@ -36,7 +38,7 @@ class User
             session_register('msg');
         }
     }
-   
+
 
     /**
      * 新增使用者頁面
@@ -49,7 +51,7 @@ class User
             $this->viewLogin();
             return ;
         }
-        
+
         $this->smarty->assign('error', $this->error);
         $this->smarty->assign('msg', $this->msg);
         $this->smarty->display('user/userAdd.html');
@@ -67,14 +69,14 @@ class User
             return ;
         }
 
-        $this->userAddSql($input);
+        $idGen = new IdGenerator();
+        $userId = $idGen->GetID('user');
+        $this->userAddSql($userId, $input);
         $this->smarty->display('user/userAdd.html');
     }
 
-    public function userAddSql($input)
+    public function userAddSql($userId, $input)
     {
-        $idGen = new IdGenerator();
-        $userId = $idGen->GetID('user');
         $now = date('Y-m-d H:i:s');
 
         $sql = "INSERT INTO `shingnan`.`user` (
@@ -86,7 +88,6 @@ class User
         0,:lastUpdateTime, :createTime);";
 
         $res = $this->db->prepare($sql);
-        var_dump($now);
 
         $res->bindParam(':userId', $userId, PDO::PARAM_STR);
         $res->bindParam(':userName', $input['userName'], PDO::PARAM_STR);
@@ -104,6 +105,186 @@ class User
         $error = $res->errorInfo();
         $this->$error = $error[0];
     }
+
+    public function userSearchPrepare()
+    {
+        if ($_SESSION['isLogin'] == false) {
+            $this->error = '請先登入!';
+            $this->viewLogin();
+            return ;
+        }
+
+        $this->smarty->assign('error', $this->error);
+        $this->smarty->assign('msg', $this->msg);
+        $this->smarty->display('user/userSearch.html');
+    }
+
+
+    public function userSearch($input)
+    {
+        if ($_SESSION['isLogin'] == false) {
+            $this->error = '請先登入!';
+            $this->viewLogin();
+            return ;
+        }
+
+        $sql = "SELECT `user`.`userId`, `user`.`userName` , `user`.`gender`, `user`.`phone` ,`user`.`downlineNum`, `user`.`lastUpdateTime`
+                FROM  `user`
+                WHERE  `user`.`isDelete` = 0 And `user`.`userName`=:userName And `user`.`phone`=:phone
+                ORDER BY `user`.`userId`";
+
+        $res = $this->db->prepare($sql);
+        $res->bindParam(':userName', $input['userName'], PDO::PARAM_STR);
+        $res->bindParam(':phone', $input['phone'], PDO::PARAM_STR);
+
+        $res->execute();
+        $searchResult = $res->fetchAll();
+        $this->smarty->assign('searchResult', $searchResult);
+        $this->userSearchPrepare();
+
+        $error = $res->errorInfo();
+        $this->$error = $error[0];
+    }
+
+    public function userDelete($input)
+    {
+        if ($_SESSION['isLogin'] == false) {
+            $this->error = '請先登入!';
+            $this->viewLogin();
+            return;
+        }
+        
+        if (!isset($input['userId'])) {
+            return;
+        }
+
+        $this->db->beginTransaction();
+        $sql    = "DELETE FROM `user` WHERE `userId` = :userId;";
+        $res = $this->db->prepare($sql);
+        $res->bindParam(':userId', $input['userId'], PDO::PARAM_STR);
+        $res->execute();
+        $this->db->commit();
+
+        $now = date('Y-m-d H:i:s');
+        $sql = "UPDATE `shingnan`.`user` SET  `isDelete` = 1, `lastUpdateTime` = :lastUpdateTime WHERE `userId` = :userId;";
+        $res = $this->db->prepare($sql);
+        $res->bindParam(':userId', $input['userId'], PDO::PARAM_STR);
+        $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
+        $res->execute();
+
+        $this->userSearchPrepare();
+    }
+
+    /**
+     * For user detail page
+     * @DateTime 2016-09-03
+     */
+    
+    public function userDetailPrepare($input)
+    {
+        if ($_SESSION['isLogin'] == false) {
+            $this->error = '請先登入!';
+            $this->viewLogin();
+            return;
+        }
+        $userId = $input['userId'];
+        $sql = "SELECT `user`.`userId`, `user`.`userName`,
+                       `user`.`account`, `user`.`password`,
+                       `user`.`phone`, `user`.`gender`,
+                       `user`.`address`, `user`.`point`,
+                       `user`.`downlineNum`
+                FROM  `user` 
+                WHERE  `user`.`userId` = :userId AND `user`.`isDelete` = 0";
+
+        $res = $this->db->prepare($sql);
+        $res->bindParam(':userId', $userId, PDO::PARAM_STR);
+        $res->execute();
+        $userDetailData = $res->fetch();
+
+        $this->smarty->assign('userDetailData', $userDetailData);
+        $this->smarty->assign('error', $this->error);
+        $this->smarty->assign('msg', $this->msg);
+        $this->smarty->display('user/userDetail.html');
+    }
+
+    public function userDetailEdit($input)
+    {
+        if ($_SESSION['isLogin'] == false) {
+            $this->error = '請先登入!';
+            $this->viewLogin();
+            return;
+        }
+        //TODO: Finish this sql
+        $sql = "UPDATE `shingnan`.`user`
+                SET  `lastUpdateTime` = :lastUpdateTime,
+                     `userId` = :userId, `userName` = :userName,
+                     `account` = :account, `phone` = :phone,
+                     `gender` = :gender, `address` = :address,
+                     `gender` = :point, `address` = :address,
+
+                WHERE `userId` = :userId;";
+
+
+    }
+
+
+    /**
+     * For user shopping record page
+     * @DateTime 2016-09-03
+     */
+
+    public function userShoppingRecordPrepare($input)
+    {
+        if ($_SESSION['isLogin'] == false) {
+            $this->error = '請先登入!';
+            $this->viewLogin();
+            return;
+        }
+        //TODO: Get user id and get the corespondin user data (use uql)
+        $sql = "SELECT `user`.`userId`, `user`.`userName`, `user`.`phone`
+                FROM  `user` 
+                WHERE  `userId` = :userId;";
+
+        $res = $this->db->prepare($sql);
+        $res->bindParam(':userId', $input['userId'], PDO::PARAM_STR);
+        $res->execute();
+        $userData = $res->fetch();
+
+        $this->smarty->assign('userData', $userData);
+
+        $this->smarty->assign('error', $this->error);
+        $this->smarty->assign('msg', $this->msg);
+        $this->smarty->display('user/userShoppingRecord.html');
+    }
+
+    /**
+     * For user user record page
+     * @DateTime 2016-09-03
+     */
+    public function userCourseRecordPrepare($input)
+    {
+        if ($_SESSION['isLogin'] == false) {
+            $this->error = '請先登入!';
+            $this->viewLogin();
+            return;
+        }
+        //TODO: Get user id and get the corespondin user data (use uql)
+        $sql = "SELECT `user`.`userId`, `user`.`userName`, `user`.`phone`
+                FROM  `user` 
+                WHERE  `userId` = :userId;";
+
+        $res = $this->db->prepare($sql);
+        $res->bindParam(':userId', $input['userId'], PDO::PARAM_STR);
+        $res->execute();
+        $userData = $res->fetch();
+
+        $this->smarty->assign('userData', $userData);
+
+        $this->smarty->assign('error', $this->error);
+        $this->smarty->assign('msg', $this->msg);
+        $this->smarty->display('user/userCourseRecord.html');
+    }
+    
 
     /**
       * 顯示登入畫面
