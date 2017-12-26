@@ -21,7 +21,7 @@
         \{include file="../common/header.html"\} \{include file="../common/menu.html"\}
         <div class="content-wrapper">
             <section class="content-header">
-                <h1>興南生活文章</h1>
+                <h1>衛教文章檢視修改</h1>
             </section>
             <section class="content">
                 <div class="row">
@@ -34,7 +34,7 @@
                         \{/if\}
                         <div class="box box-primary">
                             <div class="box-header with-border">
-                                <h3 class="box-title">新增文章</h3>
+                                <h3 class="box-title">修改文章</h3>
                             </div>
                             <!-- form-->
                             <form class="form-horizontal" method="post" action="../controller/lifeController.php">
@@ -42,21 +42,23 @@
                                     <div id="lifeTitleDiv" class="form-group">
                                         <label for="lifeTitle" class="col-sm-2 control-label">標題</label>
                                         <div class="col-sm-10">
-                                            <input id="lifeTitle" name="lifeTitle" class="form-control" placeholder="輸入文章標題">
+                                            <input id="lifeTitle" name="lifeTitle" class="form-control" value="\{$lifeData.title\}">
                                         </div>
                                     </div>
-                                    <div id="lifeContent" class="form-group">
-                                        <label for="lifeEditorDiv" class="col-sm-2 control-label">內容</label>
+                                    <div id="lifeEditorDiv" class="form-group">
+                                        <label for="lifeEditor" class="col-sm-2 control-label">內容</label>
                                         <div class="col-sm-10">
                                             <textarea id="lifeEditor" name="lifeEditor" rows="10" cols="80">
+                                                \{$lifeData.content\}
                                             </textarea>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="box-footer" style="text-align: right;">
-                                    <a href="../controller/lifeController.php?action=lifeAddPrepare" class="btn btn-warning">取消</a>
-                                    <input type="hidden" name="action" value="lifeAdd">
-                                    <button type="submit" class="btn btn-success">確定</button>
+                                    <a href="../controller/lifeController.php?action=lifeList" class="btn btn-warning">取消</a>
+                                    <input type="hidden" name="action" value="lifeEdit">
+                                    <input type="hidden" name="lifeId" value="\{$lifeData.articleId\}">
+                                    <button type="submit" class="btn btn-success">更新</button>
                                 </div>
                             </form>
                         </div>

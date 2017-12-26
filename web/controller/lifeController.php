@@ -34,9 +34,6 @@ switch ($method) {
             case 'lifeDelete':
                 $life->lifeDelete($_GET);
                 break;
-            case 'lifeImageDelete':
-                $life->lifeImageDelete($_GET);
-                break;
             default:
                 $life->viewLogin();
                 break;

@@ -9,9 +9,9 @@
     <script type="text/javascript" src="../plugins/ckeditor/ckeditor.js"></script>
     <script>
     $(function() {
-        // Replace the <textarea id="editor"> with a CKEditor
+        // Replace the <textarea id="courseEditor"> with a CKEditor
         // instance, using default configuration.
-        CKEDITOR.replace('editor');
+        CKEDITOR.replace('courseEditor');
     });
     </script>
 </head>
@@ -37,27 +37,25 @@
                                 <h3 class="box-title">新增課程</h3>
                             </div>
                             <!-- form-->
-                            <form class="form-horizontal" method="post" action="../controller/lifeController.php" onsubmit="formValidation()">
+                            <form class="form-horizontal" method="post" action="../controller/courseController.php">
                                 <div class="box-body">
-                                    <div id="educationTitle" class="form-group">
-                                        <label for="educationTitle" class="col-sm-2 control-label">課程標題</label>
+                                    <div id="courseNameDiv" class="form-group">
+                                        <label for="courseName" class="col-sm-2 control-label">課程標題</label>
                                         <div class="col-sm-10">
-                                            <input id="educationTitle" name="educationTitle" class="form-control" placeholder="輸入課程標題">
+                                            <input id="courseName" name="courseName" class="form-control" placeholder="輸入課程標題">
                                         </div>
                                     </div>
-                                    <div id="educationContent" class="form-group">
-                                        <label for="content" class="col-sm-2 control-label">課程內容</label>
+                                    <div id="courseEditorDiv" class="form-group">
+                                        <label for="courseEditor" class="col-sm-2 control-label">課程內容</label>
                                         <div class="col-sm-10">
-                                            <form>
-                                                <textarea id="editor" name="editor" rows="10" cols="80">
-                                                </textarea>
-                                            </form>
+                                            <textarea id="courseEditor" name="courseEditor" rows="10" cols="80">
+                                            </textarea>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="box-footer" style="text-align: right;">
-                                    <a href="../controller/lifeController.php?action=main" class="btn btn-warning">取消</a>
-                                    <input type="hidden" name="action" value="lifeAdd">
+                                    <a href="../controller/courseController.php?action=courseAddPrepare" class="btn btn-warning">取消</a>
+                                    <input type="hidden" name="action" value="courseAdd">
                                     <button type="submit" class="btn btn-success">確定</button>
                                 </div>
                             </form>
