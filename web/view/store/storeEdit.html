@@ -3,6 +3,13 @@
 
 <head>
     \{include file="../common/resource.html"\}
+    <!-- InputMask -->
+    <script src="../plugins/input-mask/jquery.inputmask.js"></script>
+    <script>
+    $(function() {
+        $("[data-mask]").inputmask();
+    });
+    </script>
 </head>
 
 <body class="hold-transition skin-yellow sidebar-mini">
@@ -43,7 +50,7 @@
                                     <div id="storePhoneDiv" class="form-group">
                                         <label for="phoneNumber" class="col-sm-2 control-label">聯絡電話</label>
                                         <div class="col-sm-3">
-                                            <input id="phoneNumber" name="phoneNumber" class="form-control" value="\{$storeData.phoneNumber\}">
+                                            <input id="phoneNumber" name="phoneNumber" class="form-control" value="\{$storeData.phoneNumber\}" data-inputmask='"mask": "(99) 999-9999"' data-mask>
                                         </div>
                                         <label for="businessHours" class="col-sm-2 control-label">營業時間</label>
                                         <div class="col-sm-4">

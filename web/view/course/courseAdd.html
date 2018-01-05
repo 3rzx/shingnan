@@ -8,6 +8,73 @@
     <!-- CK Editor -->
     <script type="text/javascript" src="../plugins/ckeditor/ckeditor.js"></script>
     <script>
+    var imgCount = 1;
+    $(document).ready(function() {
+        $("#courseImage1").filestyle({
+            size: "nr",
+            input: false,
+            buttonText: "上傳圖片",
+            buttonName: "btn-info",
+            iconName: "glyphicon glyphicon-camera"
+        });
+
+
+        $("#courseImage1").change(function() {
+            readURL(this, '#courseImg1');
+        });
+
+    });
+
+    function readURL(input, id) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+                $(id).attr('src', e.target.result);
+                $(id).css('display', '');
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function fieldValidation(field) {
+        if ($.trim($(field).val()) == '') {
+            $(field + 'Div').addClass('has-error');
+            $(field + 'Div').val('');
+            return false;
+        } else {
+            $(field + 'Div').removeClass('has-error');
+        }
+        return true;
+    }
+
+    function addFrameImg(i) {
+        str = '<div id = "image' + i + '"><div class = "form-inline" style="display:inline-block;">';
+        str += '<input type="file" id="courseImage' + i + '" name="courseImage' + i + '" data-input="false" accept="image/*">&nbsp';
+        str += '<a class="btn btn-sm btn-danger" onclick="deleteFrameImg(' + i + ')"><i class="glyphicon glyphicon-remove"></i></a>';
+        str += '</div>';
+        str += '<img id="courseImg' + i + '" class="img-thumbnail" style="display:none"><br></div>'
+
+        $("#addImgStart").after(str);
+
+        $("#courseImage" + i).filestyle({
+            size: "nr",
+            input: false,
+            buttonText: "上傳圖片",
+            buttonName: "btn-info",
+            iconName: "glyphicon glyphicon-camera"
+        });
+
+        $("#courseImage" + i).change(function() {
+            readURL(this, "#courseImg" + i);
+        });
+
+    }
+
+    function deleteFrameImg(i) {
+        $("#image" + i).remove();
+    }
+
     $(function() {
         // Replace the <textarea id="courseEditor"> with a CKEditor
         // instance, using default configuration.
@@ -50,6 +117,20 @@
                                         <div class="col-sm-10">
                                             <textarea id="courseEditor" name="courseEditor" rows="10" cols="80">
                                             </textarea>
+                                        </div>
+                                    </div>
+                                    <div id="courseImageDiv" class="form-group">
+                                        <label class="col-sm-2 control-label">文章圖片</label>
+                                        <div class="col-sm-10">
+                                            <div id="image1">
+                                                <div class="form-inline" style="display:inline-block;">
+                                                    <input type="file" id="courseImage1" name="courseImage1" data-input="false" accept="image/*">
+                                                    <a class="btn btn-sm btn-primary" onclick="addFrameImg(++imgCount)"><i class="glyphicon glyphicon-plus"></i></a>
+                                                </div>
+                                                <img id="courseImg1" class="img-thumbnail" style="display:none">
+                                                <br>
+                                            </div>
+                                            <div id="addImgStart" name="addImgStart"></div>
                                         </div>
                                     </div>
                                 </div>

@@ -1,6 +1,7 @@
 <?php
 // initialize
 require_once HOME_DIR . 'configs/config.php';
+require_once 'upload.func.php';
 require_once 'IdGenerator.php';
 /**
  * 衛教類別
