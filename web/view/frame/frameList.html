@@ -55,7 +55,7 @@
             <!-- Main content -->
             <section class="content">
                 <div class="row">
-                    <div class="col-md-10">
+                    <div class="col-md-12">
                         \{if $error != ''\}
                         <div class="alert alert-warning alert-dismissable text-center">
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
@@ -70,13 +70,14 @@
                                 <table class="table table-striped" id="frameListTable">
                                     <thead>
                                         <tr style="background-color: #00c0ef; color: #fff;">
-                                            <th class="col-xs-1">鏡框名稱</th>
+                                            <th class="col-xs-2">鏡框名稱</th>
                                             <th class="col-xs-1">鏡框型號</th>                                            
                                             <th class="col-xs-1">鏡框品牌</th>                                            
                                             <th class="col-xs-1">鏡框框形</th>                                            
                                             <th class="col-xs-1">鏡框材質</th>                                            
                                             <th class="col-xs-1">鏡框顏色</th>                         
-                                            <th class="col-xs-1">是否上架到網路上</th>
+                                            <th class="col-xs-1">上架到網路上</th>
+                                            <th class="col-xs-1">主打商品</th>
                                             <th class="col-xs-2">最後更新時間</th>
                                             <th class="col-xs-1">操作選項</th>
                                         </tr>
@@ -103,6 +104,11 @@
                                             <td>\{$frame.material\}</td>
                                             <td>\{$frame.color\}</td>
                                             \{if $frame.isLaunch == 1\}
+                                            <td>是</td>
+                                            \{else\}
+                                            <td>否</td>
+                                            \{/if\}
+                                            \{if $frame.isPrimary == 1\}
                                             <td>是</td>
                                             \{else\}
                                             <td>否</td>

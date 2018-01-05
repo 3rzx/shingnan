@@ -77,13 +77,16 @@ class Frame
         $frameId = $idGen->GetID('frame');
         $isLaunch = 0;
         if (isset($input['isLaunch']))
-            $isLaunch = 1;                        
+            $isLaunch = 1;
+        $isPrimary = 0;
+        if (isset($input['isPrimary']))
+            $isPrimary = 1;                          
 
 
-        $sql = "INSERT INTO `shingnan`.`frame` (`frameId`, `no`, `frameName`, `brandId`, `shape`, `material`, 
-                                                `color`, `isLaunch`, `ctr`, `isDelete`, `lastUpdateTime`, `createTime`) 
-                VALUES (:frameId, :no, :frameName, :frameBrand, :shape, :material, 
-                        :color, :isLaunch, 0, 0, :lastUpdateTime, :createTime);";
+        $sql = "INSERT INTO `shingnan`.`frame` (`frameId`, `no`, `frameName`, `brandId`, `shape`, `material`, `color`, `price`, 
+                                                `discountPrice`, `isLaunch`, `isPrimary`, `isDelete`, `lastUpdateTime`, `createTime`) 
+                VALUES (:frameId, :no, :frameName, :frameBrand, :shape, :material, :color, :price, 
+                        :discountPrice, :isLaunch, :isPrimary, 0, :lastUpdateTime, :createTime);";
         $res = $this->db->prepare($sql);
         $res->bindParam(':frameId', $frameId, PDO::PARAM_STR);
         $res->bindParam(':no', $input['no'], PDO::PARAM_STR);
@@ -92,7 +95,10 @@ class Frame
         $res->bindParam(':shape', $input['shape'], PDO::PARAM_INT);
         $res->bindParam(':material', $input['material'], PDO::PARAM_STR);
         $res->bindParam(':color', $input['color'], PDO::PARAM_STR);
+        $res->bindParam(':price', $input['price'], PDO::PARAM_INT);
+        $res->bindParam(':discountPrice', $input['discountPrice'], PDO::PARAM_INT);
         $res->bindParam(':isLaunch', $isLaunch, PDO::PARAM_INT);
+        $res->bindParam(':isPrimary', $isPrimary, PDO::PARAM_INT);
         $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
         $res->bindParam(':createTime', $now, PDO::PARAM_STR);
         if ($res->execute()) {
@@ -109,7 +115,7 @@ class Frame
                 $res->execute();
                 if(!$res){
                     $error = $res->errorInfo();
-                    $this->error = ' 風格設定錯誤 '.$error[0];
+                    $this->error = ' 風格設定錯誤 '.$error[2];
                 }
             }
             //deal with image
@@ -131,7 +137,7 @@ class Frame
             $res->execute();
             if (!$res) { 
                 $error = $res->errorInfo();
-                $this->error = $this->error.' 圖片新增錯誤 '.$error[0];
+                $this->error = $this->error.' 圖片新增錯誤 '.$error[2];
                 $this->frameList();
             }
         }
@@ -147,7 +153,7 @@ class Frame
             $this->viewLogin();
         }
          $sql = "SELECT `frame`.`frameName`, `frame`.`frameId` , `frame`.`no`, `frame`.`brandId`, `frame`.`shape`, 
-                        `frame`.`material`, `frame`.`color`, `frame`.`isLaunch`  
+                        `frame`.`material`, `frame`.`color`, `frame`.`price`, `frame`.`discountPrice`, `frame`.`isLaunch`, `frame`.`isPrimary` 
                 FROM  `frame` 
                 WHERE  `frame`.`isDelete` = 0 AND `frame`.`frameId` = :frameId" ;
         $res = $this->db->prepare($sql);
@@ -174,10 +180,19 @@ class Frame
         $res->execute();
         $frameStyleData = $res->fetchAll();
 
+        $sql = "SELECT `image`.`imageId`, `image`.`imageId`, `image`.`imageName`, `image`.`itemId`, `image`.`path`, `image`.`link` 
+                FROM `image` 
+                WHERE `image`.`itemId` = :frameId;" ;
+        $res = $this->db->prepare($sql);
+        $res->bindParam(':frameId', $input['frameId'], PDO::PARAM_STR);
+        $res->execute();
+        $imageData = $res->fetchAll();
+
         $this->smarty->assign('frameData', $frameData);
         $this->smarty->assign('styleData', $styleData);
-        $this->smarty->assign('brandData',$brandData);
-        $this->smarty->assign('frameStyleData',$frameStyleData);
+        $this->smarty->assign('brandData', $brandData);
+        $this->smarty->assign('frameStyleData', $frameStyleData);
+        $this->smarty->assign('imageData', $imageData);
         $this->smarty->assign('error', $this->error);
         $this->smarty->display('frame/frameEdit.html');
     }
@@ -190,57 +205,82 @@ class Frame
             $this->error = '請先登入!';
             $this->viewLogin();
         }
+        $idGen = new IdGenerator();
         $now = date('Y-m-d H:i:s');
-        $sql = "UPDATE  `shingnan`.`frame` SET  `frameName` = :frameName, `description` = :description, 
-                `lastUpdateTime` =  :lastUpdateTime WHERE  `frame`.`frameId` = :frameId;" ;
+        $frameId = $input['frameId'];
+        $isLaunch = 0;
+        if (isset($input['isLaunch']))
+            $isLaunch = 1;
+        $isPrimary = 0;
+        if (isset($input['isPrimary']))
+            $isPrimary = 1;
+
+        $sql = "UPDATE `shingnan`.`frame` 
+                SET `frameName` = :frameName, `no` = :no, `brandId` = :frameBrand, `shape` = :shape, `material` = :material, `color` = :color, `price` = :price, `discountPrice` = :discountPrice, `isLaunch` = :isLaunch, `isPrimary` = :isPrimary, `lastUpdateTime` =  :lastUpdateTime 
+                WHERE  `frame`.`frameId` = :frameId;" ;
         $res = $this->db->prepare($sql);
-        $res->bindParam(':frameId', $input['frameId'], PDO::PARAM_STR);
+        $res->bindParam(':frameId', $frameId, PDO::PARAM_STR);
         $res->bindParam(':frameName',$input['frameName'], PDO::PARAM_STR);
-        $res->bindParam(':description',$input['description'], PDO::PARAM_STR);
-        $res->bindParam(':lastUpdateTime',$now, PDO::PARAM_STR);
-        $res->execute();
+        $res->bindParam(':no', $input['no'], PDO::PARAM_STR);
+        $res->bindParam(':frameBrand',  $input['frameBrand'], PDO::PARAM_STR);
+        $res->bindParam(':shape', $input['shape'], PDO::PARAM_INT);
+        $res->bindParam(':material', $input['material'], PDO::PARAM_STR);
+        $res->bindParam(':color', $input['color'], PDO::PARAM_STR);
+        $res->bindParam(':price', $input['price'], PDO::PARAM_INT);
+        $res->bindParam(':discountPrice', $input['discountPrice'], PDO::PARAM_INT);
+        $res->bindParam(':isLaunch', $isLaunch, PDO::PARAM_INT);
+        $res->bindParam(':isPrimary', $isPrimary, PDO::PARAM_INT);
+        $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
 
         if ($res->execute()) {
-        //update image 
-            $this->msg = '更新成功';
-            if ($_FILES['frameImage']['error'] == 0) {
-                if( isset($input['imageId']) ){                
-                    $fileInfo = $_FILES['frameImage'];
-                    $frameImage = uploadFile($fileInfo, '../media/picture');
-                    $sql = "UPDATE  `shingnan`.`image` SET  `path` = :pathinfo WHERE `image`.`imageId` = :imageId;";
-                    $res = $this->db->prepare($sql);
-                    $res->bindParam(':imageId', $input['imageId'], PDO::PARAM_STR);
-                    $res->bindParam(':pathinfo', $frameImage, PDO::PARAM_STR);
-                    $res->execute();
-                    if (!$res) { 
-                        $error = $res->errorInfo();
-                        $this->error = $error[0];
-                        $this->frameList();
-                    }
-                }else{
-                    $idGen = new IdGenerator();
-                    $imgId = $idGen->GetID('image');
-                    $imgName = 'frame_'.$input['frameName'];
-                    $fileInfo = $_FILES['frameImage'];
-                    $frameImage = uploadFile($fileInfo, '../media/picture');
-                    $sql = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`, 
-                                                            `itemId`, `ctr`, `path`, `link`, `createTime`) 
-                            VALUES (:imgId, :imgName, 3, 
-                                    :frameId, 0, :filePath, '', :createTime);";
-                    $res = $this->db->prepare($sql);
-                    $res->bindParam(':imgId', $imgId, PDO::PARAM_STR);
-                    $res->bindParam(':imgName', $imgName, PDO::PARAM_STR);
-                    $res->bindParam(':frameId', $input['frameId'], PDO::PARAM_STR);
-                    $res->bindParam(':filePath', $frameImage, PDO::PARAM_STR);
-                    $res->bindParam(':createTime', $now, PDO::PARAM_STR);
-                    $res->execute();
-                    if (!$res) { 
-                        $error = $res->errorInfo();
-                        $this->error = $error[0];
-                        $this->frameList();
-                    }
+            //deal with style
+            $this->msg = '資料新增成功';
+            $frameStyle = $input['frameStyle'];
+            if(!empty($frameStyle)){
+                //先把之前的style設定都delete
+                $this->db->beginTransaction();
+                $sql  = "DELETE FROM `frameStyle` WHERE `frameId` = :frameId;";
+                $res = $this->db->prepare($sql);
+                $res->bindParam(':frameId', $frameId, PDO::PARAM_STR);
+                $res->execute();
+                $this->db->commit();
+
+                $sql2 = "INSERT INTO `shingnan`.`frameStyle` (`styleId`, `frameId`, `createTime`) VALUES";
+                foreach($frameStyle as $s){
+                    $sql2 .= " ('" . $s . "', '" . $frameId . "', '" . $now . "'),";
+                }
+                $sql2 = substr_replace($sql2, ";", -1);
+                $res = $this->db->prepare($sql2);
+                $res->execute();
+                if(!$res){
+                    $error = $res->errorInfo();
+                    $this->error = ' 風格設定錯誤 '.$error[2];
                 }
             }
+            //deal with image
+            $uploadPath = '../media/picture';
+            $sql3 = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`,`itemId`, `ctr`, `path`, `link`, `createTime`) VALUES ";
+            for($i=0;$i<$input['imgCount'];$i++){
+                $imgCount = 'frameImage'.(string)($i+1);
+                if (isset($_FILES[$imgCount]['error']) && $_FILES[$imgCount]['error'] == 0){
+                    $imgId = $idGen->GetID('image').$i;
+                    $imgName = 'frame_'.$input['frameName'];
+                    $fileInfo = $_FILES[$imgCount];
+                    $imagePath = uploadFile($fileInfo, $uploadPath);
+                    //echo $imagePath."<br>";
+                    $sql3 .= "('" . $imgId . "', '" . $imgName . "' , 1, '" . $frameId . "', 0, '" . $imagePath . "', '', '" . $now . "'),";
+                }
+            }
+            $sql3 = substr_replace($sql3, ';', -1);
+            $res = $this->db->prepare($sql3);
+            $res->execute();
+            if (!$res) { 
+                $error = $res->errorInfo();
+                $this->error = $this->error.' 圖片新增錯誤 '.$error[2];
+                $this->frameList();
+            }
+        }else{
+            $error = $res->errorInfo();
         }
         $this->frameList();
     }
@@ -255,7 +295,7 @@ class Frame
         }
         // get all data from frame
         $sql = 'SELECT `frame`.`frameId`, `frame`.`no`, `frame`.`frameName`, `frame`.`brandId`, `frame`.`shape`, `frame`.`material`, 
-                     `frame`.`color`, `frame`.`isLaunch`, `frame`.`lastUpdateTime`, `brand`.`brandName` 
+                     `frame`.`color`, `frame`.`isLaunch`, `frame`.`isPrimary`, `frame`.`lastUpdateTime`, `brand`.`brandName` 
                 FROM `frame`, `brand` 
                 WHERE `frame`.`brandId` = `brand`.`brandId` AND `frame`.`isDelete` = 0 
                 ORDER BY `frame`.`frameId`';
@@ -321,7 +361,6 @@ class Frame
         $this->db->commit();
         $this->frameEditPrepare();
     }
-
 
     /**
      * 顯示登入畫面
