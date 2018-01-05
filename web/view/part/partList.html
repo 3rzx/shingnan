@@ -11,13 +11,12 @@
     $(function () {
         $('#partListTable').DataTable({
             "columnDefs": [
-                { "orderable": false, "targets": 5 }
+                { "orderable": false, "targets": 4 }
             ],
             "paging": false,
             "lengthChange": false,
             "searching": false,
-            "ordering": true,
-            "info": true,
+            "ordering": true,   
             "autoWidth": false
         });
     });
@@ -49,7 +48,7 @@
         \{include file="../common/menu.html"\}
         <div class="content-wrapper">
             <section class="content-header">
-                <h1>品牌檢視修改</h1>
+                <h1>零件檢視/修改</h1>
             </section>
             <!-- Main content -->
             <section class="content">
@@ -63,7 +62,7 @@
                         \{/if\}
                         <div class="box box-info">
                             <div class="box-header">
-                                <h3 class="box-title">品牌列表</h3>
+                                <h3 class="box-title">零件列表</h3>
                             </div>
                             <div class="box-body">
                                 <table class="table table-striped" id="partListTable">
@@ -72,13 +71,12 @@
                                             <th>零件名稱</th>
                                             <th>零件類別</th>
                                             <th>零件大小</th>
-                                            <th>是否上架到網路上</th>
                                             <th>最後更新時間</th>
                                             <th>操作選項</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        \{foreach from=$allpartData item=part\}
+                                        \{foreach from=$allPartData item=part\}
                                         <tr>
                                             <td>\{$part.partName\}</td>
                                             \{if $part.type == 1\}
@@ -95,11 +93,6 @@
                                                 <td>其他</td>
                                             \{/if\}
                                             <td>\{$part.size\}</td>
-                                            \{if $part.isLaunch == 1\}
-                                            <td>是</td>
-                                            \{else\}
-                                            <td>否</td>
-                                            \{/if\}
                                             <td>\{$part.lastUpdateTime\}</td>
                                             <td>
                                                 <a href="../controller/partController.php?action=partEditPrepare&partId=\{$part.partId\}">
