@@ -71,8 +71,10 @@ class User
 
         $idGen = new IdGenerator();
         $userId = $idGen->GetID('user');
-        $this->userAddSql($userId, $input);
-        $this->smarty->display('user/userAdd.html');
+        if ($this->userAddSql($userId, $input)) {
+            $this->$msg = '新增成功';
+            $this->userDetailPrepare(array('userId' =>  $userId));
+        }
     }
 
     public function userAddSql($userId, $input)
@@ -99,7 +101,7 @@ class User
         $res->bindParam(':createTime', $now, PDO::PARAM_STR);
 
         if ($res->execute()) {
-            $this->$msg = '新增成功';
+            return true;
         }
 
         $error = $res->errorInfo();
@@ -153,7 +155,7 @@ class User
             $this->viewLogin();
             return;
         }
-        
+
         if (!isset($input['userId'])) {
             return;
         }
@@ -179,7 +181,7 @@ class User
      * For user detail page
      * @DateTime 2016-09-03
      */
-    
+
     public function userDetailPrepare($input)
     {
         if ($_SESSION['isLogin'] == false) {
@@ -193,7 +195,7 @@ class User
                        `user`.`phone`, `user`.`gender`,
                        `user`.`address`, `user`.`point`,
                        `user`.`downlineNum`
-                FROM  `user` 
+                FROM  `user`
                 WHERE  `user`.`userId` = :userId AND `user`.`isDelete` = 0";
 
         $res = $this->db->prepare($sql);
@@ -223,8 +225,6 @@ class User
                      `gender` = :point, `address` = :address,
 
                 WHERE `userId` = :userId;";
-
-
     }
 
 
@@ -240,9 +240,9 @@ class User
             $this->viewLogin();
             return;
         }
-        //TODO: Get user id and get the corespondin user data (use uql)
+        //TODO: Get user id and get the correspondin user data (use uql)
         $sql = "SELECT `user`.`userId`, `user`.`userName`, `user`.`phone`
-                FROM  `user` 
+                FROM  `user`
                 WHERE  `userId` = :userId;";
 
         $res = $this->db->prepare($sql);
@@ -270,7 +270,7 @@ class User
         }
         //TODO: Get user id and get the corespondin user data (use uql)
         $sql = "SELECT `user`.`userId`, `user`.`userName`, `user`.`phone`
-                FROM  `user` 
+                FROM  `user`
                 WHERE  `userId` = :userId;";
 
         $res = $this->db->prepare($sql);
@@ -284,7 +284,76 @@ class User
         $this->smarty->assign('msg', $this->msg);
         $this->smarty->display('user/userCourseRecord.html');
     }
-    
+
+    public function userShoppingGetData($itemType)
+    {
+        $sql = null;
+        switch ($itemType) {
+            case 'frame':
+                $sql = "SELECT  `frame`.`frameName`
+                    FROM  `frame`
+                    WHERE `frame`.`isDelete`=0;";
+                break;
+            case 'glass':
+                $sql = "SELECT  `glass`.`glassName`
+                    FROM  `glass`
+                    WHERE  `glass`.`isDelete`=0;";
+                break;
+            case 'len':
+                $sql = "SELECT  `len`.`lenName`
+                    FROM  `len`
+                    WHERE  `len`.`isDelete`=0;";
+                break;
+            case 'part':
+                $sql = "SELECT  `part`.`partName`
+                    FROM  `part`
+                    WHERE  `part`.`isDelete`=0;";
+                break;
+            default:
+                break;
+        }
+        $res = $this->db->prepare($sql);
+        $res->execute();
+        return $res->fetchAll();
+    }
+
+    public function userShoppingAddPrepare($input)
+    {
+        if ($_SESSION['isLogin'] == false) {
+            $this->error = '請先登入!';
+            $this->viewLogin();
+            return;
+        }
+
+        $idGen = new IdGenerator();
+        $tranId = $idGen->GetID('tran');
+
+        $frameData = $this->userShoppingGetData('frame');
+        $glassData = $this->userShoppingGetData('glass');
+        $lenData = $this->userShoppingGetData('len');
+        $partData = $this->userShoppingGetData('part');
+
+        $userId = $input['userId'];
+
+        $this->smarty->assign('tranId', $tranId);
+        $this->smarty->assign('userId', $userId);
+        $this->smarty->assign('frameData', $frameData);
+        $this->smarty->assign('glassData', $glassData);
+        $this->smarty->assign('lenData', $lenData);
+        $this->smarty->assign('partData', $partData);
+
+
+        $this->smarty->assign('error', $this->error);
+        $this->smarty->assign('msg', $this->msg);
+        $this->smarty->display('user/userShoppingAdd.html');
+
+
+    }
+
+    public function userShoppingAdd($input){
+        header( "Location: ../controller/userController.php?action=userShoppingRecordPrepare&userId=".$input['userId']);
+    }
+
 
     /**
       * 顯示登入畫面

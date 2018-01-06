@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    \{include file="../common/resource.html"\}
+
+</head>
+
+<script>
+
+$(document).ready(function() {
+
+    var frameData = \{$frameData|json_encode\};
+    var glassData = \{$glassData|json_encode\};
+    var lenData = \{$lenData|json_encode\};
+    var partData = \{$partData|json_encode\};
+    var allItemData = {'frame': frameData,
+                    'glass': glassData,
+                    'len': lenData,
+                    'part': partData};
+
+
+
+    var num = 1;
+    $(document).on('click', '.shoppingRecordBtn',function(){
+            $(`#box${num}`).html(`
+                <div class="box-body">
+                    <div id="itemTypeDiv" class="form-group">
+                        <label for="itemType" class="col-sm-2 control-label">購買類型</label>
+                        <div class="col-sm-6">
+                            <select class="selectpicker itemType" name="itemType_${num}" id="itemType_${num}">
+                                <option value="frame">鏡框</option>
+                                <option value="glass">鏡片</option>
+                                <option value="len">隱形眼鏡</option>
+                                <option value="part">零件(維修)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="itemNameDiv" class="form-group">
+                        <label for="itemName" class="col-sm-2 control-label">品項名稱</label>
+                        <div class="col-sm-6">
+                            <select class="selectpicker itemName" name="itemName_${num}" id="itemName_${num}" data-live-search="true" title="請選擇品牌">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box-footer" style="text-align: right;">
+                    <a id="deleteBtn_${num}" class="deleteShoppingRecordBtn btn btn-sm btn-danger"><i class="glyphicon glyphicon-remove"></i></a>
+                    <a class="shoppingRecordBtn btn btn-sm btn-primary"><i class="glyphicon glyphicon-plus"></i></a>
+                </div>
+            `).removeClass("hidden");
+
+            $(`#itemType_${num}`).selectpicker('refresh');
+            $(`#itemName_${num}`).selectpicker('refresh');
+            $(`#box${num}`).after(`<div id="box${num+1}" class="box box-primary hidden">`);
+            num++;
+
+            // default itemName is frame
+            var defaultOptionsHtml = "";
+            for(var i = 0 ; i < allItemData['frame'].length ; i++){
+                defaultOptionsHtml += `<option value=${i}>${allItemData['frame'][i][0]}</option>`;
+            }
+            $('select[id^=itemName]').html(defaultOptionsHtml);
+            $('select[id^=itemName]').selectpicker('refresh');
+
+            $('input[name=trainDetailLength]').val(num);
+
+    });
+
+    $(document).on('click', '.deleteShoppingRecordBtn',function(){
+        var toBeDeleteBoxNum = $(this).attr('id').split('_')[1];
+        $(`#box${toBeDeleteBoxNum}`).remove();
+    });
+
+
+
+    $(document).on('change', 'select[id^=itemType]',function(){
+        var selectedItemNameNum = $(this).attr('id').split('_')[1];
+        var selectedType = $(this).val();
+        var correspondingItems = [];
+        var optionsHtml = "";
+        for(var i = 0 ; i < allItemData[selectedType].length ; i++){
+            optionsHtml += `<option value=${i}>${allItemData[selectedType][i][0]}</option>`;
+        }
+        $(`select[id=itemName_${selectedItemNameNum}]`).html(optionsHtml);
+        $(`select[id=itemName_${selectedItemNameNum}]`).selectpicker('refresh');
+    });
+
+
+});
+</script>
+<body class="hold-transition skin-yellow sidebar-mini">
+    <div class="wrapper">
+        \{include file="../common/header.html"\} \{include file="../common/menu.html"\}
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1>會員交易紀錄新增</h1>
+            </section>
+            <section class="content">
+                <div class="row">
+                    <div class="col-md-6">
+                        \{if $error != ''\}
+                        <div class="alert alert-warning alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$error\}</h4>
+                        </div>
+                        \{/if\} \{if $msg != ''\}
+                        <div class="alert alert-success alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$msg\}</h4>
+                        </div>
+                        \{/if\}
+
+
+                        <form class="form-horizontal" method="post"  action="../controller/userController.php?action=userShoppingAdd" >
+                            <div id="box0" class="box box-primary">
+                                <div class="box-body">
+                                    <div id="itemTypeDiv" class="form-group">
+                                        <label for="itemType0" class="col-sm-2 control-label">購買類型</label>
+                                        <div class="col-sm-6">
+                                            <select class="selectpicker itemType" name="itemType_0" id="itemType_0">
+                                                <option value="frame">鏡框</option>
+                                                <option value="glass">鏡片</option>
+                                                <option value="len">隱形眼鏡</option>
+                                                <option value="part">零件(維修)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div id="itemNameDiv" class="form-group">
+                                        <label for="itemName_0" class="col-sm-2 control-label">品項名稱</label>
+                                        <div class="col-sm-6">
+                                            <select class="selectpicker itemName" name="itemName_0" id="itemName_0" data-live-search="true" title="請選擇品牌">
+                                                <option>123</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="box-footer" style="text-align: right;">
+                                    <a class="shoppingRecordBtn btn btn-sm btn-primary"><i class="glyphicon glyphicon-plus"></i></a>
+                                </div>
+                            </div>
+
+                            <div id="box1" class="box box-primary hidden">
+                            </div>
+
+                            <div class="box-footer" style="text-align: right;">
+                                <!--TODO-->
+                                <a href="../controller/userController.php?action=userShoppingRecordPrepare&userId=\{$userId\}" class="btn btn-warning">取消</a>
+                                <input type="hidden" name="action" value="userShoppingAdd">
+                                <input type="hidden" name="tranId" value="\{$tranId\}">
+                                <input type="hidden" name="userId" value="\{$userId\}">
+                                <input type="hidden" name="trainDetailLength" value="1">
+                                <button type="submit" class="btn btn-success">更新</button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </section>
+        </div>
+        \{include file="../common/footer.html"\}
+    </div>
+</body>
+
+</html>
