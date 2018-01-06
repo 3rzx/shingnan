@@ -29,6 +29,41 @@
                 <h1>文章點擊率</h1>
             </section>
             <section class="content">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box box-info" style="padding: 5px;">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">篩選條件</h3>
+                            </div>
+                            <div class="box-body row">
+                                <div id="errDiv" class="form-group has-error" style="display: none;">
+                                    <label id="errMsg" class="col-sm-12">查無資料</label>
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label class="control-label col-md-2" for="startDatePicker">開始日期</label>
+                                    <div class="input-group col-md-8">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-clock-o"></i>
+                                        </div>
+                                        <input type="text" class="form-control pull-right" id="startDatePicker">
+                                    </div>
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label class="control-label col-md-2" for="endDatePicker">結束日期</label>
+                                    <div class="input-group col-md-8">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-clock-o"></i>
+                                        </div>
+                                        <input type="text" class="form-control pull-right" id="endDatePicker">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box-footer">
+                                <button class="btn btn-success" onclick="queryByDate()">確定</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <!-- Main content -->
                 <div class="row">
                     <div class="col-xs-12">
@@ -41,6 +76,8 @@
                                             <th>文章分類</th>
                                             <th>文章標題</th>
                                             <th>文章內容</th>
+                                            <th>建立時間</th>
+                                            <th>最後更新時間</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -50,6 +87,8 @@
                                             <td>\{$typeMap[$article.type]\}</td>
                                             <td>\{$article.title\}</td>
                                             <td>\{$article.content\}</td>
+                                            <td>\{$article.createTime\}</td>
+                                            <td>\{$article.lastUpdateTime\}</td>
                                         </tr>
                                         \{/foreach\}
                                     </tbody>
@@ -75,7 +114,9 @@
                     { "targets": 0, "width": "10%", "orderable": true },
                     { "targets": 1, "width": "15%", "orderable": true },
                     { "targets": 2, "width": "15%", "orderable": true },
-                    { "targets": 3, "width": "60%", "orderable": true }
+                    { "targets": 3, "width": "40%", "orderable": true },
+                    { "targets": 4, "width": "10%", "orderable": true },
+                    { "targets": 5, "width": "10%", "orderable": true }
                 ]
             });
 

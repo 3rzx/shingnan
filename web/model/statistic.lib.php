@@ -85,7 +85,7 @@ class Statistic
                 );
 
                 $this->smarty->assign('frameList', $frameList);
-                $this->smarty->assign('shapeMap', $shapeMap);            
+                $this->smarty->assign('shapeMap', $shapeMap);
             } else {
                 $error = $res->errorInfo();
                 $this->setResultMsg('failure', $error[0]);
