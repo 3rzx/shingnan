@@ -1,6 +1,7 @@
 <?php
 // initialize
 require_once HOME_DIR . 'configs/config.php';
+require_once 'upload.func.php';
 require_once 'IdGenerator.php';
 /**
  * 生活類別
@@ -73,6 +74,28 @@ class Life
         $res->bindParam(':createTime', $now, PDO::PARAM_STR);
         if ($res->execute()) {
             $this->msg = '新增成功';
+            //deal with image
+            $uploadPath = '../media/picture';
+            $sql2 = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`,`itemId`, `ctr`, `path`, `link`, `createTime`) VALUES ";
+            for ($i = 0; $i < $input['imgCount']; $i++) {
+                $imgCount = 'lifeImage' . (string) ($i + 1);
+                if (isset($_FILES[$imgCount]['error']) && $_FILES[$imgCount]['error'] == 0) {
+                    $imgId = $idGen->GetID('image') . $i;
+                    $imgName = 'life_' . $input['lifeTitle'];
+                    $fileInfo = $_FILES[$imgCount];
+                    $imagePath = uploadFile($fileInfo, $uploadPath);
+                    //echo $imagePath."<br>";
+                    $sql2 .= "('" . $imgId . "', '" . $imgName . "' , 7, '" . $lifeId . "', 0, '" . $imagePath . "', '', '" . $now . "'),";
+                }
+            }
+            $sql2 = substr_replace($sql2, ';', -1);
+            $res = $this->db->prepare($sql2);
+            $res->execute();
+            if (!$res) {
+                $error = $res->errorInfo();
+                $this->error = $this->error . ' 圖片新增錯誤 ' . $error[2];
+                $this->lifeList();
+            }
         } else {
             $error = $res->errorInfo();
             $this->error = $error[0];
@@ -93,13 +116,23 @@ class Life
         }
         $sql = "SELECT `article`.`articleId`, `article`.`title` , `article`.`content`
                 FROM  `article`
+                LEFT JOIN  `image` ON article.`articleId` = image.`itemId`
                 WHERE  `article`.`isDelete` = 0 and `article`.`articleId` = :lifeId";
         $res = $this->db->prepare($sql);
         $res->bindParam(':lifeId', $input['lifeId'], PDO::PARAM_STR);
         $res->execute();
         $lifeData = $res->fetch();
 
+        $sql = "SELECT `image`.`imageId`, `image`.`imageId`, `image`.`imageName`, `image`.`itemId`, `image`.`path`, `image`.`link`
+                FROM `image`
+                WHERE `image`.`itemId` = :lifeId;";
+        $res = $this->db->prepare($sql);
+        $res->bindParam(':lifeId', $input['lifeId'], PDO::PARAM_STR);
+        $res->execute();
+        $imageData = $res->fetchAll();
+
         $this->smarty->assign('lifeData', $lifeData);
+        $this->smarty->assign('imageData', $imageData);
         $this->smarty->assign('error', $this->error);
         $this->smarty->display('life/lifeEdit.html');
     }
@@ -167,6 +200,15 @@ class Life
     public function lifeDelete($input)
     {
         if ($_SESSION['isLogin'] == true) {
+
+            //deal with img
+            $this->db->beginTransaction();
+            $sql = "DELETE FROM `image` WHERE `itemId` = :lifeId;";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':lifeId', $input['lifeId'], PDO::PARAM_STR);
+            $res->execute();
+            $this->db->commit();
+            //
             $this->db->beginTransaction();
             $sql = "DELETE FROM `article` WHERE `articleId` = :lifeId;";
             $res = $this->db->prepare($sql);
@@ -180,6 +222,21 @@ class Life
             $this->error = '請先登入!';
             $this->viewLogin();
         }
+    }
+
+    public function lifeImageDelete($input)
+    {
+        if ($_SESSION['isLogin'] == false) {
+            $this->error = '請先登入!';
+            $this->viewLogin();
+        }
+        $this->db->beginTransaction();
+        $sql = "DELETE FROM `image` WHERE `image`.`imageId` = :imgId;";
+        $res = $this->db->prepare($sql);
+        $res->bindParam(':imgId', $input['imageId'], PDO::PARAM_STR);
+        $res->execute();
+        $this->db->commit();
+        $this->lifeList();
     }
 
     /**

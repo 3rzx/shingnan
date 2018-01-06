@@ -23,6 +23,8 @@
             readURL(this, '#courseImg1');
         });
 
+        $('input[name="imgCount"]').val(imgCount);
+
     });
 
     function readURL(input, id) {
@@ -48,10 +50,10 @@
         return true;
     }
 
-    function addFrameImg(i) {
+    function addCourseImg(i) {
         str = '<div id = "image' + i + '"><div class = "form-inline" style="display:inline-block;">';
         str += '<input type="file" id="courseImage' + i + '" name="courseImage' + i + '" data-input="false" accept="image/*">&nbsp';
-        str += '<a class="btn btn-sm btn-danger" onclick="deleteFrameImg(' + i + ')"><i class="glyphicon glyphicon-remove"></i></a>';
+        str += '<a class="btn btn-sm btn-danger" onclick="deleteCourseImg(' + i + ')"><i class="glyphicon glyphicon-remove"></i></a>';
         str += '</div>';
         str += '<img id="courseImg' + i + '" class="img-thumbnail" style="display:none"><br></div>'
 
@@ -69,9 +71,11 @@
             readURL(this, "#courseImg" + i);
         });
 
+        $('input[name="imgCount"]').val(imgCount);
+
     }
 
-    function deleteFrameImg(i) {
+    function deleteCourseImg(i) {
         $("#image" + i).remove();
     }
 
@@ -104,7 +108,7 @@
                                 <h3 class="box-title">新增課程</h3>
                             </div>
                             <!-- form-->
-                            <form class="form-horizontal" method="post" action="../controller/courseController.php">
+                            <form class="form-horizontal" method="post" enctype="multipart/form-data" action="../controller/courseController.php">
                                 <div class="box-body">
                                     <div id="courseNameDiv" class="form-group">
                                         <label for="courseName" class="col-sm-2 control-label">課程標題</label>
@@ -122,20 +126,19 @@
                                     <div id="courseImageDiv" class="form-group">
                                         <label class="col-sm-2 control-label">文章圖片</label>
                                         <div class="col-sm-10">
-                                            <div id="image1">
-                                                <div class="form-inline" style="display:inline-block;">
-                                                    <input type="file" id="courseImage1" name="courseImage1" data-input="false" accept="image/*">
-                                                    <a class="btn btn-sm btn-primary" onclick="addFrameImg(++imgCount)"><i class="glyphicon glyphicon-plus"></i></a>
-                                                </div>
-                                                <img id="courseImg1" class="img-thumbnail" style="display:none">
-                                                <br>
+                                            <div class="form-inline" style="display:inline-block;">
+                                                <input type="file" id="courseImage1" name="courseImage1" data-input="false" accept="image/*">
+                                                <a class="btn btn-sm btn-primary" onclick="addCourseImg(++imgCount)"><i class="glyphicon glyphicon-plus"></i></a>
                                             </div>
+                                            <img id="courseImg1" class="img-thumbnail" style="display:none">
+                                            <br>
                                             <div id="addImgStart" name="addImgStart"></div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="box-footer" style="text-align: right;">
                                     <a href="../controller/courseController.php?action=courseAddPrepare" class="btn btn-warning">取消</a>
+                                    <input type="hidden" name="imgCount">
                                     <input type="hidden" name="action" value="courseAdd">
                                     <button type="submit" class="btn btn-success">確定</button>
                                 </div>

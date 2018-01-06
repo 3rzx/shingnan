@@ -8,6 +8,85 @@
     <!-- CK Editor -->
     <script type="text/javascript" src="../plugins/ckeditor/ckeditor.js"></script>
     <script>
+    var imgCount = 1;
+    $('input[name="imgCount"]').val(imgCount);
+    $(document).ready(function() {
+        $("#newsImage1").filestyle({
+            size: "nr",
+            input: false,
+            buttonText: "上傳圖片",
+            buttonName: "btn-info",
+            iconName: "glyphicon glyphicon-camera"
+        });
+
+        $("#newsImage1").change(function() {
+            readURL(this, '#newsImg1');
+        });
+    });
+
+    function readURL(input, id) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+                $(id).attr('src', e.target.result);
+                $(id).css('display', '');
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function deleteImage(imageId) {
+
+        BootstrapDialog.show({
+            title: '提醒',
+            message: '確定刪除該文章圖片嗎?',
+            buttons: [{
+                label: '確定',
+                cssClass: 'btn-danger',
+                action: function(dialogItself) {
+                    $.get('../controller/newsController.php?action=newsImageDelete&imageId=' + imageId, function() {});
+                    $("#existed_" + imageId).remove();
+                    dialogItself.close();
+                    //deal with id 
+                }
+            }, {
+                label: '取消',
+                action: function(dialogItself) {
+                    dialogItself.close();
+                }
+            }]
+        });
+    }
+
+    function addNewsImg(i) {
+        str = '<div id = "image' + i + '"><div class = "form-inline" style="display:inline-block;">';
+        str += '<input type="file" id="newsImage' + i + '" name="newsImage' + i + '" data-input="false" accept="image/*">&nbsp';
+        str += '<a class="btn btn-sm btn-danger" onclick="deleteFrameImg(' + i + ')"><i class="glyphicon glyphicon-remove"></i></a>';
+        str += '</div>';
+        str += '<img id="newsImg' + i + '" class="img-thumbnail" style="display:none"><br></div>'
+
+        $("#addImgStart").after(str);
+
+        $("#newsImage" + i).filestyle({
+            size: "nr",
+            input: false,
+            buttonText: "上傳圖片",
+            buttonName: "btn-info",
+            iconName: "glyphicon glyphicon-camera"
+        });
+
+        $("#newsImage" + i).change(function() {
+            readURL(this, "#newsImg" + i);
+        });
+
+        $('input[name="imgCount"]').val(imgCount);
+    }
+
+    function deleteFrameImg(i) {
+        $("#image" + i).remove();
+    }
+    //    
     $(function() {
         // Replace the <textarea id="newsEditor"> with a CKEditor
         // instance, using default configuration.
@@ -37,7 +116,7 @@
                                 <h3 class="box-title">修改文章</h3>
                             </div>
                             <!-- form-->
-                            <form class="form-horizontal" method="post" action="../controller/newsController.php">
+                            <form class="form-horizontal" method="post" enctype="multipart/form-data" action="../controller/newsController.php">
                                 <div class="box-body">
                                     <div id="newsTitleDiv" class="form-group">
                                         <label for="newsTitle" class="col-sm-2 control-label">標題</label>
@@ -53,10 +132,29 @@
                                             </textarea>
                                         </div>
                                     </div>
+                                    <div id="newsImageDiv" class="form-group">
+                                        <label class="col-sm-2 control-label">文章圖片</label>
+                                        <div class="col-sm-10">
+                                            <div class="form-inline" style="display:inline-block;">
+                                                <input type="file" id="newsImage1" name="newsImage1" data-input="false" accept="image/*">
+                                                <a class="btn btn-sm btn-primary" onclick="addNewsImg(++imgCount)"><i class="glyphicon glyphicon-plus"></i></a>
+                                            </div>
+                                            <img id="newsImg1" class="img-thumbnail" style="display:none">
+                                            <br>
+                                            <div id="addImgStart" name="addImgStart"></div>
+                                            <br> \{foreach from=$imageData item=image\}
+                                            <div id="existed_\{$image.imageId\}">
+                                                <a class="btn btn-sm btn-danger" onclick="deleteImage('\{$image.imageId\}')"><i class="glyphicon glyphicon-remove"></i></a>
+                                                <img id="\{$image.imageId\}" class="img-thumbnail" src="\{$image.path\}" alt="尚未上傳圖片">
+                                            </div>
+                                            \{/foreach\}
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="box-footer" style="text-align: right;">
                                     <a href="../controller/newsController.php?action=newsList" class="btn btn-warning">取消</a>
                                     <input type="hidden" name="action" value="newsEdit">
+                                    <input type="hidden" name="imgCount">
                                     <input type="hidden" name="newsId" value="\{$newsData.articleId\}">
                                     <button type="submit" class="btn btn-success">更新</button>
                                 </div>

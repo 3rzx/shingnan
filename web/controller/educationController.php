@@ -34,6 +34,9 @@ switch ($method) {
             case 'educationDelete':
                 $education->educationDelete($_GET);
                 break;
+            case 'educationImageDelete':
+                $education->educationImageDelete($_GET);
+                break;
             default:
                 $education->viewLogin();
                 break;
