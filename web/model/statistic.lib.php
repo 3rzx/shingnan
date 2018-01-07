@@ -108,9 +108,11 @@ class Statistic
      */
     public function viewOrderHistory() {
         if ($_SESSION['isLogin'] == true) {
-            $sql = "SELECT *, `user`.`userName`, `user`.`gender` 
-                    FROM `tran` INNER JOIN `user` 
-                    ON `tran`.`userId` = `user`.`userId`";
+            $sql = "SELECT `tran`.*, `tranDetail`.`itemNum`, `tranDetail`.`actionState`,        `user`.`userName`, `user`.`gender`, `frame`.`frameName`
+                    FROM `tran`
+                    INNER JOIN `tranDetail` ON `tran`.`tranId` = `tranDetail`.`tranId`
+                    INNER JOIN `user` ON `tran`.`userId` = `user`.`userId`
+                    INNER JOIN `frame` ON `tranDetail`.`itemId` = `frame`.`frameId`";
             $res = $this->db->prepare($sql);
 
             if ($res->execute()) {
@@ -128,7 +130,7 @@ class Statistic
                 );
 
                 $this->smarty->assign('orderHistory', $orderHistory);
-                $this->smarty->assign('fieldMap', $fieldMap);           
+                $this->smarty->assign('fieldMap', $fieldMap);
             } else {
                 $error = $res->errorInfo();
                 $this->setResultMsg('failure', $error[0]);
@@ -146,30 +148,49 @@ class Statistic
     /**
      * 使用日期查詢消費紀錄列表
      */
-    public function queryOrderHistoryByDate($input) {
-        $startDate = $input['startDate'];
-        $endDate = $input['endDate'];
+    public function orderHistoryQueryByDate($input) {
+        if ($_SESSION['isLogin'] == true) {
+            $startDate = $input['startDate'];
+            $endDate = $input['endDate'];
+            $sql = "SELECT `tran`.*, `tranDetail`.`itemNum`, `tranDetail`.`actionState`,            `user`.`userName`, `user`.`gender`, `frame`.`frameName`
+                    FROM `tran`
+                    INNER JOIN `tranDetail` ON `tran`.`tranId` = `tranDetail`.`tranId`
+                    AND `tran`.`lastUpdateTime` >= :startDate
+                    AND `tran`.`lastUpdateTime` <= :endDate
+                    INNER JOIN `user` ON `tran`.`userId` = `user`.`userId`
+                    INNER JOIN `frame` ON `tranDetail`.`itemId` = `frame`.`frameId`";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':startDate', $startDate, PDO::PARAM_STR);
+            $res->bindParam(':endDate', $endDate, PDO::PARAM_STR);
 
-        $sql = "SELECT * FROM `tran` 
-                WHERE `lastUpdateTime` >= :startDate 
-                AND `lastUpdateTime` <= :endDate";
-        $res = $this->db->prepare($sql);
-        $res->bindParam(':startDate', $startDate, PDO::PARAM_STR);
-        $res->bindParam(':endDate', $endDate, PDO::PARAM_STR);
+            if ($res->execute()) {
+                $orderHistory = $res->fetchAll();
+                $this->setResultMsg();
+                $fieldMap = array(
+                    1 => '女',
+                    2 => '男',
+                    3 => '購物',
+                    4 => '維修',
+                    5 => '非金錢來往行為',
+                    6 => '未付任何金錢',
+                    7 => '已付訂金',
+                    8 => '已結清尾款'
+                );
 
-        if ($res->execute()) {
-            $orderHistory = $res->fetchAll();
-            $this->setResultMsg();
+                $this->smarty->assign('orderHistory', $orderHistory);
+                $this->smarty->assign('fieldMap', $fieldMap);
+            } else {        
+                $error = $res->errorInfo();
+                $this->setResultMsg('failure', $error[0]);
+            }
 
-            $this->smarty->assign('orderHistory', $orderHistory);
+            $this->smarty->assign('error', $this->error);
+            $this->smarty->assign('msg', $this->msg);
+            $this->smarty->display('statistic/orderHistory.html');
         } else {        
-            $error = $res->errorInfo();
-            $this->setResultMsg('failure', $error[0]);
+            $this->setResultMsg('failure', '請先登入!');
+            $this->viewLogin();
         }
-
-        $this->smarty->assign('error', $this->error);
-        $this->smarty->assign('msg', $this->msg);
-        $this->smarty->display('statistic/orderHistory.html');
     }
 
     /**

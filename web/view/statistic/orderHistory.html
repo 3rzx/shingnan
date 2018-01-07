@@ -74,25 +74,28 @@
                                         <tr>
                                             <th>滿意度</th>
                                             <th>會員名稱</th>
-                                            <th>會員性別</th>
                                             <th>商品名稱</th>
                                             <th>商品數量</th>
                                             <th>消費種類</th>
                                             <th>點數</th>
                                             <th>結帳狀態</th>
+                                            <th>最後更新日期</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         \{foreach from=$orderHistory item=order\}
                                         <tr>
-                                            <td>\{$order.score\}</td>
+                                            <td>
+                                                \{if $order.score == null\} 0 \{else\} \{$order.score\} \{/if\}
+                                            </td>
                                             <td>\{$order.userName\}</td>
-                                            <td>\{$fieldMap[$order.gender]\}</td>
-                                            <td>隱形眼鏡 A</td>
+                                            <!-- <td>\{$fieldMap[$order.gender]\}</td> -->
+                                            <td>\{$order.frameName\}</td>
                                             <td>\{$order.itemNum\}</td>
                                             <td>\{$fieldMap[$order.actionState + 2]\}</td>
                                             <td>\{$order.point\}</td>
                                             <td>\{$fieldMap[$order.checkState + 5]\}</td>
+                                            <td>\{$order.lastUpdateTime\}</td>
                                         </tr>
                                         \{/foreach\}
                                     </tbody>
@@ -118,10 +121,10 @@
                     { "targets": 0, "width": "10%", "orderable": true },
                     { "targets": 1, "width": "15%", "orderable": true },
                     { "targets": 2, "width": "10%", "orderable": true },
-                    { "targets": 3, "width": "15%", "orderable": true },
-                    { "targets": 4, "width": "10%", "orderable": true },
-                    { "targets": 5, "width": "15%", "orderable": true },
-                    { "targets": 6, "width": "10%", "orderable": true },
+                    { "targets": 3, "width": "10%", "orderable": true },
+                    { "targets": 4, "width": "15%", "orderable": true },
+                    { "targets": 5, "width": "10%", "orderable": true },
+                    { "targets": 6, "width": "15%", "orderable": true },
                     { "targets": 7, "width": "15%", "orderable": true },
                 ]
             });
@@ -151,21 +154,8 @@
             } else if ($('#facilitySelect').val() === '#') {
                 alert('請選擇體驗設施');
             } else {
-                getQueryResult();
+                location.href = "statisticController.php?action=orderHistoryQueryByDate&startDate=" + startDate + "&endDate=" + endDate;
             }
-        }
-
-        function getQueryResult() {
-            $.get(
-                'controller/statisticController.php',
-                {
-                    startDate: startDate,
-                    endDate: endDate,
-                    action: 'getQueryResult'
-                }
-            ).fail(function () {
-                alert("抱歉! 伺服器無法接受您的查詢!");
-            });
         }
     </script>
 </body>

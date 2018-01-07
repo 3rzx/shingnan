@@ -27,8 +27,8 @@ switch ($method) {
             case 'orderHistory':
                 $statistic->viewOrderHistory();
                 break;
-            case 'getQueryResult':
-                $statistic->queryOrderHistoryByDate($_GET);
+            case 'orderHistoryQueryByDate':
+                $statistic->orderHistoryQueryByDate($_GET);
                 break;
             case 'articleQueryByDate':
                 $statistic->articleQueryByDate($_GET);
