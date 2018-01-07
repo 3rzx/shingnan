@@ -88,12 +88,12 @@
                                             <td>\{$frame.frameName\}</td>
                                             <td>\{$frame.no\}</td>
                                             <td>\{$shapeMap[$frame.shape]\}</td>
-                                            <td>\{$frame.color\}</td>
-                                            <td>\{$frame.material\}</td>
+                                            <td>\{$frame.createTime\}</td>
+                                            <td>\{$frame.lastUpdateTime\}</td>
                                             <td>
-                                                <button class="btn btn-sm btn-info" onclick="">
+                                                <a class="btn btn-sm btn-info" href="frameController.php?action=frameEditPrepare&frameId=\{$frame.frameId\}">
                                                     <i class="glyphicon glyphicon-menu-hamburger"></i>
-                                                </button>
+                                                </a>
                                             </td>
                                         </tr>
                                         \{/foreach\}
@@ -120,10 +120,10 @@
                     { "targets": 0, "width": "10%", "orderable": true },
                     { "targets": 1, "width": "15%", "orderable": true },
                     { "targets": 2, "width": "15%", "orderable": true },
-                    { "targets": 3, "width": "15%", "orderable": true },
-                    { "targets": 4, "width": "15%", "orderable": true },
-                    { "targets": 5, "width": "15%", "orderable": true },
-                    { "targets": 6, "width": "15%", "orderable": true }
+                    { "targets": 3, "width": "10%", "orderable": true },
+                    { "targets": 4, "width": "20%", "orderable": true },
+                    { "targets": 5, "width": "20%", "orderable": true },
+                    { "targets": 6, "width": "10%", "orderable": true }
                 ]
             });
 
@@ -144,16 +144,13 @@
 
         });
 
-        function query() {
+        function queryByDate() {
             if (startDate === null || startDate === "") {
                 alert('請選擇開始日期!');
             } else if (endDate === null || endDate === "") {
                 alert('請選擇結束日期!');
-            } else if ($('#facilitySelect').val() === '#') {
-                alert('請選擇體驗設施');
             } else {
-                setInspectTable('man');
-                setInspectTable('auto');
+                location.href = "statisticController.php?action=goodsQueryByDate&startDate=" + startDate + "&endDate=" + endDate;
             }
         }
     </script>

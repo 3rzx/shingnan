@@ -33,6 +33,9 @@ switch ($method) {
             case 'articleQueryByDate':
                 $statistic->articleQueryByDate($_GET);
                 break;
+            case 'goodsQueryByDate':
+                $statistic->goodsQueryByDate($_GET);
+                break;
             default:
                 $statistic->viewLogin();
         }

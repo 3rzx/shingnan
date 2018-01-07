@@ -69,7 +69,10 @@ class Statistic
      */
     public function viewGoodsClick() {
         if ($_SESSION['isLogin'] == true) {
-            $sql = "SELECT * FROM `frame`";
+            $sql = "SELECT `frame`.*, COUNT(`frameClick`.`itemId`) AS `ctr`
+                    FROM `frame` LEFT JOIN `frameClick`
+                    ON `frame`.`frameId` = `frameClick`.`itemId`
+                    GROUP BY `frame`.`frameId`";
             $res = $this->db->prepare($sql);
 
             if ($res->execute()) {
@@ -169,6 +172,9 @@ class Statistic
         $this->smarty->display('statistic/orderHistory.html');
     }
 
+    /**
+     * 使用日期查詢文章點擊率列表
+     */
     public function articleQueryByDate($input) {
         if ($_SESSION['isLogin'] == true) {
             $startDate = $input['startDate'];
@@ -200,6 +206,52 @@ class Statistic
             $this->smarty->assign('error', $this->error);
             $this->smarty->assign('msg', $this->msg);
             $this->smarty->display('statistic/articleClick.html');
+        } else {
+            $this->setResultMsg('failure', '請先登入!');
+            $this->viewLogin();
+        }
+    }
+
+    /**
+     * 使用日期查詢商品點擊率列表
+     */
+    public function goodsQueryByDate($input) {
+        if ($_SESSION['isLogin'] == true) {
+            $startDate = $input['startDate'];
+            $endDate = $input['endDate'];
+
+            $sql = "SELECT `frame`.*, COUNT(`frameClick`.`itemId`) AS `ctr`
+                    FROM `frame` LEFT JOIN `frameClick`
+                    ON `frame`.`frameId` = `frameClick`.`itemId`
+                    AND `frameClick`.`createTime` >= :startDate 
+                    AND `frameClick`.`createTime` <= :endDate
+                    GROUP BY `frame`.`frameId`";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':startDate', $startDate, PDO::PARAM_STR);
+            $res->bindParam(':endDate', $endDate, PDO::PARAM_STR);
+
+            if ($res->execute()) {
+                $frameList = $res->fetchAll();
+                $this->setResultMsg();
+                $shapeMap = array(
+                    1 => '圓',
+                    2 => '方',
+                    3 => '全',
+                    4 => '半',
+                    5 => '無',
+                    6 => '混合'
+                );
+
+                $this->smarty->assign('frameList', $frameList);
+                $this->smarty->assign('shapeMap', $shapeMap);
+            } else {        
+                $error = $res->errorInfo();
+                $this->setResultMsg('failure', $error[0]);
+            }
+
+            $this->smarty->assign('error', $this->error);
+            $this->smarty->assign('msg', $this->msg);
+            $this->smarty->display('statistic/goodsClick.html');
         } else {
             $this->setResultMsg('failure', '請先登入!');
             $this->viewLogin();
