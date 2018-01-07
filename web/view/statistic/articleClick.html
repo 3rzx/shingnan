@@ -137,16 +137,13 @@
 
         });
 
-        function query() {
+        function queryByDate() {
             if (startDate === null || startDate === "") {
                 alert('請選擇開始日期!');
             } else if (endDate === null || endDate === "") {
                 alert('請選擇結束日期!');
-            } else if ($('#facilitySelect').val() === '#') {
-                alert('請選擇體驗設施');
             } else {
-                setInspectTable('man');
-                setInspectTable('auto');
+                location.href = "statisticController.php?action=articleQueryByDate&startDate=" + startDate + "&endDate=" + endDate;
             }
         }
     </script>

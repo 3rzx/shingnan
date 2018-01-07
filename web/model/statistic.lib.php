@@ -169,6 +169,43 @@ class Statistic
         $this->smarty->display('statistic/orderHistory.html');
     }
 
+    public function articleQueryByDate($input) {
+        if ($_SESSION['isLogin'] == true) {
+            $startDate = $input['startDate'];
+            $endDate = $input['endDate'];
+
+            $sql = "SELECT * FROM `article` 
+                    WHERE `lastUpdateTime` >= :startDate 
+                    AND `lastUpdateTime` <= :endDate";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':startDate', $startDate, PDO::PARAM_STR);
+            $res->bindParam(':endDate', $endDate, PDO::PARAM_STR);
+
+            if ($res->execute()) {
+                $articleList = $res->fetchAll();
+                $this->setResultMsg();
+                $typeMap = array(
+                    1 => '衛教文章',
+                    2 => '新知趨勢',
+                    3 => '興南生活'
+                );
+
+                $this->smarty->assign('articleList', $articleList);   
+                $this->smarty->assign('typeMap', $typeMap);
+            } else {        
+                $error = $res->errorInfo();
+                $this->setResultMsg('failure', $error[0]);
+            }
+
+            $this->smarty->assign('error', $this->error);
+            $this->smarty->assign('msg', $this->msg);
+            $this->smarty->display('statistic/articleClick.html');
+        } else {
+            $this->setResultMsg('failure', '請先登入!');
+            $this->viewLogin();
+        }
+    }
+
     /**
      * 設定訊息
      */

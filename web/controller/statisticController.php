@@ -30,6 +30,9 @@ switch ($method) {
             case 'getQueryResult':
                 $statistic->queryOrderHistoryByDate($_GET);
                 break;
+            case 'articleQueryByDate':
+                $statistic->articleQueryByDate($_GET);
+                break;
             default:
                 $statistic->viewLogin();
         }
