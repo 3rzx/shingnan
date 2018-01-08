@@ -34,6 +34,9 @@ switch ($method) {
             case 'newsDelete':
                 $news->newsDelete($_GET);
                 break;
+            case 'newsImageDelete':
+                $news->newsImageDelete($_GET);
+                break;
             default:
                 $news->viewLogin();
                 break;

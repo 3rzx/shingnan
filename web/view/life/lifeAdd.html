@@ -3,11 +3,80 @@
 
 <head>
     \{include file="../common/resource.html"\}
-    <script type="text/javascript" src="../plugins/bootstrap-filestyle/src/bootstrap-filestyle.min.js">
-    </script>
+    <script type="text/javascript" src="../plugins/bootstrap-filestyle/src/bootstrap-filestyle.min.js"></script>
     <!-- CK Editor -->
     <script type="text/javascript" src="../plugins/ckeditor/ckeditor.js"></script>
     <script>
+    var imgCount = 1;
+    $(document).ready(function() {
+        $("#lifeImage1").filestyle({
+            size: "nr",
+            input: false,
+            buttonText: "上傳圖片",
+            buttonName: "btn-info",
+            iconName: "glyphicon glyphicon-camera"
+        });
+
+
+        $("#lifeImage1").change(function() {
+            readURL(this, '#lifeImg1');
+        });
+
+        $('input[name="imgCount"]').val(imgCount);
+
+    });
+
+    function readURL(input, id) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+                $(id).attr('src', e.target.result);
+                $(id).css('display', '');
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function fieldValidation(field) {
+        if ($.trim($(field).val()) == '') {
+            $(field + 'Div').addClass('has-error');
+            $(field + 'Div').val('');
+            return false;
+        } else {
+            $(field + 'Div').removeClass('has-error');
+        }
+        return true;
+    }
+
+    function addLifeImg(i) {
+        str = '<div id = "image' + i + '"><div class = "form-inline" style="display:inline-block;">';
+        str += '<input type="file" id="lifeImage' + i + '" name="lifeImage' + i + '" data-input="false" accept="image/*">&nbsp';
+        str += '<a class="btn btn-sm btn-danger" onclick="deleteLifeImg(' + i + ')"><i class="glyphicon glyphicon-remove"></i></a>';
+        str += '</div>';
+        str += '<img id="lifeImg' + i + '" class="img-thumbnail" style="display:none"><br></div>'
+
+        $("#addImgStart").after(str);
+
+        $("#lifeImage" + i).filestyle({
+            size: "nr",
+            input: false,
+            buttonText: "上傳圖片",
+            buttonName: "btn-info",
+            iconName: "glyphicon glyphicon-camera"
+        });
+
+        $("#lifeImage" + i).change(function() {
+            readURL(this, "#lifeImg" + i);
+        });
+        $('input[name="imgCount"]').val(imgCount);
+
+    }
+
+    function deleteLifeImg(i) {
+        $("#image" + i).remove();
+    }
+
     $(function() {
         // Replace the <textarea id="lifeEditor"> with a CKEditor
         // instance, using default configuration.
@@ -37,7 +106,7 @@
                                 <h3 class="box-title">新增文章</h3>
                             </div>
                             <!-- form-->
-                            <form class="form-horizontal" method="post" action="../controller/lifeController.php">
+                            <form class="form-horizontal" method="post" enctype="multipart/form-data" action="../controller/lifeController.php">
                                 <div class="box-body">
                                     <div id="lifeTitleDiv" class="form-group">
                                         <label for="lifeTitle" class="col-sm-2 control-label">標題</label>
@@ -52,9 +121,22 @@
                                             </textarea>
                                         </div>
                                     </div>
+                                    <div id="lifeImageDiv" class="form-group">
+                                        <label class="col-sm-2 control-label">文章圖片</label>
+                                        <div class="col-sm-10">
+                                            <div class="form-inline" style="display:inline-block;">
+                                                <input type="file" id="lifeImage1" name="lifeImage1" data-input="false" accept="image/*">
+                                                <a class="btn btn-sm btn-primary" onclick="addLifeImg(++imgCount)"><i class="glyphicon glyphicon-plus"></i></a>
+                                            </div>
+                                            <img id="lifeImg1" class="img-thumbnail" style="display:none">
+                                            <br>
+                                            <div id="addImgStart" name="addImgStart"></div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="box-footer" style="text-align: right;">
                                     <a href="../controller/lifeController.php?action=lifeAddPrepare" class="btn btn-warning">取消</a>
+                                    <input type="hidden" name="imgCount">
                                     <input type="hidden" name="action" value="lifeAdd">
                                     <button type="submit" class="btn btn-success">確定</button>
                                 </div>

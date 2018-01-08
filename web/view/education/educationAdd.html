@@ -3,11 +3,71 @@
 
 <head>
     \{include file="../common/resource.html"\}
-    <script type="text/javascript" src="../plugins/bootstrap-filestyle/src/bootstrap-filestyle.min.js">
-    </script>
+    <script type="text/javascript" src="../plugins/bootstrap-filestyle/src/bootstrap-filestyle.min.js"></script>
     <!-- CK Editor -->
     <script type="text/javascript" src="../plugins/ckeditor/ckeditor.js"></script>
     <script>
+    var imgCount = 1;
+    $(document).ready(function() {
+        $("#educationImage1").filestyle({
+            size: "nr",
+            input: false,
+            buttonText: "上傳圖片",
+            buttonName: "btn-info",
+            iconName: "glyphicon glyphicon-camera"
+        });
+
+
+        $("#educationImage1").change(function() {
+            readURL(this, '#educationImg1');
+        });
+
+        $('input[name="imgCount"]').val(imgCount);
+
+    });
+
+    function readURL(input, id) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+                $(id).attr('src', e.target.result);
+                $(id).css('display', '');
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+
+    function addEducationImg(i) {
+        str = '<div id = "image' + i + '"><div class = "form-inline" style="display:inline-block;">';
+        str += '<input type="file" id="educationImage' + i + '" name="educationImage' + i + '" data-input="false" accept="image/*">&nbsp';
+        str += '<a class="btn btn-sm btn-danger" onclick="deleteEducationImg(' + i + ')"><i class="glyphicon glyphicon-remove"></i></a>';
+        str += '</div>';
+        str += '<img id="educationImg' + i + '" class="img-thumbnail" style="display:none"><br></div>'
+
+        $("#addImgStart").after(str);
+
+        $("#educationImage" + i).filestyle({
+            size: "nr",
+            input: false,
+            buttonText: "上傳圖片",
+            buttonName: "btn-info",
+            iconName: "glyphicon glyphicon-camera"
+        });
+
+        $("#educationImage" + i).change(function() {
+            readURL(this, "#educationImg" + i);
+        });
+
+        $('input[name="imgCount"]').val(imgCount);
+    }
+
+    function deleteEducationImg(i) {
+        $("#image" + i).remove();
+    }
+
+    //    
     $(function() {
         // Replace the <textarea id="educationEditor"> with a CKEditor
         // instance, using default configuration.
@@ -37,7 +97,7 @@
                                 <h3 class="box-title">新增文章</h3>
                             </div>
                             <!-- form-->
-                            <form class="form-horizontal" method="post" action="../controller/educationController.php">
+                            <form class="form-horizontal" method="post" enctype="multipart/form-data" action="../controller/educationController.php">
                                 <div class="box-body">
                                     <div id="educationTitleDiv" class="form-group">
                                         <label for="educationTitle" class="col-sm-2 control-label">標題</label>
@@ -52,9 +112,22 @@
                                             </textarea>
                                         </div>
                                     </div>
+                                    <div id="educationImageDiv" class="form-group">
+                                        <label class="col-sm-2 control-label">文章圖片</label>
+                                        <div class="col-sm-10">
+                                            <div class="form-inline" style="display:inline-block;">
+                                                <input type="file" id="educationImage1" name="educationImage1" data-input="false" accept="image/*">
+                                                <a class="btn btn-sm btn-primary" onclick="addEducationImg(++imgCount)"><i class="glyphicon glyphicon-plus"></i></a>
+                                            </div>
+                                            <img id="educationImg1" class="img-thumbnail" style="display:none">
+                                            <br>
+                                            <div id="addImgStart" name="addImgStart"></div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="box-footer" style="text-align: right;">
                                     <a href="../controller/educationController.php?action=educationAddPrepare" class="btn btn-warning">取消</a>
+                                    <input type="hidden" name="imgCount">
                                     <input type="hidden" name="action" value="educationAdd">
                                     <button type="submit" class="btn btn-success">確定</button>
                                 </div>
