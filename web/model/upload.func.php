@@ -22,12 +22,14 @@ function uploadFile($fileInfo, $uploadPath = 'uploads', $uniName = '', $allowExt
     $uniName     = $fileInfo['name'];
     $destination = $uploadPath . '/' . $uniName;
     // 確保檔案名稱唯一，防止重覆名稱產生覆蓋
-    // if ($uniName == '') {
-    //     $uniName     = md5(uniqid(microtime(true), true)) . '.' . $ext;
-    //     $destination = $uploadPath . '/' . $uniName;
-    // } else {
-    //     $destination = $uploadPath . '/' . $uniName;
-    // }
+    $uniName     = md5(uniqid(microtime(true), true)) . '.' . $ext;
+    $destination = $uploadPath . '/' . $uniName;
+    /* if ($uniName == '') {
+         $uniName     = md5(uniqid(microtime(true), true)) . '.' . $ext;
+         $destination = $uploadPath . '/' . $uniName;
+     } else {
+         $destination = $uploadPath . '/' . $uniName;
+     }*/
 
     // 判斷是否有錯誤
     if ($fileInfo['error'] > 0) {
