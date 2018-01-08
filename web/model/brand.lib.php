@@ -147,7 +147,7 @@ class Brand
         //update image 
             $this->msg = '更新成功';
             if ($_FILES['brandImage']['error'] == 0) {
-                if( isset($input['imageId']) ){                
+                if( isset($input['imageId']) ){
                     $fileInfo = $_FILES['brandImage'];
                     $brandImage = uploadFile($fileInfo, '../media/picture');
                     $sql = "UPDATE  `shingnan`.`image` SET  `path` = :pathinfo WHERE `image`.`imageId` = :imageId;";
