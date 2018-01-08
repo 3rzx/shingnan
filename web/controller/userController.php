@@ -9,7 +9,6 @@ require_once HOME_DIR . 'model/user.lib.php';
 $user = new User();
 
 $method = $_SERVER['REQUEST_METHOD'];
-
 switch ($method) {
     case 'POST':
         $action = isset($_POST['action']) ? $_POST['action'] : '';

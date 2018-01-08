@@ -109,7 +109,6 @@ $(document).ready(function() {
     });
 
     //  produce tranDetail in database
-    console.log(allTranDetailData);
     var itemType = "";
     for(i in allTranDetailData){
         $(`#shoppingRecordBtn_0`).click();
@@ -117,15 +116,19 @@ $(document).ready(function() {
         $(`select[id=itemType_${i}]`).val(itemType).change(); //  change trigger when itemName is selected and itemType changed at the same Time
         $(`select[id=itemName_${i}]`).val(allTranDetailData[i]['itemId']);
         $(`#state_${i}`).val('update');
+        $(`#amount_${i}`).val(allTranDetailData[i]['itemNum']);
 
 
         $(`select[id=itemType_${i}]`).selectpicker('refresh');
         $(`select[id=itemName_${i}]`).selectpicker('refresh');
-        console.log(i);
     }
+    
     $(`textarea[name=description]`).val(tranData['description']);
     $('#price').val(tranData['price']);
+    $(`textarea[name=opinion]`).val(tranData['opinion']);
+    $('#score').val(tranData['score']);
 
+    $(`input.form-check-input[value=${tranData['checkState']}]`).attr('checked', 'true');
 });
 </script>
 <body class="hold-transition skin-yellow sidebar-mini">
@@ -133,7 +136,7 @@ $(document).ready(function() {
         \{include file="../common/header.html"\} \{include file="../common/menu.html"\}
         <div class="content-wrapper">
             <section class="content-header">
-                <h1>會員交易紀錄新增</h1>
+                <h1>會員交易紀錄編輯</h1>
             </section>
             <section class="content">
                 <div class="row">
@@ -153,13 +156,43 @@ $(document).ready(function() {
 
                         <form class="form-horizontal" method="post"  action="../controller/userController.php" >
 
+                            <!--checkState box-->
+                            <div id="checkStateBox" class="box box-primary">
+                                <div class="box-body">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="checkState" value="1" checked>
+                                            <label class="form-check-label" for="exampleRadios1">
+                                                非金錢往來行為
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="checkState" value="2">
+                                            <label class="form-check-label" for="exampleRadios2">
+                                                未付款
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="checkState" value="3">
+                                            <label class="form-check-label" for="exampleRadios3">
+                                                以付訂金
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="checkState" value="4">
+                                            <label class="form-check-label" for="exampleRadios3">
+                                                已結清
+                                            </label>
+                                        </div>
+                                </div>
+                            </div>
+
                             <div id="box0" class="box box-primary hidden">
                                 <div class="box-footer" style="text-align: right;">
                                     <a id= "shoppingRecordBtn_0" class="shoppingRecordBtn btn btn-sm btn-primary"><i class="glyphicon glyphicon-plus"></i></a>
                                 </div>
                             </div>
 
-                            <!--descriptionBox-->
+                            <!--description box-->
                             <div id="descriptionBox" class="box box-primary">
                                 <div class="box-body">
                                     <div id="descriptionDiv" class="form-group">
@@ -171,6 +204,8 @@ $(document).ready(function() {
                                 </div>
                             </div>
 
+
+                            <!--price box-->
                             <div id="priceBox" class="box box-primary">
                                 <div class="box-body">
                                     <div id="pirceDiv" class="form-group">
@@ -180,16 +215,36 @@ $(document).ready(function() {
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="box-footer" style="text-align: right;">
+                                    <a href="../controller/userController.php?action=userShoppingRecordPrepare&userId=\{$userId\}" class="btn btn-warning">取消</a>
+                                    <input type="hidden" name="action" value="userShoppingRecordEdit">
+                                    <input type="hidden" name="userId" value="\{$tranData.userId\}">
+                                    <input type="hidden" name="tranId" value="\{$tranData.tranId\}">
+                                    <input type="hidden" name="tranDetailLength" value="1">
+                                    <button type="submit" class="btn btn-success">更新</button>
+                                </div>
                             </div>
 
-                            <div class="box-footer" style="text-align: right;">
-                                <a href="../controller/userController.php?action=userShoppingRecordPrepare&userId=\{$userId\}" class="btn btn-warning">取消</a>
-                                <input type="hidden" name="action" value="userShoppingRecordEdit">
-                                <input type="hidden" name="userId" value="\{$tranData.userId\}">
-                                <input type="hidden" name="tranId" value="\{$tranData.tranId\}">
-                                <input type="hidden" name="tranDetailLength" value="1">
-                                <button type="submit" class="btn btn-success">更新</button>
+                            <!--opinion and score box-->
+                            <div class="box box-primary">
+                                <div class="box-body">
+                                    <div id="feebackDiv" class="form-group">
+                                        <label for="opinion" class="col-sm-2 control-label">交易回饋</label>
+                                        <div class="col-sm-8">
+                                            <textarea readonly name="opinion" class="form-control" rows="5"></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div id="scoreDiv" class="form-group">
+                                        <label for="score" class="col-sm-2 control-label">交易評分</label>
+                                        <div class="col-sm-6">
+                                            <input readonly id="score" name="score" class="form-control" type="number">
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
+
 
 
                         </form>

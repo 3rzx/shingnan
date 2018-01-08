@@ -3,6 +3,30 @@
 
 <head>
     \{include file="../common/resource.html"\}
+<script>
+$(document).ready(function() {
+    var allAccount = \{$allAccount|json_encode\};
+    $("#account").focusout(function(){
+        var repeatedAccount = false;
+        for(var i in allAccount){
+            if($(this).val() === allAccount[i]['account']){
+                repeatedAccount = true;
+            }
+
+        }
+        if(repeatedAccount){
+            $("#repeatedAccountValidataion").removeClass("hidden");
+            $("button[type=submit]").attr('disabled', true);
+
+        }
+    });
+    $("#account").focusin(function(){
+        $("#repeatedAccountValidataion").addClass("hidden");
+    });
+
+
+});
+</script>
 </head>
 
 <body class="hold-transition skin-yellow sidebar-mini">
@@ -15,18 +39,7 @@
             <section class="content">
                 <div class="row">
                     <div class="col-md-6">
-                        \{if $error != ''\}
-                        <div class="alert alert-warning alert-dismissable text-center">
-                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                            <h4 style="display: inline;">\{$error\}</h4>
-                        </div>
-                        \{/if\} \{if $msg != ''\}
-                        <div class="alert alert-success alert-dismissable text-center">
-                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                            <h4 style="display: inline;">\{$msg\}</h4>
-                        </div>
-                        \{/if\}
-                        <div class="box box-primary">
+                    <div class="box box-primary">
                             <div class="box-header with-border">
                                 <h3 class="box-title">新增使用者</h3>
                             </div>
@@ -70,7 +83,10 @@
                                     <div id="accountNameDiv" class="form-group">
                                         <label for="account" class="col-sm-2 control-label">帳號</label>
                                         <div class="col-sm-10">
-                                            <input id="account" name="account" class="form-control" placeholder="帳號">
+                                            <input id="account" name="account" class="form-control" placeholder="帳號" required>
+                                            <div id="repeatedAccountValidataion" class="invalid-feedback hidden" style="color:red;">
+                                                帳號重複, 請重新輸入
+                                            </div>
                                         </div>
                                     </div>
 
@@ -78,7 +94,7 @@
                                     <div id="userPasswordDiv" class="form-group">
                                         <label for="password" class="col-sm-2 control-label">密碼</label>
                                         <div class="col-sm-10">
-                                            <input id="password" type="password" name="password" class="form-control" placeholder="密碼">
+                                            <input id="password" type="password" name="password" class="form-control" placeholder="密碼" required>
                                         </div>
                                     </div>
 
@@ -97,12 +113,12 @@
                                             <input id="address" name="address" class="form-control" placeholder="地址">
                                         </div>
                                     </div>
-                                    
+
                                     <!-- /.box-body -->
                                     <div class="box-footer" style="text-align: right;">
-                                        <a href="../controller/userController.php" class="btn btn-warning">取消</a>
                                         <input type="hidden" name="action" value="userAdd">
                                         <button type="submit" class="btn btn-primary">確定</button>
+
                                     </div>
                                 </div>
                             </form>
