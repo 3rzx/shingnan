@@ -1,5 +1,8 @@
 <?php
 //initialize
+//ini_set("display_errors", "on");
+
+//error_reporting(E_ALL ^ E_NOTICE);
 require_once '../configs/source.php';
 require_once HOME_DIR . 'model/user.lib.php';
 
@@ -19,6 +22,9 @@ switch ($method) {
                 break;
             case 'userDelete':
                 $user->userDelete($_POST);
+                break;
+            case 'userShoppingAdd':
+                $user->userShoppingAdd($_POST);
                 break;
         }
         break;
@@ -41,6 +47,9 @@ switch ($method) {
                 $user->userCourseRecordPrepare($_GET);
                 break;
 
+            case 'userShoppingAddPrepare':
+                $user->userShoppingAddPrepare($_GET);
+                break;
             default:
                 $user->viewLogin();
         }
