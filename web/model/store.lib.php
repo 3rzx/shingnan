@@ -64,16 +64,18 @@ class Store
         $idGen = new IdGenerator();
         $now = date('Y-m-d H:i:s');
         $storeId = $idGen->GetID('store');
-        $sql = "INSERT INTO `shingnan`.`store` (`storeId`, `storeName`, `phoneNumber`, `address`, `businessHours`, `description`, `isDelete`, `lastUpdateTime`, `createTime`) VALUES (:storeId, :storeName, :phoneNumber, :address, :businessHours, :description, '0', :lastUpdateTime, :createTime);";
+        $sql = "INSERT INTO `shingnan`.`store` (`storeId`, `storeName`, `phoneNumber`, `address`, `businessFrom`,`businessTo`, `description`, `isDelete`, `lastUpdateTime`, `createTime`) VALUES (:storeId, :storeName, :phoneNumber, :address, :businessFrom , :businessTo , :description, '0', :lastUpdateTime, :createTime);";
         $res = $this->db->prepare($sql);
         $res->bindParam(':storeId', $storeId, PDO::PARAM_STR);
         $res->bindParam(':storeName', $input['storeName'], PDO::PARAM_STR);
         $res->bindParam(':phoneNumber', $input['storePhone'], PDO::PARAM_STR);
         $res->bindParam(':address', $input['storeAddress'], PDO::PARAM_STR);
-        $res->bindParam(':businessHours', $input['businessHours'], PDO::PARAM_STR);
+        $res->bindParam(':businessFrom', $input['businessFrom'], PDO::PARAM_STR);
+        $res->bindParam(':businessTo', $input['businessTo'], PDO::PARAM_STR);
         $res->bindParam(':description', $input['description'], PDO::PARAM_STR);
         $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
         $res->bindParam(':createTime', $now, PDO::PARAM_STR);
+        echo sql;
         if ($res->execute()) {
             $this->msg = '新增成功';
         } else {
@@ -94,8 +96,7 @@ class Store
             $this->error = '請先登入!';
             $this->viewLogin();
         }
-        $sql = "SELECT `store`.`storeId`, `store`.`storeName` , `store`.`phoneNumber` , `store`.`address` , `store`.`description` ,
-        		`store`.`businessHours`
+        $sql = "SELECT `store`.`storeId`, `store`.`storeName` , `store`.`phoneNumber` , `store`.`address` , `store`.`description` , `store`.`businessFrom`, `store`.`businessTo`
                 FROM  `store`
                 WHERE  `store`.`isDelete` = 0 and `store`.`storeId` = :storeId";
         $res = $this->db->prepare($sql);
@@ -119,8 +120,8 @@ class Store
             $this->viewLogin();
         }
         $now = date('Y-m-d H:i:s');
-        $sql = "UPDATE `shingnan`.`store` SET `storeName` = :storeName ,`phoneNumber` = :phoneNumber , `address` =  :address ,
-        		`description` =  :description , `businessHours` =  :businessHours , `lastUpdateTime` = :lastUpdateTime
+        $sql = "UPDATE `shingnan`.`store` SET `storeName` = :storeName ,`phoneNumber` = :phoneNumber , `address` =  :address , `description` =  :description , `businessFrom` =  :businessFrom , `businessTo` =  :businessTo ,
+        `lastUpdateTime` = :lastUpdateTime
         WHERE  `store`.`storeId` = :storeId";
         $res = $this->db->prepare($sql);
         $res->bindParam(':storeId', $input['storeId'], PDO::PARAM_STR);
@@ -128,7 +129,8 @@ class Store
         $res->bindParam(':phoneNumber', $input['phoneNumber'], PDO::PARAM_STR);
         $res->bindParam(':address', $input['address'], PDO::PARAM_STR);
         $res->bindParam(':description', $input['description'], PDO::PARAM_STR);
-        $res->bindParam(':businessHours', $input['businessHours'], PDO::PARAM_STR);
+        $res->bindParam(':businessFrom', $input['businessFrom'], PDO::PARAM_STR);
+        $res->bindParam(':businessTo', $input['businessTo'], PDO::PARAM_STR);
         $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
         $res->execute();
 
@@ -150,7 +152,7 @@ class Store
     {
         if ($_SESSION['isLogin'] == true) {
             // get all data from store
-            $sql = 'SELECT `store`.`storeId`, `store`.`storeName` , `store`.`phoneNumber`,`store`.`address` , `store`.`businessHours`, `store`.`description` ,`store`.`lastUpdateTime`,`store`.`createTime`
+            $sql = 'SELECT `store`.`storeId`, `store`.`storeName` , `store`.`phoneNumber`,`store`.`address` , `store`.`businessFrom`,`store`.`businessTo`, `store`.`description` ,`store`.`lastUpdateTime`,`store`.`createTime`
                 FROM  `store`
                 ORDER BY `store`.`storeId`';
             $res = $this->db->prepare($sql);
