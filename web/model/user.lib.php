@@ -201,6 +201,17 @@ class User
         $res->execute();
         $userDetailData = $res->fetch();
 
+
+        //find user child
+         $sql = "SELECT `user`.`userId`, `user`.`userName` 
+                 FROM  `user` WHERE  `user`.`introducerId` = :userId AND `user`.`isDelete` = 0";
+
+        $res = $this->db->prepare($sql);
+        $res->bindParam(':userId', $userId, PDO::PARAM_STR);
+        $res->execute();
+        $userChildrenData = $res->fetchAll();
+
+        $this->smarty->assign('userChildrenData', $userChildrenData);
         $this->smarty->assign('userDetailData', $userDetailData);
         $this->smarty->assign('error', $this->error);
         $this->smarty->assign('msg', $this->msg);
