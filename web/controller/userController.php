@@ -23,9 +23,20 @@ switch ($method) {
             case 'userDelete':
                 $user->userDelete($_POST);
                 break;
+            case 'userDetailEdit':
+                $user->userDetailEdit($_POST);
+                break;
             case 'userShoppingAdd':
                 $user->userShoppingAdd($_POST);
                 break;
+            case 'userShoppingRecordDelete':
+                $user->userShoppingRecordDelete($_POST);
+                break;
+            case 'userShoppingRecordEdit':
+                $user->userShoppingRecordEdit($_POST);
+                break;
+            default:
+                $user->viewLogin();
         }
         break;
     case 'GET':
@@ -49,6 +60,9 @@ switch ($method) {
 
             case 'userShoppingAddPrepare':
                 $user->userShoppingAddPrepare($_GET);
+                break;
+            case 'userShoppingRecordEdit':
+                $user->userShoppingRecordEditPrepare($_GET);
                 break;
             default:
                 $user->viewLogin();

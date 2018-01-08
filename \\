@@ -28,8 +28,7 @@ $(document).ready(function() {
                     <div id="itemTypeDiv" class="form-group">
                         <label for="itemType" class="col-sm-2 control-label">購買類型</label>
                         <div class="col-sm-6">
-                            <select required class="selectpicker itemType" name="itemType_${num}" id="itemType_${num}">
-                                <option value="">請選擇購買類型</option>
+                            <select class="selectpicker itemType" name="itemType_${num}" id="itemType_${num}">
                                 <option value="frame">鏡框</option>
                                 <option value="glass">鏡片</option>
                                 <option value="len">隱形眼鏡</option>
@@ -41,34 +40,50 @@ $(document).ready(function() {
                     <div id="itemNameDiv" class="form-group">
                         <label for="itemName" class="col-sm-2 control-label">品項名稱</label>
                         <div class="col-sm-6">
-                            <select required class="selectpicker itemName" name="itemName_${num}" id="itemName_${num}" data-live-search="true" title="請選擇品牌">
+                            <select class="selectpicker itemName" name="itemName_${num}" id="itemName_${num}" data-live-search="true" title="請選擇品牌">
                             </select>
                         </div>
                     </div>
 
                     <div id="amountDiv" class="form-group">
                         <label for="amount" class="col-sm-2 control-label">數量</label>
-                        <div class="col-sm-6">
-                            <input id="amount_${num}" name="amount_${num}" class="form-control" type="number" min="1" value="1">
+                        <div class="col-sm-10">
+                            <input id="amount_${num}" name="amount_${num}" class="form-control" placeholder="數量">
                         </div>
                     </div>
-
                 </div>
 
                 <div class="box-footer" style="text-align: right;">
                     <a id="deleteBtn_${num}" class="deleteShoppingRecordBtn btn btn-sm btn-danger"><i class="glyphicon glyphicon-remove"></i></a>
                     <a class="shoppingRecordBtn btn btn-sm btn-primary"><i class="glyphicon glyphicon-plus"></i></a>
                 </div>
-
             `).removeClass("hidden");
 
             $(`#itemType_${num}`).selectpicker('refresh');
             $(`#itemName_${num}`).selectpicker('refresh');
             $(`#box${num}`).after(`<div id="box${num+1}" class="box box-primary hidden">`);
-            num++;
 
+            // default itemName is frame
+            var defaultOptionsHtml = "";
+            for(var i = 1 ; i < allItemData['frame'].length ; i++){
+                defaultOptionsHtml += `<option value=${allItemData['frame'][i]['frameId']}>${allItemData['frame'][i]['frameName']}</option>`;
+            }
+            $(`select[id=itemName_${num}]`).html(defaultOptionsHtml);
+            $(`select[id=itemName_${num}]`).selectpicker('refresh');
+
+            num++;
             $('input[name=tranDetailLength]').val(num);
     });
+
+
+    // first box itemName initialize to frame
+    var firstBoxdefaultOptionsHtml = "";
+    for(var i = 0 ; i < allItemData['frame'].length ; i++){
+        firstBoxdefaultOptionsHtml += `<option value=${allItemData['frame'][i]['frameId']}>${allItemData['frame'][i]['frameName']}</option>`;
+    }
+    $('select[id=itemName_0]').html(firstBoxdefaultOptionsHtml);
+    $('select[id=itemName_0]').selectpicker('refresh');
+
 
     //
     $(document).on('click', '.deleteShoppingRecordBtn',function(){
@@ -116,15 +131,13 @@ $(document).ready(function() {
                         \{/if\}
 
 
-                        <form class="form-horizontal" method="post"  action="../controller/userController.php" >
+                        <form class="form-horizontal" method="post"  action="../controller/userController.php?action=userShoppingAdd" >
                             <div id="box0" class="box box-primary">
-                                <!--box-body-->
                                 <div class="box-body">
                                     <div id="itemTypeDiv" class="form-group">
                                         <label for="itemType0" class="col-sm-2 control-label">購買類型</label>
                                         <div class="col-sm-6">
-                                            <select required class="selectpicker itemType" name="itemType_0" id="itemType_0">
-                                                <option value="">請選擇購買類型</option>
+                                            <select class="selectpicker itemType" name="itemType_0" id="itemType_0">
                                                 <option value="frame">鏡框</option>
                                                 <option value="glass">鏡片</option>
                                                 <option value="len">隱形眼鏡</option>
@@ -136,7 +149,7 @@ $(document).ready(function() {
                                     <div id="itemNameDiv" class="form-group">
                                         <label for="itemName_0" class="col-sm-2 control-label">品項名稱</label>
                                         <div class="col-sm-6">
-                                            <select required class="selectpicker itemName" name="itemName_0" id="itemName_0" data-live-search="true" title="請選擇品牌">
+                                            <select class="selectpicker itemName" name="itemName_0" id="itemName_0" data-live-search="true" title="請選擇品牌">
                                             </select>
                                         </div>
                                     </div>
@@ -144,13 +157,20 @@ $(document).ready(function() {
                                     <div id="amountDiv" class="form-group">
                                         <label for="amount" class="col-sm-2 control-label">數量</label>
                                         <div class="col-sm-6">
-                                            <input id="amount_0" name="amount_0" class="form-control" type="number" min="1" value="1">
+                                            <input id="amount_0" name="amount_0" class="form-control" placeholder="數量">
+                                        </div>
+                                    </div>
+
+                                    <div id="descriptionDiv" class="form-group">
+                                        <label for="amount" class="col-sm-2 control-label">備註</label>
+                                        <div class="col-sm-6">
+                                            <textarea class="" rows="5"></textarea>
                                         </div>
                                     </div>
 
                                 </div>
 
-                                <!--box-footer-->
+
                                 <div class="box-footer" style="text-align: right;">
                                     <a class="shoppingRecordBtn btn btn-sm btn-primary"><i class="glyphicon glyphicon-plus"></i></a>
                                 </div>
@@ -159,38 +179,14 @@ $(document).ready(function() {
                             <div id="box1" class="box box-primary hidden">
                             </div>
 
-                            <!--descriptionBox-->
-                            <div id="descriptionBox" class="box box-primary">
-                                <div class="box-body">
-                                    <div id="descriptionDiv" class="form-group">
-                                        <label for="description" class="col-sm-2 control-label">備註</label>
-                                        <div class="col-sm-8">
-                                            <textarea name="description" class="form-control" rows="5" ></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div id="priceBox" class="box box-primary">
-                                <div class="box-body">
-                                    <div id="pirceDiv" class="form-group">
-                                        <label for="price" class="col-sm-2 control-label">價格</label>
-                                        <div class="col-sm-6">
-                                            <input id="price" name="price" class="form-control" type="number" value="0">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
                             <div class="box-footer" style="text-align: right;">
+                                <!--TODO-->
                                 <a href="../controller/userController.php?action=userShoppingRecordPrepare&userId=\{$userId\}" class="btn btn-warning">取消</a>
                                 <input type="hidden" name="action" value="userShoppingAdd">
                                 <input type="hidden" name="userId" value="\{$userId\}">
                                 <input type="hidden" name="tranDetailLength" value="1">
                                 <button type="submit" class="btn btn-success">更新</button>
                             </div>
-
-
                         </form>
 
                     </div>
