@@ -3,33 +3,34 @@
 
 <head>
     \{include file="../common/resource.html"\}
-    <script>
-        function deleteUser(userId){
-            BootstrapDialog.show({
-                title:'提醒',
-                message: '確認是否刪除使用者資料',
-                buttons: [{
-                    label: '確定',
-                    cssClass: 'btn-danger',
-                    action: function(){
-                        $.ajax({
-                            type: "POST",
-                            url: "../controller/userController.php",
-                            data: {'action': 'userDelete', 'userId': userId},
-                            success: function() {   
-                                location.reload();  
-                            }
-                        });
+<script>
+
+function deleteUser(userId){
+    BootstrapDialog.show({
+        title:'提醒',
+        message: '確認是否刪除使用者資料',
+        buttons: [{
+            label: '確定',
+            cssClass: 'btn-danger',
+            action: function(){
+                $.ajax({
+                    type: "POST",
+                    url: "../controller/userController.php",
+                    data: {'action': 'userDelete', 'userId': userId},
+                    success: function() {
+                        location.reload();
                     }
-                },{
-                    label: '取消',
-                    action: function(dialogItself){
-                        dialogItself.close();
-                    }
-                }]
-            });
-        }
-    </script>
+                });
+            }
+        },{
+            label: '取消',
+            action: function(dialogItself){
+                dialogItself.close();
+            }
+        }]
+    });
+}
+</script>
 
 </head>
 
@@ -99,7 +100,7 @@
                                             <th>性別</th>
                                             <th>電話</th>
                                             <th>下線人數</th>
-                                            <th>最後更新時間</th>
+                                            <th>會員點數</th>
                                             <th>操作選項</th>
 
                                         </tr>
@@ -115,7 +116,7 @@
                                             \{/if\}
                                             <td>\{$user.phone\}</td>
                                             <td>\{$user.downlineNum\}</td>
-                                            <td>\{$user.lastUpdateTime\}</td>
+                                            <td>\{$user.point\}</td>
                                             <td>
                                                 <a href="../controller/userController.php?action=userDetailPrepare&userId=\{$user.userId\}">
                                                     <button class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-pencil"></i></button>
@@ -128,6 +129,11 @@
                                                 <a href="#">
                                                     <button class="btn btn-sm btn-danger" onclick="deleteUser('\{$user.userId\}');"><i class="glyphicon glyphicon-remove"></i></button>
                                                 </a>
+
+                                                <a href="../controller/userController.php?action=userShoppingRecordPrepare&userId=\{$user.userId\}">
+                                                    <button class="btn btn-sm btn-warning"><i class="glyphicon glyphicon-th-list"></i></button>
+                                                </a>
+
                                             </td>
                                         </tr>
                                         \{/foreach\}

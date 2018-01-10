@@ -3,6 +3,19 @@
 
 <head>
     \{include file="../common/resource.html"\}
+<script>
+$(document).ready(function() {
+    var checkStateMapping = {
+        1: '參加',
+        2: '考量中',
+        3: '不參加',
+    };
+    $(".state").each(function(){
+        var mapping = checkStateMapping[$(this).attr('value')];
+        $(this).html(mapping);
+    });
+});
+</script>
 </head>
 
 <body class="hold-transition skin-yellow sidebar-mini">
@@ -30,36 +43,45 @@
                           <li class="active"><a href="#">會員課程資料</a></li>
                         </ul>
 
+
+
                         <div class="box box-primary">
                             <div class="box-header with-border">
-                                <h3 class="box-title">會員課程資料</h3>
+                                <h3 class="box-title" style="text-align: left;">購物紀錄</h3>
+
+                                <h4 class="box-tools">會員點數 \{$point\}</h4>
                             </div>
-                            <!-- form-->
-                            <form class="form-horizontal" method="post" action="../controller/userController.php">
-                                <div class="box-body">
-                                    <!-- name -->
-                                    <div id="userNameDiv" class="form-group">
-                                        <label for="userName" class="col-sm-2 control-label">使用者姓名</label>
-                                        <div class="col-sm-10">
-                                            <input id="userName" name="userName" class="form-control" placeholder="\{$userData.userName\}">
-                                        </div>
-                                    </div>
+                            <div class="box-body">
+                                <table class="table table-striped" id="tranListTable">
+                                    <thead>
+                                        <tr style="background-color: #00c0ef; color: #fff;">
+                                            <th>課程名稱</th>
+                                            <th>出席情況</th>
+                                            <th>最後更新時間</th>
+                                            <th>操作選項</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                         \{foreach from=$allUserCourseData item=courseData\}
+                                            <tr>
+                                                <td>\{$courseData.courseName\}</td>
+                                                <td class="state" value="\{$courseData.state\}"></td>
+                                                <td>\{$courseData.lastUpdateTime\}</td>
+                                                <td>
 
-                                    <!--phoneNumber-->
-                                    <div id="phoneDiv" class="form-group">
-                                        <label for="password" class="col-sm-2 control-label">手機號碼</label>
-                                        <div class="col-sm-10">
-                                            <input id="phone" name="phone" class="form-control" placeholder="\{$userData.phone\}">
-                                        </div>
-                                    </div>
+                                                    <a href="#">
+                                                        <button class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-pencil"></i></button>
+                                                    </a>&nbsp;
 
-                                    <!-- /.box-body -->
-                                    <div class="box-footer" style="text-align: right;">
-                                        <input type="hidden" name="action" value="userSearch">
-                                        <button type="submit" class="btn btn-primary">確定</button>
-                                    </div>
-                                </div>
-                            </form>
+                                                    <a href="#">
+                                                        <button class="btn btn-sm btn-danger" onclick="deleteTran('\{$courseData.courseId\}');"><i class="glyphicon glyphicon-remove"></i></button>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                         \{/foreach\}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
 
 

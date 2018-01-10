@@ -81,7 +81,7 @@
                           <li class="active"><a href="#">會員詳細資料</a></li>
                           <li><a href="../controller/userController.php?action=userShoppingRecordPrepare&userId=\{$userDetailData.userId\}">會員購物資料</a></li>
                           <li><a href="../controller/userController.php?action=userCourseRecordPrepare&userId=\{$userDetailData.userId\}">會員課程資料</a></li>
-                        </ul> 
+                        </ul>
 
                         <div class="box box-primary">
                             <div class="box-header with-border">
@@ -94,7 +94,7 @@
                                     <div id="userNameDiv" class="form-group">
                                         <label for="userName" class="col-sm-2 control-label">使用者姓名</label>
                                         <div class="col-sm-10">
-                                            <input id="userName" name="userName" class="form-control" placeholder="\{$userDetailData.userName\}">
+                                            <input id="userName" name="userName" class="form-control" value="\{$userDetailData.userName\}">
                                         </div>
                                     </div>
 
@@ -113,7 +113,7 @@
                                     <div id="phoneDiv" class="form-group">
                                         <label for="phone" class="col-sm-2 control-label">手機號碼</label>
                                         <div class="col-sm-10">
-                                            <input id="phone" name="phone" class="form-control" placeholder="\{$userDetailData.phone\}">
+                                            <input id="phone" name="phone" class="form-control" value="\{$userDetailData.phone\}">
                                         </div>
                                     </div>
 
@@ -121,7 +121,7 @@
                                     <div id="accountDiv" class="form-group">
                                         <label for="account" class="col-sm-2 control-label">帳號</label>
                                         <div class="col-sm-10">
-                                            <input id="account" name="account" class="form-control" placeholder="\{$userDetailData.account\}">
+                                            <input id="account" name="account" class="form-control" value="\{$userDetailData.account\}">
                                         </div>
                                     </div>
 
@@ -135,13 +135,14 @@
                                     <div id="addressDiv" class="form-group">
                                         <label for="address" class="col-sm-2 control-label">地址</label>
                                         <div class="col-sm-10">
-                                            <input id="address" name="address" class="form-control" placeholder="\{$userDetailData.address\}">
+                                            <input id="address" name="address" class="form-control" value="\{$userDetailData.address\}">
                                         </div>
                                     </div>
 
                                    <!-- /.box-body -->
                                     <div class="box-footer" style="text-align: right;">
-                                        <input type="hidden" name="action" value="userSearch">
+                                        <input type="hidden" name="userId" value="\{$userDetailData.userId\}">
+                                        <input type="hidden" name="action" value="userDetailEdit">
                                         <button type="submit" class="btn btn-primary">確定</button>
                                     </div>
                                 </div>
