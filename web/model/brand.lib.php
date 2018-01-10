@@ -3,6 +3,7 @@
 require_once HOME_DIR . 'configs/config.php';
 require_once 'upload.func.php';
 require_once 'IdGenerator.php';
+require_once 'deleteImgFile.php';
 /**
  * 品牌類別
  */
@@ -225,12 +226,25 @@ class Brand
         }
         if(isset($input['imageId'])){
         //deal with img
+
+            //取得file path
+            $sql = "SELECT `path` FROM `image` WHERE `image`.`imageId` = :imgId;";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':imgId', $input['imageId'], PDO::PARAM_STR);
+            $res->execute();
+            $path = $res->fetch();
+
+            //delete data from db
             $this->db->beginTransaction();
             $sql    = "DELETE FROM `image` WHERE `imageId` = :imgId;";
             $res = $this->db->prepare($sql);
             $res->bindParam(':imgId', $input['imageId'], PDO::PARAM_STR);
             $res->execute();
             $this->db->commit();
+
+            //delete data file
+            $deleter = new deleteImgFile();
+            $deleter->deleteFile($path['path']);
         }
         $now = date('Y-m-d H:i:s');
         $sql = "UPDATE `shingnan`.`brand` SET  `isDelete` = 1, `lastUpdateTime` = :lastUpdateTime WHERE brandId = :brandId;";
@@ -247,12 +261,25 @@ class Brand
             $this->error = '請先登入!';
             $this->viewLogin();
         }
+        //取得file path
+        $sql = "SELECT `path` FROM `image` WHERE `image`.`imageId` = :imgId;";
+        $res = $this->db->prepare($sql);
+        $res->bindParam(':imgId', $input['imageId'], PDO::PARAM_STR);
+        $res->execute();
+        $path = $res->fetch();
+
+        //delete data from db
         $this->db->beginTransaction();
         $sql = "DELETE FROM `image` WHERE `image`.`imageId` = :imgId;";
         $res = $this->db->prepare($sql);
         $res->bindParam(':imgId', $input['imageId'], PDO::PARAM_STR);
         $res->execute();
         $this->db->commit();
+
+        //delete data file
+        $deleter = new deleteImgFile();
+        $deleter->deleteFile($path['path']);
+
         $this->brandList();
     }
 

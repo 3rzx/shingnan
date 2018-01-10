@@ -3,6 +3,59 @@
 
 <head>
     \{include file="../common/resource.html"\}
+    <script type="text/javascript" src="../plugins/cytoscape/dist/cytoscape.js"></script>
+    <script type="text/javascript">
+        var children = \{$userChildrenData|json_encode\};
+
+        $(function() {
+            var cy = cytoscape({
+                container: document.getElementById('cy'),
+                userPanningEnabled: false,
+                style: [
+                    {
+                        selector: 'node',
+                        css: {
+                            'background-color': '#734d16',
+                            'font-size':'50',
+                            content: 'data(name)'
+                        }
+                    }
+                ],
+                elements: {
+                    nodes: [
+                        \{foreach from=$userChildrenData item=child\}
+                            { data: { id: '\{$child.userId\}', name: '\{$child.userName\}' } },
+                        \{/foreach\}
+                        { data: { id: '\{$userDetailData.userId\}', name: '\{$userDetailData.userName\}' }, grabbable: false, css: {'background-color': '#f3861c', width:35, height:35 } }
+                    ],
+                    edges: [
+                        \{foreach from=$userChildrenData item=child\}
+                            { data: { id: 'e\{$child.userId\}\{$userDetailData.userId\}', source: '\{$userDetailData.userId\}', target: '\{$child.userId\}' }, css: {'line-color': '#67b733'} },
+                        \{/foreach\}
+                    ]
+                },
+                layout: {
+                    name: 'breadthfirst',
+                    directed: false,
+                    padding: 5,
+                    fit: false
+                }
+            });
+
+            cy.on('tap', 'node', function (evt) {
+                window.location = "../controller/userController.php?action=userDetailPrepare&userId=" + evt.target.id();
+            });
+
+            cy.zoomingEnabled(false);
+        });
+
+    </script>
+    <style type="text/css">
+        #cy {
+          height: 100%;
+          width: 100%;  
+        }
+    </style>
 </head>
 
 <body class="hold-transition skin-yellow sidebar-mini">
@@ -24,7 +77,7 @@
                         </div>
                         \{/if\}
 
-                         <ul class="nav nav-tabs">
+                         <ul class="nav nav-tabs" style="border-bottom-color: #337ab7; border-bottom-width: 3px; font-size:20px; font-weight: bold;">
                           <li class="active"><a href="#">會員詳細資料</a></li>
                           <li><a href="../controller/userController.php?action=userShoppingRecordPrepare&userId=\{$userDetailData.userId\}">會員購物資料</a></li>
                           <li><a href="../controller/userController.php?action=userCourseRecordPrepare&userId=\{$userDetailData.userId\}">會員課程資料</a></li>
@@ -95,7 +148,16 @@
                             </form>
                         </div>
 
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">介紹會員</div>
+                                <div class="panel-body">
+                                    <div id="cy-container" style="height: 500px;">
+                                        <div id="cy"></div>                               
+                                </div>
+                            </div>
+                        </div>  
 
+                        
                     </div>
                 </div>
             </section>

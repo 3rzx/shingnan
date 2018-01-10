@@ -3,6 +3,7 @@
 require_once HOME_DIR . 'configs/config.php';
 require_once 'upload.func.php';
 require_once 'IdGenerator.php';
+require_once 'deleteImgFile.php';
 /**
  * 鏡框類別
  */
@@ -320,12 +321,27 @@ class Frame
             $this->viewLogin();
         }
         //deal with img
+
+        //取得file path
+        $sql = "SELECT `path` FROM `image` WHERE `itemId` = :frameId;";
+        $res = $this->db->prepare($sql);
+        $res->bindParam(':frameId', $input['frameId'], PDO::PARAM_STR);
+        $res->execute();
+        $path = $res->fetchAll();
+
+        //delete data from db
         $this->db->beginTransaction();
         $sql  = "DELETE FROM `image` WHERE `itemId` = :frameId;";
         $res = $this->db->prepare($sql);
         $res->bindParam(':frameId', $input['frameId'], PDO::PARAM_STR);
         $res->execute();
         $this->db->commit();
+
+        //deal with data file
+        $deleter = new deleteImgFile();
+        foreach($path as $item){
+            $deleter->deleteFile($item['path']);
+        }
 
         //deal with style
         $this->db->beginTransaction();
@@ -342,6 +358,7 @@ class Frame
         $res->bindParam(':frameId', $input['frameId'], PDO::PARAM_STR);
         $res->execute();
         $this->db->commit();
+        
         $this->frameList();
     }
 
@@ -353,12 +370,26 @@ class Frame
             $this->error = '請先登入!';
             $this->viewLogin();
         }
+
+        //取得file path
+        $sql = "SELECT `path` FROM `image` WHERE `image`.`imageId` = :imgId;";
+        $res = $this->db->prepare($sql);
+        $res->bindParam(':imgId', $input['imageId'], PDO::PARAM_STR);
+        $res->execute();
+        $path = $res->fetch();
+
+        //delete data from db
         $this->db->beginTransaction();
         $sql = "DELETE FROM `image` WHERE `image`.`imageId` = :imgId;";
         $res = $this->db->prepare($sql);
         $res->bindParam(':imgId', $input['imageId'], PDO::PARAM_STR);
         $res->execute();
         $this->db->commit();
+
+        //delete data file
+        $deleter = new deleteImgFile();
+        $deleter->deleteFile($path['path']);
+
         $this->frameEditPrepare();
     }
 

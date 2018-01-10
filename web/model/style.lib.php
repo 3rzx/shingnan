@@ -242,12 +242,24 @@ class Style
             $this->error = '請先登入!';
             $this->viewLogin();
         }
+        //取得file path
+        $sql = "SELECT `path` FROM `image` WHERE `image`.`imageId` = :imgId;";
+        $res = $this->db->prepare($sql);
+        $res->bindParam(':imgId', $input['imageId'], PDO::PARAM_STR);
+        $res->execute();
+        $path = $res->fetch();
+
         $this->db->beginTransaction();
         $sql = "DELETE FROM `image` WHERE `image`.`imageId` = :imgId;";
         $res = $this->db->prepare($sql);
         $res->bindParam(':imgId', $input['imageId'], PDO::PARAM_STR);
         $res->execute();
         $this->db->commit();
+
+        //delete data file
+        $deleter = new deleteImgFile();
+        $deleter->deleteFile($path['path']);
+
         $this->styleList();
     }
 
