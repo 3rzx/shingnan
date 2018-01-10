@@ -63,7 +63,7 @@ $(document).ready(function() {
                         </div>
                         \{/if\}
 
-                         <ul class="nav nav-tabs">
+                         <ul class="nav nav-tabs" style="border-bottom-color: #337ab7; border-bottom-width: 3px; font-size:20px; font-weight: bold;">
                           <li><a href="../controller/userController.php?action=userDetailPrepare&userId=\{$userId\}">會員詳細資料</a></li>
                           <li class="active"><a href="#">會員購物資料</a></li>
                           <li><a href="../controller/userController.php?action=userCourseRecordPrepare&userId=\{$userId\}">會員課程資料</a></li>
@@ -73,7 +73,7 @@ $(document).ready(function() {
                             <div class="box-header with-border">
                                 <h3 class="box-title" style="text-align: left;">購物紀錄</h3>
 
-                                <h4 class="box-tools">會員點數 \{$point\}</h4>
+                                <h4 class="box-tools" style="color:#e2533b; font-weight:bold; font-size: 25px;">會員點數 \{$point\}</h4>
                             </div>
                             <div class="box-body">
                                 <table class="table table-striped" id="tranListTable">

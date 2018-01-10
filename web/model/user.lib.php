@@ -125,9 +125,10 @@ class User
             $this->viewLogin();
             return ;
         }
-
+        $searchResult=null;
         $this->smarty->assign('error', $this->error);
         $this->smarty->assign('msg', $this->msg);
+        $this->smarty->assign('searchResult', $searchResult);
         $this->smarty->display('user/userSearch.html');
     }
 
@@ -153,6 +154,8 @@ class User
 
         $res->execute();
         $searchResult = $res->fetchAll();
+        $this->smarty->assign('error', $this->error);
+        $this->smarty->assign('msg', $this->msg);
         $this->smarty->assign('searchResult', $searchResult);
         $this->smarty->display('user/userSearch.html');
 
@@ -292,6 +295,8 @@ class User
         $result = $res->fetch();
         $point = $result['point'];
 
+        $this->smarty->assign('error', $this->error);
+        $this->smarty->assign('msg', $this->msg);
         $this->smarty->assign('userId', $input['userId']);
         $this->smarty->assign('point', $point);
         $this->smarty->display('user/userShoppingRecord.html');
@@ -319,6 +324,7 @@ class User
         $res->execute();
         $allUserCourseData = $res->fetchAll();
 
+        $this->smarty->assign('userId',$input['userId']);
         $this->smarty->assign('allUserCourseData', $allUserCourseData);
 
         $this->smarty->assign('error', $this->error);
@@ -485,6 +491,8 @@ class User
         $res = $this->db->prepare($sql);
         $res->execute();
         $allTranDetailData = $res->fetchAll();
+        $this->smarty->assign('error', $this->error);
+        $this->smarty->assign('msg', $this->msg);
         $this->smarty->assign('allTranDetailData', $allTranDetailData);
         $this->smarty->display('user/userShoppingRecordEdit.html');
     }
