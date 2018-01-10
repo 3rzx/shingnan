@@ -49,25 +49,13 @@
     <script>
     $(function() {
         $('textarea#educationEditor').froalaEditor({
-            height:300
+            height:300,
+            imageUploadURL: '/shingnan/web/model/upload_image.php'
         })
-        $('textarea#educationEditor').froalaEditor()
-            .on('froalaEditor.image.beforeUpload', function(e, editor, files) {
-                if (files.length) {
-                    var reader = new FileReader();
-                    reader.onload = function(e) {
-                        var result = e.target.result;
-
-                        editor.image.insert(result, null, null, editor.image.get());
-                    };
-
-                    reader.readAsDataURL(files[0]);
-                }
-
-                return false;
-            })
+        
     });
     </script>
+  
 </head>
 
 <body class="hold-transition skin-yellow sidebar-mini">
