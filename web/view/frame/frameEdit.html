@@ -126,13 +126,13 @@
                                     <div id="frameNameDiv" class="form-group">
                                         <label for="frameName" class="col-sm-2 control-label">鏡框名稱</label>
                                         <div class="col-sm-6">
-                                            <input id="frameName" name="frameName" class="form-control" placeholder="輸入鏡框名稱"  value="\{$frameData.frameName\}">
+                                            <input id="frameName" name="frameName" class="form-control" placeholder="輸入鏡框名稱"  value="\{$frameData.frameName\}"  required>
                                         </div>
                                     </div>
                                     <div id="noDiv" class="form-group">
                                         <label for="no" class="col-sm-2 control-label">鏡框型號</label>
                                         <div class="col-sm-6">
-                                            <input id="no" name="no" class="form-control" placeholder="輸入鏡框型號" value="\{$frameData.no\}">
+                                            <input id="no" name="no" class="form-control" placeholder="輸入鏡框型號" value="\{$frameData.no\}"  required>
                                         </div>
                                     </div>
                                     <div id="frameBrandDiv" class="form-group">
@@ -189,7 +189,7 @@
                                     <div id="frameStyleDiv" class="form-group">
                                         <label for="frameStyle" class="col-sm-2 control-label">鏡框所屬風格</label>
                                         <div class="col-sm-6">
-                                            <select class="selectpicker" name="frameStyle[]" id="frameStyle" multiple title="請選擇風格(多選)">
+                                            <select class="selectpicker" name="frameStyle[]" id="frameStyle" multiple title="請選擇風格(多選)"  required>
                                                 \{foreach from=$styleData item=style\}
                                                 <option value='\{$style.styleId\}'>\{$style.styleName\}</option>
                                                 \{/foreach\}
