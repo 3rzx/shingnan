@@ -5,9 +5,19 @@
     \{include file="../common/resource.html"\}
     <!-- InputMask -->
     <script src="../plugins/input-mask/jquery.inputmask.js"></script>
+    <!-- Bootstrap time Picker -->
+    <link rel="stylesheet" href="../plugins/timepicker/bootstrap-timepicker.min.css">
+    <!-- bootstrap time picker -->
+    <script src="../plugins/timepicker/bootstrap-timepicker.min.js"></script>
+    <!-- InputMask -->
+    <script src="../plugins/input-mask/jquery.inputmask.js"></script>
     <script>
     $(function() {
         $("[data-mask]").inputmask();
+        //Timepicker
+        $(".timepicker").timepicker({
+            showInputs: false
+        });
     });
     </script>
 </head>
@@ -21,7 +31,7 @@
             </section>
             <section class="content">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-8">
                         \{if $error != ''\}
                         <div class="alert alert-warning alert-dismissable text-center">
                             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
@@ -53,8 +63,21 @@
                                             <input id="phoneNumber" name="phoneNumber" class="form-control" value="\{$storeData.phoneNumber\}" data-inputmask='"mask": "(99) 999-9999"' data-mask>
                                         </div>
                                         <label for="businessHours" class="col-sm-2 control-label">營業時間</label>
-                                        <div class="col-sm-4">
-                                            <input id="businessHours" name="businessHours" class="form-control" value="\{$storeData.businessHours\}">
+                                        <div class="col-sm-2 bootstrap-timepicker">
+                                            <div class="input-group">
+                                                <input id="businessFrom" name="businessFrom" class="form-control timepicker" value="\{$storeData.businessFrom\}">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-clock-o"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-2 bootstrap-timepicker">
+                                            <div class="input-group">
+                                                <input id="businessTo" name="businessTo" class="form-control timepicker" value="\{$storeData.businessTo\}">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-clock-o"></i>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div id="descriptionDiv" class="form-group">
