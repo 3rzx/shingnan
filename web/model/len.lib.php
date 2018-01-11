@@ -45,14 +45,15 @@ class Len
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
+        }else{
+            $sql = "SELECT `brandId`, `brandName` FROM `brand` WHERE `isDelete` = 0 ;" ;
+            $res = $this->db->prepare($sql);
+            $res->execute();
+            $brandData = $res->fetchAll();
+            $this->smarty->assign('brandData',$brandData);
+            $this->smarty->assign('error', $this->error);
+            $this->smarty->display('len/lenAdd.html');
         }
-        $sql = "SELECT `brandId`, `brandName` FROM `brand` WHERE `isDelete` = 0 ;" ;
-        $res = $this->db->prepare($sql);
-        $res->execute();
-        $brandData = $res->fetchAll();
-        $this->smarty->assign('brandData',$brandData);
-        $this->smarty->assign('error', $this->error);
-        $this->smarty->display('len/lenAdd.html');
     }
 
     /**
@@ -62,32 +63,33 @@ class Len
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
-        }
-        $idGen = new IdGenerator();
-        $now = date('Y-m-d H:i:s');
-        $lenId = $idGen->GetID('len');
-        echo $input['quantity'];
-        $sql = "INSERT INTO `shingnan`.`len` (`lenId`, `lenName`, `brandId`, `quantity`, `size`, `period`, 
-                                              `color`, `isDelete`, `lastUpdateTime`, `createTime`) 
-                VALUES (:lenId, :lenName, :lenBrand, :quantity, :size, :period, 
-                        :color, 0, :lastUpdateTime, :createTime);";
-        $res = $this->db->prepare($sql);
-        $res->bindParam(':lenId', $lenId, PDO::PARAM_STR);
-        $res->bindParam(':lenName', $input['lenName'], PDO::PARAM_STR);
-        $res->bindParam(':lenBrand', $input['lenBrand'], PDO::PARAM_STR);
-        $res->bindParam(':quantity', $input['quantity'], PDO::PARAM_INT);
-        $res->bindParam(':size', $input['size'], PDO::PARAM_STR);
-        $res->bindParam(':period', $input['period'], PDO::PARAM_INT);
-        $res->bindParam(':color', $input['color'], PDO::PARAM_STR);
-        $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
-        $res->bindParam(':createTime', $now, PDO::PARAM_STR);
-        $res->execute();
-        if (!$res) { 
-            $error = $res->errorInfo();
-            $this->error = $error[0];
-            $this->lenList();
-        }
-       $this->lenList();
+        }else{
+            $idGen = new IdGenerator();
+            $now = date('Y-m-d H:i:s');
+            $lenId = $idGen->GetID('len');
+            echo $input['quantity'];
+            $sql = "INSERT INTO `shingnan`.`len` (`lenId`, `lenName`, `brandId`, `quantity`, `size`, `period`, 
+                                                  `color`, `isDelete`, `lastUpdateTime`, `createTime`) 
+                    VALUES (:lenId, :lenName, :lenBrand, :quantity, :size, :period, 
+                            :color, 0, :lastUpdateTime, :createTime);";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':lenId', $lenId, PDO::PARAM_STR);
+            $res->bindParam(':lenName', $input['lenName'], PDO::PARAM_STR);
+            $res->bindParam(':lenBrand', $input['lenBrand'], PDO::PARAM_STR);
+            $res->bindParam(':quantity', $input['quantity'], PDO::PARAM_INT);
+            $res->bindParam(':size', $input['size'], PDO::PARAM_STR);
+            $res->bindParam(':period', $input['period'], PDO::PARAM_INT);
+            $res->bindParam(':color', $input['color'], PDO::PARAM_STR);
+            $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
+            $res->bindParam(':createTime', $now, PDO::PARAM_STR);
+            $res->execute();
+            if (!$res) { 
+                $error = $res->errorInfo();
+                $this->error = $error[0];
+                $this->lenList();
+            }
+           $this->lenList();
+       }
     }
 
     /**
@@ -97,23 +99,24 @@ class Len
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
-        }
-        $sql = "SELECT `len`.`lenName`, `len`.`lenId`, `len`.`brandId`, `len`.`quantity`, `len`.`size`, `len`.`period`, `len`.`color` 
-                FROM `len` 
-                WHERE `len`.`isDelete` = 0 AND `len`.`lenId` = :lenId" ;
-        $res = $this->db->prepare($sql);
-        $res->bindParam(':lenId', $input['lenId'], PDO::PARAM_STR);
-        $res->execute();
-        $lenData = $res->fetch();
-        $this->smarty->assign('lenData', $lenData);
+        }else{
+            $sql = "SELECT `len`.`lenName`, `len`.`lenId`, `len`.`brandId`, `len`.`quantity`, `len`.`size`, `len`.`period`, `len`.`color` 
+                    FROM `len` 
+                    WHERE `len`.`isDelete` = 0 AND `len`.`lenId` = :lenId" ;
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':lenId', $input['lenId'], PDO::PARAM_STR);
+            $res->execute();
+            $lenData = $res->fetch();
+            $this->smarty->assign('lenData', $lenData);
 
-        $sql = "SELECT `brandId`, `brandName` FROM `brand` WHERE `isDelete` = 0 ;" ;
-        $res = $this->db->prepare($sql);
-        $res->execute();
-        $brandData = $res->fetchAll();
-        $this->smarty->assign('brandData',$brandData);
-        $this->smarty->assign('error', $this->error);
-        $this->smarty->display('len/lenEdit.html');
+            $sql = "SELECT `brandId`, `brandName` FROM `brand` WHERE `isDelete` = 0 ;" ;
+            $res = $this->db->prepare($sql);
+            $res->execute();
+            $brandData = $res->fetchAll();
+            $this->smarty->assign('brandData',$brandData);
+            $this->smarty->assign('error', $this->error);
+            $this->smarty->display('len/lenEdit.html');
+        }
     }
 
     /**
@@ -123,27 +126,28 @@ class Len
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
-        }
-        $now = date('Y-m-d H:i:s');
-        $sql = "UPDATE  `shingnan`.`len` SET  `lenName` = :lenName, `brandId` = :lenBrand, `quantity` = :quantity, 
-                        `period` =  :period, `size` =  :size, `color` =  :color, `lastUpdateTime` = :lastUpdateTime 
-                WHERE `len`.`lenId` = :lenId;" ;
-        $res = $this->db->prepare($sql);
-        $res->bindParam(':lenId', $input['lenId'], PDO::PARAM_STR);
-        $res->bindParam(':lenName',$input['lenName'], PDO::PARAM_STR);
-        $res->bindParam(':lenBrand', $input['lenBrand'], PDO::PARAM_STR);
-        $res->bindParam(':quantity', $input['quantity'], PDO::PARAM_INT);
-        $res->bindParam(':size', $input['size'], PDO::PARAM_STR);
-        $res->bindParam(':period', $input['period'], PDO::PARAM_INT);
-        $res->bindParam(':color', $input['color'], PDO::PARAM_STR);
-        $res->bindParam(':lastUpdateTime',$now, PDO::PARAM_STR);
-        $res->execute();
-        if (!$res) { 
-            $error = $res->errorInfo();
-            $this->error = $error[0];
+        }else{
+            $now = date('Y-m-d H:i:s');
+            $sql = "UPDATE  `shingnan`.`len` SET  `lenName` = :lenName, `brandId` = :lenBrand, `quantity` = :quantity, 
+                            `period` =  :period, `size` =  :size, `color` =  :color, `lastUpdateTime` = :lastUpdateTime 
+                    WHERE `len`.`lenId` = :lenId;" ;
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':lenId', $input['lenId'], PDO::PARAM_STR);
+            $res->bindParam(':lenName',$input['lenName'], PDO::PARAM_STR);
+            $res->bindParam(':lenBrand', $input['lenBrand'], PDO::PARAM_STR);
+            $res->bindParam(':quantity', $input['quantity'], PDO::PARAM_INT);
+            $res->bindParam(':size', $input['size'], PDO::PARAM_STR);
+            $res->bindParam(':period', $input['period'], PDO::PARAM_INT);
+            $res->bindParam(':color', $input['color'], PDO::PARAM_STR);
+            $res->bindParam(':lastUpdateTime',$now, PDO::PARAM_STR);
+            $res->execute();
+            if (!$res) { 
+                $error = $res->errorInfo();
+                $this->error = $error[0];
+                $this->lenList();
+            }
             $this->lenList();
         }
-        $this->lenList();
     }
 
     /**
@@ -153,7 +157,7 @@ class Len
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
-        }
+        }else{
         // get all data from len
         $sql = 'SELECT `len`.`lenId`, `len`.`lenName`, `len`.`brandId`, `len`.`quantity`, `len`.`size`, `len`.`period`,`len`.`color`,          `len`.`lastUpdateTime`, `brand`.`brandName` 
                 FROM  `len` ,  `brand` 
@@ -168,7 +172,7 @@ class Len
         $this->smarty->assign('error', $this->error);
         $this->smarty->assign('msg', $this->msg);
         $this->smarty->display('len/lenList.html');
-        
+        }
     }
     
 
@@ -179,15 +183,15 @@ class Len
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
+        }else{
+            $now = date('Y-m-d H:i:s');
+            $sql = "UPDATE `shingnan`.`len` SET  `isDelete` = 1, `lastUpdateTime` = :lastUpdateTime WHERE lenId = :lenId;";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':lenId', $input['lenId'], PDO::PARAM_STR);
+            $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
+            $res->execute();
+            $this->lenList();
         }
-        $now = date('Y-m-d H:i:s');
-        $sql = "UPDATE `shingnan`.`len` SET  `isDelete` = 1, `lastUpdateTime` = :lastUpdateTime WHERE lenId = :lenId;";
-        $res = $this->db->prepare($sql);
-        $res->bindParam(':lenId', $input['lenId'], PDO::PARAM_STR);
-        $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
-        $res->execute();
-        $this->db->commit();
-        $this->lenList();
     }
 
     /**

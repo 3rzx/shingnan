@@ -58,115 +58,31 @@ class Brand
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
-        }
-        if(!isset($input['brandName'])){
-            $this->error = '請至少填入品牌名稱';
-            $this->brandAddPrepare();
-        }
-        $idGen = new IdGenerator();
-        $now = date('Y-m-d H:i:s');
-        $brandId = $idGen->GetID('brand');
-        $sql = "INSERT INTO `shingnan`.`brand` (`brandId`, `brandName`, `isDelete`, `description`,`lastUpdateTime`, `createTime`) 
-                    VALUES (:brandId, :brandName, '0', :description, :lastUpdateTime, :createTime);";
-        $res = $this->db->prepare($sql);
-        $res->bindParam(':brandId', $brandId, PDO::PARAM_STR);
-        $res->bindParam(':brandName', $input['brandName'], PDO::PARAM_STR);
-        $res->bindParam(':description', $input['description'], PDO::PARAM_STR);
-        $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
-        $res->bindParam(':createTime', $now, PDO::PARAM_STR);
-        if ($res->execute()) {
-        //deal with insert image
-            $this->msg = '新增成功';
-            $uploadPath = '../media/picture';
-            if ($_FILES['brandImage']['error'] == 0) {
-                $imgId = $idGen->GetID('image');
-                $imgName = 'brand_'.$input['brandName'];
-                $fileInfo = $_FILES['brandImage'];
-                $brandImage = uploadFile($fileInfo, $uploadPath);
-                $sql = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`, 
-                                                        `itemId`, `ctr`, `path`, `link`, `createTime`) 
-                        VALUES (:imgId, :imgName, 3, 
-                                :brandId, 0, :filePath, '', :createTime);";
-                $res = $this->db->prepare($sql);
-                $res->bindParam(':imgId', $imgId, PDO::PARAM_STR);
-                $res->bindParam(':imgName', $imgName, PDO::PARAM_STR);
-                $res->bindParam(':brandId', $brandId, PDO::PARAM_STR);
-                $res->bindParam(':filePath', $brandImage, PDO::PARAM_STR);
-                $res->bindParam(':createTime', $now, PDO::PARAM_STR);
-                $res->execute();
-                if (!$res) { 
-                    $error = $res->errorInfo();
-                    $this->error = $error[0];
-                    $this->brandList();
-                }
+        }else{
+            if(!isset($input['brandName'])){
+                $this->error = '請至少填入品牌名稱';
+                $this->brandAddPrepare();
             }
-        }
-       $this->brandList();
-    }
-
-    /**
-     * 編輯品牌前置
-     */
-    public function brandEditPrepare($input) {
-        if ($_SESSION['isLogin'] == false) {
-            $this->error = '請先登入!';
-            $this->viewLogin();
-        }
-         $sql = "SELECT `brand`.`brandName`, `brand`.`brandId` , `brand`.`description`, `image`.`imageId` ,`image`.`path` 
-                FROM  `brand` 
-                LEFT JOIN  `image` ON brand.`brandId` = image.`itemId` 
-                WHERE  `brand`.`isDelete` = 0 AND  `brand`.`brandId` = :brandId" ;
-        $res = $this->db->prepare($sql);
-        $res->bindParam(':brandId', $input['brandId'], PDO::PARAM_STR);
-        $res->execute();
-        $brandData = $res->fetch();
-
-        $this->smarty->assign('brandData', $brandData);
-        $this->smarty->assign('error', $this->error);
-        $this->smarty->display('brand/brandEdit.html');
-    }
-
-    /**
-     * 編輯品牌
-     */
-    public function brandEdit($input) {
-        if ($_SESSION['isLogin'] == false) {
-            $this->error = '請先登入!';
-            $this->viewLogin();
-        }
-        $now = date('Y-m-d H:i:s');
-        $sql = "UPDATE  `shingnan`.`brand` SET  `brandName` = :brandName, `description` = :description, 
-                `lastUpdateTime` =  :lastUpdateTime WHERE  `brand`.`brandId` = :brandId;" ;
-        $res = $this->db->prepare($sql);
-        $res->bindParam(':brandId', $input['brandId'], PDO::PARAM_STR);
-        $res->bindParam(':brandName',$input['brandName'], PDO::PARAM_STR);
-        $res->bindParam(':description',$input['description'], PDO::PARAM_STR);
-        $res->bindParam(':lastUpdateTime',$now, PDO::PARAM_STR);
-        $res->execute();
-
-        if ($res->execute()) {
-        //update image 
-            $this->msg = '更新成功';
-            if ($_FILES['brandImage']['error'] == 0) {
-                if( isset($input['imageId']) ){
-                    $fileInfo = $_FILES['brandImage'];
-                    $brandImage = uploadFile($fileInfo, '../media/picture');
-                    $sql = "UPDATE  `shingnan`.`image` SET  `path` = :pathinfo WHERE `image`.`imageId` = :imageId;";
-                    $res = $this->db->prepare($sql);
-                    $res->bindParam(':imageId', $input['imageId'], PDO::PARAM_STR);
-                    $res->bindParam(':pathinfo', $brandImage, PDO::PARAM_STR);
-                    $res->execute();
-                    if (!$res) { 
-                        $error = $res->errorInfo();
-                        $this->error = $error[0];
-                        $this->brandList();
-                    }
-                }else{
-                    $idGen = new IdGenerator();
+            $idGen = new IdGenerator();
+            $now = date('Y-m-d H:i:s');
+            $brandId = $idGen->GetID('brand');
+            $sql = "INSERT INTO `shingnan`.`brand` (`brandId`, `brandName`, `isDelete`, `description`,`lastUpdateTime`, `createTime`) 
+                        VALUES (:brandId, :brandName, '0', :description, :lastUpdateTime, :createTime);";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':brandId', $brandId, PDO::PARAM_STR);
+            $res->bindParam(':brandName', $input['brandName'], PDO::PARAM_STR);
+            $res->bindParam(':description', $input['description'], PDO::PARAM_STR);
+            $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
+            $res->bindParam(':createTime', $now, PDO::PARAM_STR);
+            if ($res->execute()) {
+            //deal with insert image
+                $this->msg = '新增成功';
+                $uploadPath = '../media/picture';
+                if ($_FILES['brandImage']['error'] == 0) {
                     $imgId = $idGen->GetID('image');
                     $imgName = 'brand_'.$input['brandName'];
                     $fileInfo = $_FILES['brandImage'];
-                    $brandImage = uploadFile($fileInfo, '../media/picture');
+                    $brandImage = uploadFile($fileInfo, $uploadPath);
                     $sql = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`, 
                                                             `itemId`, `ctr`, `path`, `link`, `createTime`) 
                             VALUES (:imgId, :imgName, 3, 
@@ -174,7 +90,7 @@ class Brand
                     $res = $this->db->prepare($sql);
                     $res->bindParam(':imgId', $imgId, PDO::PARAM_STR);
                     $res->bindParam(':imgName', $imgName, PDO::PARAM_STR);
-                    $res->bindParam(':brandId', $input['brandId'], PDO::PARAM_STR);
+                    $res->bindParam(':brandId', $brandId, PDO::PARAM_STR);
                     $res->bindParam(':filePath', $brandImage, PDO::PARAM_STR);
                     $res->bindParam(':createTime', $now, PDO::PARAM_STR);
                     $res->execute();
@@ -185,8 +101,95 @@ class Brand
                     }
                 }
             }
+           $this->brandList();
+       }
+    }
+
+    /**
+     * 編輯品牌前置
+     */
+    public function brandEditPrepare($input) {
+        if ($_SESSION['isLogin'] == false) {
+            $this->error = '請先登入!';
+            $this->viewLogin();
+        }else{
+            $sql = "SELECT `brand`.`brandName`, `brand`.`brandId` , `brand`.`description`, `image`.`imageId` ,`image`.`path` 
+                    FROM  `brand` 
+                    LEFT JOIN  `image` ON brand.`brandId` = image.`itemId` 
+                    WHERE  `brand`.`isDelete` = 0 AND  `brand`.`brandId` = :brandId" ;
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':brandId', $input['brandId'], PDO::PARAM_STR);
+            $res->execute();
+            $brandData = $res->fetch();
+
+            $this->smarty->assign('brandData', $brandData);
+            $this->smarty->assign('error', $this->error);
+            $this->smarty->display('brand/brandEdit.html');
         }
-        $this->brandList();
+    }
+
+    /**
+     * 編輯品牌
+     */
+    public function brandEdit($input) {
+        if ($_SESSION['isLogin'] == false) {
+            $this->error = '請先登入!';
+            $this->viewLogin();
+        }else{
+            $now = date('Y-m-d H:i:s');
+            $sql = "UPDATE  `shingnan`.`brand` SET  `brandName` = :brandName, `description` = :description, 
+                    `lastUpdateTime` =  :lastUpdateTime WHERE  `brand`.`brandId` = :brandId;" ;
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':brandId', $input['brandId'], PDO::PARAM_STR);
+            $res->bindParam(':brandName',$input['brandName'], PDO::PARAM_STR);
+            $res->bindParam(':description',$input['description'], PDO::PARAM_STR);
+            $res->bindParam(':lastUpdateTime',$now, PDO::PARAM_STR);
+            $res->execute();
+
+            if ($res->execute()) {
+            //update image 
+                $this->msg = '更新成功';
+                if ($_FILES['brandImage']['error'] == 0) {
+                    if( isset($input['imageId']) ){
+                        $fileInfo = $_FILES['brandImage'];
+                        $brandImage = uploadFile($fileInfo, '../media/picture');
+                        $sql = "UPDATE  `shingnan`.`image` SET  `path` = :pathinfo WHERE `image`.`imageId` = :imageId;";
+                        $res = $this->db->prepare($sql);
+                        $res->bindParam(':imageId', $input['imageId'], PDO::PARAM_STR);
+                        $res->bindParam(':pathinfo', $brandImage, PDO::PARAM_STR);
+                        $res->execute();
+                        if (!$res) { 
+                            $error = $res->errorInfo();
+                            $this->error = $error[0];
+                            $this->brandList();
+                        }
+                    }else{
+                        $idGen = new IdGenerator();
+                        $imgId = $idGen->GetID('image');
+                        $imgName = 'brand_'.$input['brandName'];
+                        $fileInfo = $_FILES['brandImage'];
+                        $brandImage = uploadFile($fileInfo, '../media/picture');
+                        $sql = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`, 
+                                                                `itemId`, `ctr`, `path`, `link`, `createTime`) 
+                                VALUES (:imgId, :imgName, 3, 
+                                        :brandId, 0, :filePath, '', :createTime);";
+                        $res = $this->db->prepare($sql);
+                        $res->bindParam(':imgId', $imgId, PDO::PARAM_STR);
+                        $res->bindParam(':imgName', $imgName, PDO::PARAM_STR);
+                        $res->bindParam(':brandId', $input['brandId'], PDO::PARAM_STR);
+                        $res->bindParam(':filePath', $brandImage, PDO::PARAM_STR);
+                        $res->bindParam(':createTime', $now, PDO::PARAM_STR);
+                        $res->execute();
+                        if (!$res) { 
+                            $error = $res->errorInfo();
+                            $this->error = $error[0];
+                            $this->brandList();
+                        }
+                    }
+                }
+            }
+            $this->brandList();
+        }
     }
 
     /**
@@ -196,23 +199,23 @@ class Brand
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
-        }
-        // get all data from brand
-        $sql = 'SELECT `brand`.`brandName`, `brand`.`brandId` , `brand`.`description`, `brand`.`lastUpdateTime`,
-                        `image`.`imageId`,`image`.`path` 
-                FROM  `brand` 
-                LEFT JOIN  `image` ON `brand`.`brandId` = `image`.`itemId` 
-                WHERE  `brand`.`isDelete` = 0
-                ORDER BY `brand`.`brandId`';
-        $res = $this->db->prepare($sql);
-        $res->execute();
-        $allbrandData = $res->fetchAll();
+        }else{
+            // get all data from brand
+            $sql = 'SELECT `brand`.`brandName`, `brand`.`brandId` , `brand`.`description`, `brand`.`lastUpdateTime`,
+                            `image`.`imageId`,`image`.`path` 
+                    FROM  `brand` 
+                    LEFT JOIN  `image` ON `brand`.`brandId` = `image`.`itemId` 
+                    WHERE  `brand`.`isDelete` = 0
+                    ORDER BY `brand`.`brandId`';
+            $res = $this->db->prepare($sql);
+            $res->execute();
+            $allbrandData = $res->fetchAll();
 
-        $this->smarty->assign('allbrandData', $allbrandData);
-        $this->smarty->assign('error', $this->error);
-        $this->smarty->assign('msg', $this->msg);
-        $this->smarty->display('brand/brandList.html');
-        
+            $this->smarty->assign('allbrandData', $allbrandData);
+            $this->smarty->assign('error', $this->error);
+            $this->smarty->assign('msg', $this->msg);
+            $this->smarty->display('brand/brandList.html');
+        }
     }
     
 
@@ -223,10 +226,45 @@ class Brand
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
-        }
-        if(isset($input['imageId'])){
-        //deal with img
+        }else{
+            if(isset($input['imageId'])){
+            //deal with img
 
+                //取得file path
+                $sql = "SELECT `path` FROM `image` WHERE `image`.`imageId` = :imgId;";
+                $res = $this->db->prepare($sql);
+                $res->bindParam(':imgId', $input['imageId'], PDO::PARAM_STR);
+                $res->execute();
+                $path = $res->fetch();
+
+                //delete data from db
+                $this->db->beginTransaction();
+                $sql    = "DELETE FROM `image` WHERE `imageId` = :imgId;";
+                $res = $this->db->prepare($sql);
+                $res->bindParam(':imgId', $input['imageId'], PDO::PARAM_STR);
+                $res->execute();
+                $this->db->commit();
+
+                //delete data file
+                $deleter = new deleteImgFile();
+                $deleter->deleteFile($path['path']);
+            }
+            $now = date('Y-m-d H:i:s');
+            $sql = "UPDATE `shingnan`.`brand` SET  `isDelete` = 1, `lastUpdateTime` = :lastUpdateTime WHERE brandId = :brandId;";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':brandId', $input['brandId'], PDO::PARAM_STR);
+            $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
+            $res->execute();
+            $this->brandList();
+        }
+    }
+
+
+    public function brandImageDelete($input){
+        if ($_SESSION['isLogin'] == false) {
+            $this->error = '請先登入!';
+            $this->viewLogin();
+        }else{
             //取得file path
             $sql = "SELECT `path` FROM `image` WHERE `image`.`imageId` = :imgId;";
             $res = $this->db->prepare($sql);
@@ -236,7 +274,7 @@ class Brand
 
             //delete data from db
             $this->db->beginTransaction();
-            $sql    = "DELETE FROM `image` WHERE `imageId` = :imgId;";
+            $sql = "DELETE FROM `image` WHERE `image`.`imageId` = :imgId;";
             $res = $this->db->prepare($sql);
             $res->bindParam(':imgId', $input['imageId'], PDO::PARAM_STR);
             $res->execute();
@@ -245,42 +283,9 @@ class Brand
             //delete data file
             $deleter = new deleteImgFile();
             $deleter->deleteFile($path['path']);
+
+            $this->brandList();
         }
-        $now = date('Y-m-d H:i:s');
-        $sql = "UPDATE `shingnan`.`brand` SET  `isDelete` = 1, `lastUpdateTime` = :lastUpdateTime WHERE brandId = :brandId;";
-        $res = $this->db->prepare($sql);
-        $res->bindParam(':brandId', $input['brandId'], PDO::PARAM_STR);
-        $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
-        $res->execute();
-        $this->brandList();
-    }
-
-
-    public function brandImageDelete($input){
-        if ($_SESSION['isLogin'] == false) {
-            $this->error = '請先登入!';
-            $this->viewLogin();
-        }
-        //取得file path
-        $sql = "SELECT `path` FROM `image` WHERE `image`.`imageId` = :imgId;";
-        $res = $this->db->prepare($sql);
-        $res->bindParam(':imgId', $input['imageId'], PDO::PARAM_STR);
-        $res->execute();
-        $path = $res->fetch();
-
-        //delete data from db
-        $this->db->beginTransaction();
-        $sql = "DELETE FROM `image` WHERE `image`.`imageId` = :imgId;";
-        $res = $this->db->prepare($sql);
-        $res->bindParam(':imgId', $input['imageId'], PDO::PARAM_STR);
-        $res->execute();
-        $this->db->commit();
-
-        //delete data file
-        $deleter = new deleteImgFile();
-        $deleter->deleteFile($path['path']);
-
-        $this->brandList();
     }
 
     /**

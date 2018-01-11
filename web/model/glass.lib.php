@@ -45,14 +45,15 @@ class Glass
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
+        }else{
+            $sql = "SELECT `brandId`, `brandName` FROM `brand` WHERE `isDelete` = 0 ;" ;
+            $res = $this->db->prepare($sql);
+            $res->execute();
+            $brandData = $res->fetchAll();
+            $this->smarty->assign('brandData',$brandData);
+            $this->smarty->assign('error', $this->error);
+            $this->smarty->display('glass/glassAdd.html');
         }
-        $sql = "SELECT `brandId`, `brandName` FROM `brand` WHERE `isDelete` = 0 ;" ;
-        $res = $this->db->prepare($sql);
-        $res->execute();
-        $brandData = $res->fetchAll();
-        $this->smarty->assign('brandData',$brandData);
-        $this->smarty->assign('error', $this->error);
-        $this->smarty->display('glass/glassAdd.html');
     }
 
     /**
@@ -62,30 +63,31 @@ class Glass
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
+        }else{
+            $idGen = new IdGenerator();
+            $now = date('Y-m-d H:i:s');
+            $glassId = $idGen->GetID('glass');
+            $sql = "INSERT INTO `shingnan`.`glass` (`glassId`, `no`, `glassName`, `brandId`, `type`, `memo`, 
+                                                    `isDelete`, `lastUpdateTime`, `createTime`) 
+                    VALUES (:glassId, :glassNo, :glassName, :glassBrand, :glassType, :memo, 
+                            '0', :lastUpdateTime, :createTime);";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':glassId', $glassId, PDO::PARAM_STR);
+            $res->bindParam(':glassNo', $input['glassNo'], PDO::PARAM_STR);
+            $res->bindParam(':glassName', $input['glassName'], PDO::PARAM_STR);
+            $res->bindParam(':glassBrand', $input['glassBrand'], PDO::PARAM_STR);
+            $res->bindParam(':glassType', $input['type'], PDO::PARAM_STR);
+            $res->bindParam(':memo', $input['memo'], PDO::PARAM_STR);
+            $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
+            $res->bindParam(':createTime', $now, PDO::PARAM_STR);
+            $res->execute();
+            if (!$res) { 
+                $error = $res->errorInfo();
+                $this->error = $error[0];
+                $this->glassList();
+            }
+           $this->glassList();
         }
-        $idGen = new IdGenerator();
-        $now = date('Y-m-d H:i:s');
-        $glassId = $idGen->GetID('glass');
-        $sql = "INSERT INTO `shingnan`.`glass` (`glassId`, `no`, `glassName`, `brandId`, `type`, `memo`, 
-                                                `isDelete`, `lastUpdateTime`, `createTime`) 
-                VALUES (:glassId, :glassNo, :glassName, :glassBrand, :glassType, :memo, 
-                        '0', :lastUpdateTime, :createTime);";
-        $res = $this->db->prepare($sql);
-        $res->bindParam(':glassId', $glassId, PDO::PARAM_STR);
-        $res->bindParam(':glassNo', $input['glassNo'], PDO::PARAM_STR);
-        $res->bindParam(':glassName', $input['glassName'], PDO::PARAM_STR);
-        $res->bindParam(':glassBrand', $input['glassBrand'], PDO::PARAM_STR);
-        $res->bindParam(':glassType', $input['type'], PDO::PARAM_STR);
-        $res->bindParam(':memo', $input['memo'], PDO::PARAM_STR);
-        $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
-        $res->bindParam(':createTime', $now, PDO::PARAM_STR);
-        $res->execute();
-        if (!$res) { 
-            $error = $res->errorInfo();
-            $this->error = $error[0];
-            $this->glassList();
-        }
-       $this->glassList();
     }
 
     /**
@@ -95,7 +97,7 @@ class Glass
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
-        }
+        }else{
          $sql = "SELECT `glass`.`glassId`, `glass`.`glassName`, `glass`.`no`, `glass`.`brandId`, `glass`.`type`, `glass`.`memo` 
                 FROM  `glass` 
                 WHERE  `glass`.`isDelete` = 0 AND  `glass`.`glassId` = :glassId;" ;
@@ -112,7 +114,7 @@ class Glass
         $this->smarty->assign('brandData',$brandData);
         $this->smarty->assign('error', $this->error);
         $this->smarty->display('glass/glassEdit.html');
-    }
+    }}
 
     /**
      * 編輯鏡片
@@ -121,7 +123,7 @@ class Glass
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
-        }
+        }else{
         $now = date('Y-m-d H:i:s');
         $sql = "UPDATE  `shingnan`.`glass` SET  `glassName` = :glassName, `brandId`= :brandId, `no` = :no, `type` = :type, `memo` = :memo,
                 `lastUpdateTime` =  :lastUpdateTime WHERE `glass`.`glassId` = :glassId;" ;
@@ -142,6 +144,7 @@ class Glass
         }
         $this->glassList();
     }
+    }
 
     /**
      * 顯示所有鏡片列表
@@ -150,7 +153,7 @@ class Glass
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
-        }
+        }else{
         // get all data from glass
         $sql = 'SELECT `glass`.`glassId`, `glass`.`no`, `glass`.`glassName`, `glass`.`type`, `glass`.`memo`, `glass`.`lastUpdateTime`, 
                         `brand`.`brandName` 
@@ -166,7 +169,7 @@ class Glass
         $this->smarty->assign('error', $this->error);
         $this->smarty->assign('msg', $this->msg);
         $this->smarty->display('glass/glassList.html');
-        
+        }
     }
     
 
@@ -177,7 +180,7 @@ class Glass
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
-        }
+        }else{
         $now = date('Y-m-d H:i:s');
         $sql = "UPDATE `shingnan`.`glass` SET  `isDelete` = 1, `lastUpdateTime` = :lastUpdateTime WHERE `glass`.`glassId` = :glassId;";
         $res = $this->db->prepare($sql);
@@ -185,6 +188,7 @@ class Glass
         $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
         $res->execute();
         $this->glassList();
+    }
     }
 
     /**

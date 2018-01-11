@@ -45,12 +45,13 @@ class Point
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
+        }else{
+            $pointFile = new pointFile();
+            $oldRate = $pointFile->GetRate();
+            $this->smarty->assign('oldRate', $oldRate);
+            $this->smarty->assign('error', $this->error);
+            $this->smarty->display('Point/PointEdit.html');
         }
-        $pointFile = new pointFile();
-        $oldRate = $pointFile->GetRate();
-        $this->smarty->assign('oldRate', $oldRate);
-        $this->smarty->assign('error', $this->error);
-        $this->smarty->display('Point/PointEdit.html');
     }
 
     /**
@@ -60,13 +61,14 @@ class Point
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
+        }else{
+            $newRate = $input['pointNewRate'];
+            $pointFile = new pointFile();
+            $pointFile->SetRate($newRate);
+            $this->smarty->assign('oldRate', $newRate);
+            $this->smarty->assign('error', $this->error);
+            $this->smarty->display('Point/PointEdit.html');
         }
-        $newRate = $input['pointNewRate'];
-        $pointFile = new pointFile();
-        $pointFile->SetRate($newRate);
-        $this->smarty->assign('oldRate', $newRate);
-        $this->smarty->assign('error', $this->error);
-        $this->smarty->display('Point/PointEdit.html');
     }
 
     /**

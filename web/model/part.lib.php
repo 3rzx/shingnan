@@ -45,9 +45,10 @@ class Part
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
+        }else{
+            $this->smarty->assign('error', $this->error);
+            $this->smarty->display('part/partAdd.html');
         }
-        $this->smarty->assign('error', $this->error);
-        $this->smarty->display('part/partAdd.html');
     }
 
     /**
@@ -57,31 +58,32 @@ class Part
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
-        }
-        if(!isset($input['partName'])){
-            $this->error = '請至少填入零件名稱';
-            $this->partAddPrepare();
-        }
-        $idGen = new IdGenerator();
-        $now = date('Y-m-d H:i:s');
-        $partId = $idGen->GetID('part'); 
-
-        $sql = "INSERT INTO `shingnan`.`part` (`partId`, `partName`, `type`, `size`, `isDelete`, `lastUpdateTime`, `createTime`) 
-                VALUES ( :partId , :partName , :partType, :partSize, '0', :lastUpdateTime, :createTime);";
-        $res = $this->db->prepare($sql);
-        $res->bindParam(':partId', $partId, PDO::PARAM_STR);
-        $res->bindParam(':partName', $input['partName'], PDO::PARAM_STR);
-        $res->bindParam(':partType', $input['partType'], PDO::PARAM_INT);
-        $res->bindParam(':partSize', $input['partSize'], PDO::PARAM_STR);
-        $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
-        $res->bindParam(':createTime', $now, PDO::PARAM_STR);
-        if ($res->execute()) {
-            $this->msg = '資料新增成功';
         }else{
-            $error = $res->errorInfo();
-            $this->error = $error[0];
+            if(!isset($input['partName'])){
+                $this->error = '請至少填入零件名稱';
+                $this->partAddPrepare();
+            }
+            $idGen = new IdGenerator();
+            $now = date('Y-m-d H:i:s');
+            $partId = $idGen->GetID('part'); 
+
+            $sql = "INSERT INTO `shingnan`.`part` (`partId`, `partName`, `type`, `size`, `isDelete`, `lastUpdateTime`, `createTime`) 
+                    VALUES ( :partId , :partName , :partType, :partSize, '0', :lastUpdateTime, :createTime);";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':partId', $partId, PDO::PARAM_STR);
+            $res->bindParam(':partName', $input['partName'], PDO::PARAM_STR);
+            $res->bindParam(':partType', $input['partType'], PDO::PARAM_INT);
+            $res->bindParam(':partSize', $input['partSize'], PDO::PARAM_STR);
+            $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
+            $res->bindParam(':createTime', $now, PDO::PARAM_STR);
+            if ($res->execute()) {
+                $this->msg = '資料新增成功';
+            }else{
+                $error = $res->errorInfo();
+                $this->error = $error[0];
+            }
+           $this->partList();
         }
-       $this->partList();
     }
 
     /**
@@ -91,18 +93,19 @@ class Part
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
-        }
-        $sql = "SELECT `part`.`partName`, `part`.`partId` , `part`.`type`, `part`.`size`  
-                FROM  `part` 
-                WHERE  `part`.`isDelete` = 0 AND  `part`.`partId` = :partId" ;
-        $res = $this->db->prepare($sql);
-        $res->bindParam(':partId', $input['partId'], PDO::PARAM_STR);
-        $res->execute();
-        $partData = $res->fetch();
+        }else{
+            $sql = "SELECT `part`.`partName`, `part`.`partId` , `part`.`type`, `part`.`size`  
+                    FROM  `part` 
+                    WHERE  `part`.`isDelete` = 0 AND  `part`.`partId` = :partId" ;
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':partId', $input['partId'], PDO::PARAM_STR);
+            $res->execute();
+            $partData = $res->fetch();
 
-        $this->smarty->assign('partData', $partData);
-        $this->smarty->assign('error', $this->error);
-        $this->smarty->display('part/partEdit.html');
+            $this->smarty->assign('partData', $partData);
+            $this->smarty->assign('error', $this->error);
+            $this->smarty->display('part/partEdit.html');
+        }
     }
 
     /**
@@ -112,7 +115,7 @@ class Part
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
-        }
+        }else{
         $now = date('Y-m-d H:i:s');
         $sql = "UPDATE `shingnan`.`part` SET  `partName` = :partName, `type` = :partType, `size` = :partSize, 
                 `lastUpdateTime` =  :lastUpdateTime WHERE `part`.`partId` = :partId;" ;
@@ -129,7 +132,7 @@ class Part
             $this->error = $error[0];
         }
        $this->partList();
-    }
+    }}
 
     /**
      * 顯示所有零件列表
@@ -138,7 +141,7 @@ class Part
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
-        }
+        }else{
         // get all data from part
         $sql = 'SELECT `part`.`partId`, `part`.`partName`, `part`.`type`, `part`.`size`, `part`.`lastUpdateTime` 
                 FROM `part` 
@@ -151,8 +154,8 @@ class Part
         $this->smarty->assign('allPartData', $allPartData);
         $this->smarty->assign('error', $this->error);
         $this->smarty->assign('msg', $this->msg);
-        $this->smarty->display('part/partList.html');
-        
+        $this->smarty->display('part/partList.html');   
+        }
     }
     
 
@@ -163,16 +166,15 @@ class Part
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
+        }else{
+            $now = date('Y-m-d H:i:s');
+            $sql = "UPDATE `shingnan`.`part` SET  `isDelete` = 1, `lastUpdateTime` = :lastUpdateTime  WHERE partId = :partId;";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':partId', $input['partId'], PDO::PARAM_STR);
+            $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
+            $res->execute();
+            $this->partList();
         }
-
-        //deal with data
-        $this->db->beginTransaction();
-        $sql = "DELETE FROM part WHERE partId = :partId;";
-        $res = $this->db->prepare($sql);
-        $res->bindParam(':partId', $input['partId'], PDO::PARAM_STR);
-        $res->execute();
-        $this->db->commit();
-        $this->partList();
     }
 
     /**

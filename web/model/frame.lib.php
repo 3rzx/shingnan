@@ -46,7 +46,7 @@ class Frame
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
-        }
+        }else{
         $sql = "SELECT `brandId`, `brandName` FROM `brand` WHERE `isDelete` = 0 ;" ;
         $res = $this->db->prepare($sql);
         $res->execute();
@@ -59,6 +59,7 @@ class Frame
         $this->smarty->assign('styleData',$styleData);
         $this->smarty->assign('error', $this->error);
         $this->smarty->display('frame/frameAdd.html');
+        }
     }
 
     /**
@@ -68,7 +69,7 @@ class Frame
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
-        }
+        }else{
         if(!isset($input['no']) || !isset($input['frameName'])){
             $this->error = '請至少填入鏡框編號與鏡框名稱';
             $this->brandAddPrepare();
@@ -143,6 +144,7 @@ class Frame
             }
         }
        $this->frameList();
+        }
     }
 
     /**
@@ -152,7 +154,7 @@ class Frame
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
-        }
+        }else{
          $sql = "SELECT `frame`.`frameName`, `frame`.`frameId` , `frame`.`no`, `frame`.`brandId`, `frame`.`shape`, 
                         `frame`.`material`, `frame`.`color`, `frame`.`price`, `frame`.`discountPrice`, `frame`.`isLaunch`, `frame`.`isPrimary` 
                 FROM  `frame` 
@@ -197,6 +199,7 @@ class Frame
         $this->smarty->assign('error', $this->error);
         $this->smarty->display('frame/frameEdit.html');
     }
+    }
 
     /**
      * 編輯鏡框
@@ -205,7 +208,7 @@ class Frame
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
-        }
+        }else{
         $idGen = new IdGenerator();
         $now = date('Y-m-d H:i:s');
         $frameId = $input['frameId'];
@@ -285,6 +288,7 @@ class Frame
         }
         $this->frameList();
     }
+    }
 
     /**
      * 顯示所有鏡框列表
@@ -293,7 +297,7 @@ class Frame
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
-        }
+        }else{
         // get all data from frame
         $sql = 'SELECT `frame`.`frameId`, `frame`.`no`, `frame`.`frameName`, `frame`.`brandId`, `frame`.`shape`, `frame`.`material`, 
                      `frame`.`color`, `frame`.`isLaunch`, `frame`.`isPrimary`, `frame`.`lastUpdateTime`, `brand`.`brandName` 
@@ -308,6 +312,7 @@ class Frame
         $this->smarty->assign('error', $this->error);
         $this->smarty->assign('msg', $this->msg);
         $this->smarty->display('frame/frameList.html');
+    }
         
     }
     
@@ -319,7 +324,7 @@ class Frame
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
-        }
+        }else{
         //deal with img
 
         //取得file path
@@ -360,7 +365,7 @@ class Frame
         $this->db->commit();
         
         $this->frameList();
-    }
+    }}
 
     /**
      * 刪除鏡框圖片
@@ -369,7 +374,7 @@ class Frame
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
-        }
+        }else{
 
         //取得file path
         $sql = "SELECT `path` FROM `image` WHERE `image`.`imageId` = :imgId;";
@@ -391,7 +396,7 @@ class Frame
         $deleter->deleteFile($path['path']);
 
         $this->frameEditPrepare();
-    }
+    }}
 
     /**
      * 顯示登入畫面
