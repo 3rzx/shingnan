@@ -3,55 +3,13 @@
 
 <head>
     \{include file="../common/resource.html"\}
-    <script type="text/javascript" src="../plugins/bootstrap-filestyle/src/bootstrap-filestyle.min.js"></script>
-    <script type="text/javascript" src="../plugins/froalaEditor/js/froala_editor.min.js"></script>
-    <script type="text/javascript" src="../plugins/froalaEditor/js/plugins/align.min.js"></script>
-    <script type="text/javascript" src="../plugins/froalaEditor/js/plugins/char_counter.min.js"></script>
-    <script type="text/javascript" src="../plugins/froalaEditor/js/plugins/code_beautifier.min.js"></script>
-    <script type="text/javascript" src="../plugins/froalaEditor/js/plugins/code_view.min.js"></script>
-    <script type="text/javascript" src="../plugins/froalaEditor/js/plugins/colors.min.js"></script>
-    <script type="text/javascript" src="../plugins/froalaEditor/js/plugins/draggable.min.js"></script>
-    <script type="text/javascript" src="../plugins/froalaEditor/js/plugins/emoticons.min.js"></script>
-    <script type="text/javascript" src="../plugins/froalaEditor/js/plugins/entities.min.js"></script>
-    <script type="text/javascript" src="../plugins/froalaEditor/js/plugins/file.min.js"></script>
-    <script type="text/javascript" src="../plugins/froalaEditor/js/plugins/font_size.min.js"></script>
-    <script type="text/javascript" src="../plugins/froalaEditor/js/plugins/font_family.min.js"></script>
-    <script type="text/javascript" src="../plugins/froalaEditor/js/plugins/fullscreen.min.js"></script>
-    <script type="text/javascript" src="../plugins/froalaEditor/js/plugins/image.min.js"></script>
-    <script type="text/javascript" src="../plugins/froalaEditor/js/plugins/image_manager.min.js"></script>
-    <script type="text/javascript" src="../plugins/froalaEditor/js/plugins/line_breaker.min.js"></script>
-    <script type="text/javascript" src="../plugins/froalaEditor/js/plugins/inline_style.min.js"></script>
-    <script type="text/javascript" src="../plugins/froalaEditor/js/plugins/link.min.js"></script>
-    <script type="text/javascript" src="../plugins/froalaEditor/js/plugins/lists.min.js"></script>
-    <script type="text/javascript" src="../plugins/froalaEditor/js/plugins/paragraph_format.min.js"></script>
-    <script type="text/javascript" src="../plugins/froalaEditor/js/plugins/paragraph_style.min.js"></script>
-    <script type="text/javascript" src="../plugins/froalaEditor/js/plugins/quick_insert.min.js"></script>
-    <script type="text/javascript" src="../plugins/froalaEditor/js/plugins/quote.min.js"></script>
-    <script type="text/javascript" src="../plugins/froalaEditor/js/plugins/table.min.js"></script>
-    <script type="text/javascript" src="../plugins/froalaEditor/js/plugins/save.min.js"></script>
-    <script type="text/javascript" src="../plugins/froalaEditor/js/plugins/url.min.js"></script>
-    <script type="text/javascript" src="../plugins/froalaEditor/js/plugins/video.min.js"></script>
-    <link rel="stylesheet" href="../plugins/froalaEditor/css/froala_editor.css">
-    <link rel="stylesheet" href="../plugins/froalaEditor/css/froala_style.css">
-    <link rel="stylesheet" href="../plugins/froalaEditor/css/plugins/code_view.css">
-    <link rel="stylesheet" href="../plugins/froalaEditor/css/plugins/colors.css">
-    <link rel="stylesheet" href="../plugins/froalaEditor/css/plugins/emoticons.css">
-    <link rel="stylesheet" href="../plugins/froalaEditor/css/plugins/image_manager.css">
-    <link rel="stylesheet" href="../plugins/froalaEditor/css/plugins/image.css">
-    <link rel="stylesheet" href="../plugins/froalaEditor/css/plugins/line_breaker.css">
-    <link rel="stylesheet" href="../plugins/froalaEditor/css/plugins/table.css">
-    <link rel="stylesheet" href="../plugins/froalaEditor/css/plugins/char_counter.css">
-    <link rel="stylesheet" href="../plugins/froalaEditor/css/plugins/video.css">
-    <link rel="stylesheet" href="../plugins/froalaEditor/css/plugins/fullscreen.css">
-    <link rel="stylesheet" href="../plugins/froalaEditor/css/plugins/file.css">
-    <link rel="stylesheet" href="../plugins/froalaEditor/css/plugins/quick_insert.css">
+    <!-- CK Editor -->
+    <script type="text/javascript" src="../plugins/ckeditor/ckeditor.js"></script>
     <script>
     $(function() {
-        $('textarea#educationEditor').froalaEditor({
-            height: 300,
-            imageUploadURL: '/shingnan/web/model/upload_image.php'
-        })
-
+        // Replace the <textarea id="newsEditor"> with a CKEditor
+        // instance, using default configuration.
+        CKEDITOR.replace('educationEditor');
     });
     </script>
 </head>
