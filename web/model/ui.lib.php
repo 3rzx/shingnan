@@ -63,29 +63,44 @@ class Ui
     /**
      * 顯示商品點閱率
      */
-    public function editIndexCover() {
-        if ($_SESSION['isLogin'] == true) {
-            $sql = "SELECT `frame`.*";
-            $res = $this->db->prepare($sql);
-
-            if ($res->execute()) {
-                $frameList = $res->fetchAll();
-                $this->setResultMsg();
-                
-
-                $this->smarty->assign('frameList', $frameList);
-                $this->smarty->assign('shapeMap', $shapeMap);
-            } else {
-                $error = $res->errorInfo();
-                $this->setResultMsg('failure', $error[0]);
+    public function editIndexCover($file) {
+        if ($_FILES['styleImage']['error'] == 0) {
+            if( isset($input['imageId']) ){                
+                $fileInfo = $_FILES['styleImage'];
+                $styleImage = uploadFile($fileInfo, '../media/picture');
+                $sql = "UPDATE  `shingnan`.`image` SET  `path` = :pathinfo WHERE `image`.`imageId` = :imageId;";
+                $res = $this->db->prepare($sql);
+                $res->bindParam(':imageId', $input['imageId'], PDO::PARAM_STR);
+                $res->bindParam(':pathinfo', $styleImage, PDO::PARAM_STR);
+                $res->execute();
+                if (!$res) { 
+                    $error = $res->errorInfo();
+                    $this->error = $error[0];
+                    $this->styleList();
+                }
+            }else{
+                $idGen = new IdGenerator();
+                $imgId = $idGen->GetID('image');
+                $imgName = 'style_'.$input['styleName'];
+                $fileInfo = $_FILES['styleImage'];
+                $styleImage = uploadFile($fileInfo, '../media/picture');
+                $sql = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`, 
+                                                        `itemId`, `ctr`, `path`, `link`, `createTime`) 
+                        VALUES (:imgId, :imgName, 2, 
+                                :styleId, 0, :filePath, '', :createTime);";
+                $res = $this->db->prepare($sql);
+                $res->bindParam(':imgId', $imgId, PDO::PARAM_STR);
+                $res->bindParam(':imgName', $imgName, PDO::PARAM_STR);
+                $res->bindParam(':styleId', $input['styleId'], PDO::PARAM_STR);
+                $res->bindParam(':filePath', $styleImage, PDO::PARAM_STR);
+                $res->bindParam(':createTime', $now, PDO::PARAM_STR);
+                $res->execute();
+                if (!$res) { 
+                    $error = $res->errorInfo();
+                    $this->error = $error[0];
+                    $this->styleList();
+                }
             }
-
-            $this->smarty->assign('error', $this->error);
-            $this->smarty->assign('msg', $this->msg);
-            $this->smarty->display('statistic/goodsClick.html');
-        } else {
-            $this->setResultMsg('failure', '請先登入!');
-            $this->viewLogin();
         }
     }
 
