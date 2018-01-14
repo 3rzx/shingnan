@@ -2,6 +2,8 @@
 // initialize
 require_once HOME_DIR . 'configs/config.php';
 require_once 'IdGenerator.php';
+require_once 'pointFile.php';
+
 /**
  * 風格類別
  */
@@ -214,7 +216,7 @@ class User
 
 
         //find user child
-         $sql = "SELECT `user`.`userId`, `user`.`userName` 
+         $sql = "SELECT `user`.`userId`, `user`.`userName`
                  FROM  `user` WHERE  `user`.`introducerId` = :userId AND `user`.`isDelete` = 0";
 
         $res = $this->db->prepare($sql);
@@ -402,8 +404,12 @@ class User
     {
         $idGen = new IdGenerator();
         $tranId = $idGen->GetID("tran");
+        
+        $pointRateGen = new pointFile();
+        $pointRate = (int)($pointRateGen->GetRate());
+
         $now = date('Y-m-d H:i:s');
-        $point = intdiv((int)$input["price"], 100);
+        $point = intdiv((int)$input["price"], $pointRate);
 
         // TODO: checkState to be set
         // create transaction row
@@ -473,6 +479,7 @@ class User
         $this->smarty->assign('lenData', $lenData);
         $this->smarty->assign('partData', $partData);
 
+        // get tranData
         $sql = "SELECT `tran`.`tranId`, `tran`.`price`, `tran`.`description`, `tran`.`userId`, `tran`.`score`, `tran`.`opinion`, `tran`.`checkState`
                 FROM `tran`
                 WHERE `tranId` = '{$input["tranId"]}';";
@@ -484,6 +491,7 @@ class User
         $tranData = $res->fetch();
         $this->smarty->assign('tranData', $tranData);
 
+        // get corresponding trainDetail data
         $sql = "SELECT  `tranDetail`.`itemId` ,  `tranDetail`.`itemNum`
                 FROM  `tranDetail`
                 WHERE  `tranId` =  '{$input['tranId']}' AND `isDelete` = 0;";
@@ -491,6 +499,7 @@ class User
         $res = $this->db->prepare($sql);
         $res->execute();
         $allTranDetailData = $res->fetchAll();
+
         $this->smarty->assign('error', $this->error);
         $this->smarty->assign('msg', $this->msg);
         $this->smarty->assign('allTranDetailData', $allTranDetailData);
@@ -508,13 +517,47 @@ class User
             return;
         }
 
+        $pointRateGen = new PointFile();
+        $pointRate = (int)($pointRateGen->GetRate());
+
         $now = date('Y-m-d H:i:s');
-        $point = intdiv((int)$input["price"], 100);
+        $point = intdiv((int)$input["price"], $pointRate);
         $tranId = $input["tranId"];
+
+        // user point minus the original point and add the  point which is modified
+        $sql = "SELECT `user`.`point`
+                FROM  `user`
+                WHERE  `userId` = '{$input['userId']}' AND `isDelete` = 0;";
+
+        $res = $this->db->prepare($sql);
+        $res->execute();
+        $result = $res->fetch();
+        $userPoint = $result['point'];
+
+        $sql = "SELECT `tran`.`point`
+                FROM  `tran`
+                WHERE  `tranId` = '{$tranId}' AND `isDelete` = 0;";
+        $res = $this->db->prepare($sql);
+        $res->execute();
+        $result = $res->fetch();
+        $originalTranPoint = $result['point'];
+        
+    
+        $newPoint = (int)$userPoint - (int)$originalTranPoint + $point;
+        $sql = "UPDATE `shingnan`.`user`
+                SET `point`='{$newPoint}'
+                WHERE `user`.`userId`='{$input['userId']}';";
+        $res = $this->db->prepare($sql);
+        if (!$res->execute()) {
+            echo("yoyo");
+            return ;
+        }
+
+
 
         // update tran data
         $sql = "UPDATE `shingnan`.`tran`
-                SET `description`='{$input["description"]}', `price`='{$input["price"]}', `lastUpdateTime`='{$now}', `checkState`='{$input["checkState"]}'
+                SET `description`='{$input["description"]}', `price`='{$input["price"]}', `lastUpdateTime`='{$now}', `checkState`='{$input["checkState"]}', `point`='{$point}'
                 WHERE `tran`.`tranId`='{$tranId}';";
 
         $res = $this->db->prepare($sql);
