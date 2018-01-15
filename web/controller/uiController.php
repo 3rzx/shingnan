@@ -12,10 +12,10 @@ switch ($method) {
         $action = isset($_POST['action']) ? $_POST['action'] : '';
         switch ($action) {
             case 'editIndexCover':
-                $ui->editIndexCover();
+                $ui->editIndexCover($_POST);
                 break;
-            case 'previewIndex':
-                $ui->previewIndex();
+            case 'previewIndexCover':
+                $ui->previewIndexCover($_POST);
                 break;
         }
         break;
@@ -24,6 +24,9 @@ switch ($method) {
         switch ($action) {
             case 'viewIndexCover':
                 $ui->viewIndexCover();
+                break;
+            case 'imgDelete':
+                $ui->imgDelete($_GET);
                 break;
             default:
                 $ui->viewLogin();

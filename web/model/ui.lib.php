@@ -1,6 +1,8 @@
 <?php
 // initialize
 require_once HOME_DIR . 'configs/config.php';
+require_once 'upload.func.php';
+require_once 'IdGenerator.php';
 /**
  * 前台 UI 設定
  */
@@ -35,14 +37,18 @@ class Ui
      * 顯示首頁封面設定
      */
     public function viewIndexCover() {
-        // cover => index_item_00
-        // 01~20 => index_item_01~20
+        // cover(3) => index_item_0~2
+        // 3~22 (5 * 4) => index_item_3~22
         if ($_SESSION['isLogin'] == true) {
             $sql = "SELECT * FROM `image` WHERE `itemId` like 'index_%'";
             $res = $this->db->prepare($sql);
-
+            
             if ($res->execute()) {
-                $images = $res->fetchAll();
+                $rows = $res->fetchAll();
+                $images = array();
+                foreach($rows as $img) {
+                    $images[$img['imageName']] = $img;
+                }
                 $this->setResultMsg();
 
                 $this->smarty->assign('images', $images);             
@@ -51,8 +57,6 @@ class Ui
                 $this->setResultMsg('failure', $error[0]);
             }
 
-            $this->smarty->assign('error', $this->error);
-            $this->smarty->assign('msg', $this->msg);
             $this->smarty->display('ui/indexCoverSet.html');
         } else {
             $this->setResultMsg('failure', '請先登入!');
@@ -61,46 +65,110 @@ class Ui
     }
 
     /**
-     * 顯示商品點閱率
+     * 上傳首頁圖片
      */
-    public function editIndexCover($file) {
-        if ($_FILES['styleImage']['error'] == 0) {
-            if( isset($input['imageId']) ){                
-                $fileInfo = $_FILES['styleImage'];
-                $styleImage = uploadFile($fileInfo, '../media/picture');
-                $sql = "UPDATE  `shingnan`.`image` SET  `path` = :pathinfo WHERE `image`.`imageId` = :imageId;";
-                $res = $this->db->prepare($sql);
-                $res->bindParam(':imageId', $input['imageId'], PDO::PARAM_STR);
-                $res->bindParam(':pathinfo', $styleImage, PDO::PARAM_STR);
-                $res->execute();
-                if (!$res) { 
-                    $error = $res->errorInfo();
-                    $this->error = $error[0];
-                    $this->styleList();
+    public function editIndexCover($input) {
+        $updateList = json_decode($input['updateList']);
+
+        foreach($updateList as $index) {
+            $sql = "SELECT `imageId` FROM `image` WHERE `itemId` = '$index'";
+            $res = $this->db->prepare($sql);
+
+            if ($res->execute()) {
+                $count = $res->rowCount();
+                if($count == 1) {
+                    $imageId = $res->fetch();
+                    $fileInfo = $_FILES[$index];
+                    $path = uploadFile($fileInfo, '../media/picture');
+                    $sql = "UPDATE `image` SET `path` = :pathInfo
+                            WHERE `imageId` = :imageId";
+                    $res = $this->db->prepare($sql);
+                    $res->bindParam(':imageId', $imageId[0], PDO::PARAM_STR);
+                    $res->bindParam(':pathinfo', $path, PDO::PARAM_STR);
+                    $res->execute();
+                } else {
+                    $idGen = new IdGenerator();
+                    $imgId = 'image_'. $index;
+                    $imgName = $index;
+                    $fileInfo = $_FILES[$index];
+                    $path = uploadFile($fileInfo, '../media/picture');
+                    $now = date('Y-m-d H:i:s');
+
+                    $sql = "INSERT INTO `image` 
+                            (`imageId`, `imageName`, `type`, `itemId`, `ctr`, `path`, `link`, `createTime`) 
+                            VALUES
+                            (:imgId, :imgName, 10, :itemId, 0, :filePath, '', :createTime)";
+
+                    $res = $this->db->prepare($sql);
+                    $res->bindParam(':imgId', $imgId, PDO::PARAM_STR);
+                    $res->bindParam(':imgName', $index, PDO::PARAM_STR);
+                    $res->bindParam(':itemId', $index, PDO::PARAM_STR);
+                    $res->bindParam(':filePath', $path, PDO::PARAM_STR);
+                    $res->bindParam(':createTime', $now, PDO::PARAM_STR);
+                    $res->execute();
                 }
-            }else{
-                $idGen = new IdGenerator();
-                $imgId = $idGen->GetID('image');
-                $imgName = 'style_'.$input['styleName'];
-                $fileInfo = $_FILES['styleImage'];
-                $styleImage = uploadFile($fileInfo, '../media/picture');
-                $sql = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`, 
-                                                        `itemId`, `ctr`, `path`, `link`, `createTime`) 
-                        VALUES (:imgId, :imgName, 2, 
-                                :styleId, 0, :filePath, '', :createTime);";
+            } 
+        }
+        $this->viewIndexCover();
+    }
+    /**
+     * 預覽首頁
+     */
+    public function previewIndexCover($input) {
+        $images = array();
+        for($i = 0; $i < 23; $i++) {
+            $index = "index_img_$i";
+            if ($_FILES[$index]['name'] != "") {
+                if ($_FILES[$index]['error'] != 0) {
+                    setResultMsg('failure', '圖片上傳錯誤');
+                    $this->viewIndexCover();
+                } else {
+                    $fileInfo = getimagesize($_FILES[$index]['tmp_name']);
+                    $tmpImage = "data:" . $fileInfo['mime'] . ";base64," . 
+                    base64_encode(file_get_contents($_FILES[$index]['tmp_name']));
+                    $images[$index] = $tmpImage;
+                }  
+            } else {
+                $sql = "SELECT `path` FROM `image` WHERE `itemId` = '$index'";
                 $res = $this->db->prepare($sql);
-                $res->bindParam(':imgId', $imgId, PDO::PARAM_STR);
-                $res->bindParam(':imgName', $imgName, PDO::PARAM_STR);
-                $res->bindParam(':styleId', $input['styleId'], PDO::PARAM_STR);
-                $res->bindParam(':filePath', $styleImage, PDO::PARAM_STR);
-                $res->bindParam(':createTime', $now, PDO::PARAM_STR);
-                $res->execute();
-                if (!$res) { 
-                    $error = $res->errorInfo();
-                    $this->error = $error[0];
-                    $this->styleList();
+                
+                if ($res->execute()) {
+                    $data = $res->fetch();     
+                    $images[$index] = $data[0];          
                 }
             }
+        }
+        $this->smarty->assign('images', $images);
+        $this->smarty->display('ui/previewIndex.html');
+    }
+
+    /**
+     * 刪除圖片
+     */
+    public function imgDelete($input) {
+        if ($_SESSION['isLogin'] == false) {
+            $this->setResultMsg('failure', '請先登入!');
+            $this->viewLogin();
+        } else {
+            //取得file path
+            $sql = "SELECT `path` FROM `image` WHERE `imageId` = :imgId;";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':imgId', $input['imageId'], PDO::PARAM_STR);
+            $res->execute();
+            $path = $res->fetch();
+
+            $this->db->beginTransaction();
+            $sql = "DELETE FROM `image` WHERE `imageId` = :imgId;";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':imgId', $input['imageId'], PDO::PARAM_STR);
+            $res->execute();
+            $this->db->commit();
+
+            //delete data file
+            $deleter = new deleteImgFile();
+            $deleter->deleteFile($path['path']);
+
+            $this->viewIndexCover();
         }
     }
 
@@ -110,6 +178,8 @@ class Ui
     public function setResultMsg($resultMsg = 'success', $errorMsg = '') {
         $this->msg = $resultMsg;
         $this->error = $errorMsg;
+        $this->smarty->assign('error', $this->error);
+        $this->smarty->assign('msg', $this->msg);
     }
 
     /**

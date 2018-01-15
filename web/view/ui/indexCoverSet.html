@@ -21,104 +21,103 @@
                             <h4 style="display: inline;">\{$error\}</h4>
                         </div>
                         \{/if\}
-                        <div class="box box-primary">
-                            <div class="box-header with-border">
-                                <h3 class="box-title">圖片列表&nbsp;</h3>
+                        <form id="coverForm" class="form-horizontal" method="post" enctype="multipart/form-data" action="../controller/uiController.php">
+                            <div class="form-group">
+                                \{for $i = 0 to 2\}
+                                <div class="col-md-4" style="text-align: center;">
+                                    <h4>大圖 - \{$i + 1\}</h4>
+                                    <div class="form-inline">
+                                        <input type="file" class="uploadImage" name="index_img_\{$i\}" id="index_\{$i\}" data-input="false" accept="image/*" style="display: inline;"> \{if $images[index_img_|cat:$i].imageId != ''\}
+                                        <a class="btn btn-danger" onclick="deleteImg('\{$images[index_img_|cat:$i].imageId\}');">
+                                            <i class="glyphicon glyphicon-remove"></i>
+                                        </a>
+                                        \{/if\}
+                                    </div>
+                                    <img id="index_\{$i\}_img" class="img-thumbnail" src="\{if $images[index_img_|cat:$i].imageName 
+                                        \}\{$images[index_img_|cat:$i].path\}\{else\}../image/cover_1.png\{/if\}" alt="尚未上傳圖片">
+                                </div>
+                                \{/for\}
                             </div>
-                            <form class="form-horizontal" method="post" enctype="multipart/form-data" action="../controller/uiController.php">
-                                <div class="box-body" style="text-align:center;">
-                                    <div class="col-md-12">
-                                        <h4>圖片 - 0</h4>
-                                        <div class="form-inline" style="display:inline-block;">
-                                            <input type="file" class="uploadImage" name="index_img_0" id="index_0" data-input="false" accept="image/*" style="display: inline;"> \{if $images[0].imageId != ''\}
-                                            <a class="btn btn-danger" onclick="deleteImg('\{$images[0].imageId\}');">
-                                                <i class="glyphicon glyphicon-remove"></i>
-                                            </a>
-                                            \{/if\}
-                                        </div>
-                                        <br/>
-                                        <img id="index_0_img" class="img-thumbnail" src="\{$images[0].path\}../image/glasses_icon.png" alt="尚未上傳圖片">
+                            \{for $i = 0 to 3\}
+                            <div class="form-group">
+                                <div class="col-md-offset-1 col-md-2" style="text-align: center;">
+                                    <h4>小圖 - \{$i*5 + 4\}</h4>
+                                    <div class="form-inline">
+                                        <input type="file" class="uploadImage" name="index_img_\{$i*5 + 3\}" id="index_\{$i*5 + 3\}" data-input="false" accept="image/*"
+                                            style="display: inline;"> \{if $images[index_img_|cat:($i*5+3)].imageId != ''\}
+                                        <a class="btn btn-danger" onclick="deleteImg('\{$images[index_img_|cat:($i*5+3)].imageId\}');">
+                                            <i class="glyphicon glyphicon-remove"></i>
+                                        </a>
+                                        \{/if\}
                                     </div>
-                                    \{for $i = 0 to 3\}
-                                    <div class="col-md-2">
-                                        <div class="form-inline" style="display:inline-block;">
-                                            <h4>圖片 - \{$i*5 + 1\}</h4>
-                                            <input type="file" class="uploadImage" name="index_img_\{$i*5 + 1\}" id="index_\{$i*5 + 1\}" data-input="false" accept="image/*"
-                                                style="display: inline;"> \{if $image[$i*5 + 1].imageId != ''\}
-                                            <a class="btn btn-danger" onclick="deleteImg('\{$image[$i*5 + 1].imageId\}');">
-                                                <i class="glyphicon glyphicon-remove"></i>
-                                            </a>
-                                            \{/if\}
-                                        </div>
-                                        <br/>
-                                        <img id="index_\{$i*5 + 1\}_img" class="img-thumbnail" src="\{$image[$i*5 + 1].path\}../image/glasses_icon.png" alt="尚未上傳圖片">
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-inline" style="display:inline-block;">
-                                            <h4>圖片 - \{$i*5+2\}</h4>
-                                            <input type="file" class="uploadImage" name="index_img_\{$i*5+2\}" id="index_\{$i*5+2\}" data-input="false" accept="image/*"
-                                                style="display: inline;"> \{if $image[$i*5+2].imageId != ''\}
-                                            <a class="btn btn-danger" onclick="deleteImg('\{$image[$i*5+2].imageId\}');">
-                                                <i class="glyphicon glyphicon-remove"></i>
-                                            </a>
-                                            \{/if\}
-                                        </div>
-                                        <br/>
-                                        <img id="index_\{$i*5+2\}_img" class="img-thumbnail" src="\{$image[$i*5+2].path\}../image/glasses_icon.png" alt="尚未上傳圖片">
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-inline" style="display:inline-block;">
-                                            <h4>圖片 - \{$i*5 + 3\}</h4>
-                                            <input type="file" class="uploadImage" name="index_img_\{$i*5+3\}" id="index_\{$i*5+3\}" data-input="false" accept="image/*"
-                                                style="display: inline;"> \{if $image[$i*5+3].imageId != ''\}
-                                            <a class="btn btn-danger" onclick="deleteImg('\{$image[$i*5+3].imageId\}');">
-                                                <i class="glyphicon glyphicon-remove"></i>
-                                            </a>
-                                            \{/if\}
-                                        </div>
-                                        <br/>
-                                        <img id="index_\{$i*5+3\}_img" class="img-thumbnail" src="\{$image[$i*5+3].path\}../image/glasses_icon.png" alt="尚未上傳圖片">
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-inline" style="display:inline-block;">
-                                            <h4>圖片 - \{$i*5 + 4\}</h4>
-                                            <input type="file" class="uploadImage" name="index_img_\{$i*5+4\}" id="index_\{$i*5+4\}" data-input="false" accept="image/*"
-                                                style="display: inline;"> \{if $image[$i*5+4].imageId != ''\}
-                                            <a class="btn btn-danger" onclick="deleteImg('\{$image[$i*5+4].imageId\}');">
-                                                <i class="glyphicon glyphicon-remove"></i>
-                                            </a>
-                                            \{/if\}
-                                        </div>
-                                        <br/>
-                                        <img id="index_\{$i*5+4\}_img" class="img-thumbnail" src="\{$image[$i*5+4].path\}../image/glasses_icon.png" alt="尚未上傳圖片">
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-inline" style="display:inline-block;">
-                                            <h4>圖片 - \{$i*5 + 5\}</h4>
-                                            <input type="file" class="uploadImage" name="index_img_\{$i*5+5\}" id="index_\{$i*5+5\}" data-input="false" accept="image/*"
-                                                style="display: inline;"> \{if $image[$i*5+5].imageId != ''\}
-                                            <a class="btn btn-danger" onclick="deleteImg('\{$image[$i*5+5].imageId\}');">
-                                                <i class="glyphicon glyphicon-remove"></i>
-                                            </a>
-                                            \{/if\}
-                                        </div>
-                                        <br/>
-                                        <img id="index_\{$i*5+5\}_img" class="img-thumbnail" src="\{$image[$i*5+5].path\}../image/glasses_icon.png" alt="尚未上傳圖片">
-                                    </div>
-                                    \{/for\}
+                                    <img id="index_\{$i*5 + 3\}_img" class="img-thumbnail" src="\{if $images[index_img_|cat:($i*5+3)]\}\{$images[index_img_|cat:($i*5+3)].path\}\{else\}../image/cover_2.png\{/if\}"
+                                        alt="尚未上傳圖片">
                                 </div>
-                                <div class="box-footer" style="text-align: right;">
-                                    <input type="hidden" name="action" value="editIndexCover">
-                                    <input type="hidden" id="updateList" name="updateList" value="[]">
-                                    <button type="button" class="btn btn-primary" onclick="preview();">
-                                        <i class="fa fa-eye"></i>&nbsp;預覽
-                                    </button>
-                                    <button type="submit" class="btn btn-success" onclick="submitForm();">
-                                        <i class="fa fa-check"></i>&nbsp;更新
-                                    </button>
+                                <div class="col-md-2" style="text-align: center;">
+                                    <h4>小圖 - \{$i*5 + 5\}</h4>
+                                    <div class="form-inline">
+                                        <input type="file" class="uploadImage" name="index_img_\{$i*5 + 4\}" id="index_\{$i*5 + 4\}" data-input="false" accept="image/*"
+                                            style="display: inline;"> \{if $images[index_img_|cat:($i*5 + 4)].imageId != ''\}
+                                        <a class="btn btn-danger" onclick="deleteImg('\{$images[index_img_|cat:($i*5 + 4)].imageId\}');">
+                                            <i class="glyphicon glyphicon-remove"></i>
+                                        </a>
+                                        \{/if\}
+                                    </div>
+                                    <img id="index_\{$i*5 + 4\}_img" class="img-thumbnail" src="\{if $images[index_img_|cat:($i*5 + 4)]\}\{$images[index_img_|cat:($i*5 + 4)].path\}\{else\}../image/cover_2.png\{/if\}"
+                                        alt="尚未上傳圖片">
                                 </div>
-                            </form>
-                        </div>
+                                <div class="col-md-2" style="text-align: center;">
+                                    <h4>小圖 - \{$i*5 + 6\}</h4>
+                                    <div class="form-inline">
+                                        <input type="file" class="uploadImage" name="index_img_\{$i*5 + 5\}" id="index_\{$i*5 + 5\}" data-input="false" accept="image/*"
+                                            style="display: inline;"> \{if $images[index_img_|cat:($i*5 + 5)].imageId != ''\}
+                                        <a class="btn btn-danger" onclick="deleteImg('\{$images[index_img_|cat:($i*5 + 5)].imageId\}');">
+                                            <i class="glyphicon glyphicon-remove"></i>
+                                        </a>
+                                        \{/if\}
+                                    </div>
+                                    <img id="index_\{$i*5 + 5\}_img" class="img-thumbnail" src="\{if $images[index_img_|cat:($i*5 + 5)].path\}\{$images[index_img_|cat:($i*5 + 5)].path\}\{else\}../image/cover_2.png\{/if\}"
+                                        alt="尚未上傳圖片">
+                                </div>
+                                <div class="col-md-2" style="text-align: center;">
+                                    <h4>小圖 - \{$i*5 + 7\}</h4>
+                                    <div class="form-inline">
+                                        <input type="file" class="uploadImage" name="index_img_\{$i*5 + 6\}" id="index_\{$i*5 + 6\}" data-input="false" accept="image/*"
+                                            style="display: inline;"> \{if $images[index_img_|cat:($i*5 + 6)].imageId != ''\}
+                                        <a class="btn btn-danger" onclick="deleteImg('\{$images[index_img_|cat:($i*5 + 6)].imageId\}');">
+                                            <i class="glyphicon glyphicon-remove"></i>
+                                        </a>
+                                        \{/if\}
+                                    </div>
+                                    <img id="index_\{$i*5 + 6\}_img" class="img-thumbnail" src="\{if $images[index_img_|cat:($i*5 + 6)].path\}\{$images[index_img_|cat:($i*5 + 6)].path\}\{else\}../image/cover_2.png\{/if\}"
+                                        alt="尚未上傳圖片">
+                                </div>
+                                <div class="col-md-2" style="text-align: center;">
+                                    <h4>小圖 - \{$i*5 + 8\}</h4>
+                                    <div class="form-inline">
+                                        <input type="file" class="uploadImage" name="index_img_\{$i*5 + 7\}" id="index_\{$i*5 + 7\}" data-input="false" accept="image/*"
+                                            style="display: inline;"> \{if $images[index_img_|cat:($i*5 + 7)].imageId != ''\}
+                                        <a class="btn btn-danger" onclick="deleteImg('\{$images[index_img_|cat:($i*5 + 7)].imageId\}');">
+                                            <i class="glyphicon glyphicon-remove"></i>
+                                        </a>
+                                        \{/if\}
+                                    </div>
+                                    <img id="index_\{$i*5 + 7\}_img" class="img-thumbnail" src="\{if $images[index_img_|cat:($i*5 + 7)].path\}\{$images[index_img_|cat:($i*5 + 7)].path\}\{else\}../image/cover_2.png\{/if\}"
+                                        alt="尚未上傳圖片">
+                                </div>
+                            </div>
+                            \{/for\}
+                            <div class="box-footer" style="text-align: right;">
+                                <input id="action" type="hidden" name="action" value="editIndexCover">
+                                <input id="updateList" type="hidden" name="updateList" value="[]">
+                                <button type="button" class="btn btn-primary" onclick="preview();">
+                                    <i class="fa fa-eye"></i>&nbsp;預覽
+                                </button>
+                                <button type="submit" class="btn btn-success" onclick="submitForm();">
+                                    <i class="fa fa-check"></i>&nbsp;更新
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </section>
@@ -129,7 +128,6 @@
     <script>
         var newImg = [];
         $(document).ready(function () {
-
             $(".uploadImage").filestyle({
                 size: "nr",
                 input: false,
@@ -144,6 +142,19 @@
 
         });
 
+        function preview() {
+            $('#action').val('previewIndexCover');
+            $('#coverForm').attr('target', '_blank');
+            $('#coverForm').submit();
+        }
+
+        function submitForm() {
+            $('#action').val('editIndexCover');
+            $('#updateList').val(JSON.stringify(newImg));
+            $('#coverForm').attr('target', '_self');
+            $('#coverForm').submit();
+        }
+
         function readURL(input) {
             id = '#' + input.id + '_img';
             if (input.files && input.files[0]) {
@@ -154,19 +165,21 @@
                     $(id).css('display', '');
                 }
                 reader.readAsDataURL(input.files[0]);
-                newImg.push(input.name);
+                if ($.inArray(input.name, newImg) == -1) {
+                    newImg.push(input.name);
+                }
             }
         }
 
         function deleteImg(imageId) {
             BootstrapDialog.show({
                 title: '提醒',
-                message: '確定刪除該風格圖片嗎?',
+                message: '確定刪除該圖片嗎?',
                 buttons: [{
                     label: '確定',
                     cssClass: 'btn-danger',
                     action: function () {
-                        location = '../controller/styleController.php?action=styleImageDelete&imageId=' + imageId;
+                        location = '../controller/uiController.php?action=imgDelete&imageId=' + imageId;
                     }
                 }, {
                     label: '取消',
