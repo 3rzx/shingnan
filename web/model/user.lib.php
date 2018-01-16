@@ -326,7 +326,7 @@ class User
         $res->execute();
         $allUserCourseData = $res->fetchAll();
 
-        $this->smarty->assign('userId',$input['userId']);
+        $this->smarty->assign('userId', $input['userId']);
         $this->smarty->assign('allUserCourseData', $allUserCourseData);
 
         $this->smarty->assign('error', $this->error);
@@ -485,7 +485,7 @@ class User
                 WHERE `tranId` = '{$input["tranId"]}';";
 
         $res = $this->db->prepare($sql);
-        if(!$res->execute()){
+        if (!$res->execute()) {
             return ;
         }
         $tranData = $res->fetch();
@@ -549,7 +549,6 @@ class User
                 WHERE `user`.`userId`='{$input['userId']}';";
         $res = $this->db->prepare($sql);
         if (!$res->execute()) {
-            echo("yoyo");
             return ;
         }
 
@@ -579,13 +578,12 @@ class User
             $itemId = $input["itemName_{$i}"];
             $itemNum = $input["amount_{$i}"];
 
-            if($input["state_{$i}"] === "insert" || $input["state_{$i}"] === "update"){
+            if ($input["state_{$i}"] === "insert" || $input["state_{$i}"] === "update") {
                 $sql .= "('{$tranId}', '{$itemId}', '{$itemNum}', '0', '0'),";
             }
-            if($input["state_{$i}"] === "delete"){
+            if ($input["state_{$i}"] === "delete") {
                 $sql .= "('{$tranId}', '{$itemId}', '{$itemNum}', '0', '1'),";
             }
-
         }
 
         $sql = substr_replace($sql, " ", -1);
@@ -595,7 +593,6 @@ class User
             return ;
         }
         header("Location: ../controller/userController.php?action=userShoppingRecordPrepare&userId={$input["userId"]}");
-
     }
 
     /**
@@ -634,7 +631,6 @@ class User
         $sql = "UPDATE `shingnan`.`user` SET  `point` = '{$remainPoint}', `lastUpdateTime` = '{$now}' WHERE `userId` = '{$result["userId"]}';";
         $res = $this->db->prepare($sql);
         $res->execute();
-
     }
 
 
