@@ -3,82 +3,10 @@
 
 <head>
     \{include file="../common/resource.html"\}
-    <script type="text/javascript" src="../plugins/bootstrap-filestyle/src/bootstrap-filestyle.min.js">
     </script>
     <!-- CK Editor -->
     <script type="text/javascript" src="../plugins/ckeditor/ckeditor.js"></script>
     <script>
-    var imgCount = 1;
-    $(document).ready(function() {
-        $("#courseImage1").filestyle({
-            size: "nr",
-            input: false,
-            buttonText: "上傳圖片",
-            buttonName: "btn-info",
-            iconName: "glyphicon glyphicon-camera"
-        });
-
-
-        $("#courseImage1").change(function() {
-            readURL(this, '#courseImg1');
-        });
-
-        $('input[name="imgCount"]').val(imgCount);
-
-    });
-
-    function readURL(input, id) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-
-            reader.onload = function(e) {
-                $(id).attr('src', e.target.result);
-                $(id).css('display', '');
-            }
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-
-    function fieldValidation(field) {
-        if ($.trim($(field).val()) == '') {
-            $(field + 'Div').addClass('has-error');
-            $(field + 'Div').val('');
-            return false;
-        } else {
-            $(field + 'Div').removeClass('has-error');
-        }
-        return true;
-    }
-
-    function addCourseImg(i) {
-        str = '<div id = "image' + i + '"><div class = "form-inline" style="display:inline-block;">';
-        str += '<input type="file" id="courseImage' + i + '" name="courseImage' + i + '" data-input="false" accept="image/*">&nbsp';
-        str += '<a class="btn btn-sm btn-danger" onclick="deleteCourseImg(' + i + ')"><i class="glyphicon glyphicon-remove"></i></a>';
-        str += '</div>';
-        str += '<img id="courseImg' + i + '" class="img-thumbnail" style="display:none"><br></div>'
-
-        $("#addImgStart").after(str);
-
-        $("#courseImage" + i).filestyle({
-            size: "nr",
-            input: false,
-            buttonText: "上傳圖片",
-            buttonName: "btn-info",
-            iconName: "glyphicon glyphicon-camera"
-        });
-
-        $("#courseImage" + i).change(function() {
-            readURL(this, "#courseImg" + i);
-        });
-
-        $('input[name="imgCount"]').val(imgCount);
-
-    }
-
-    function deleteCourseImg(i) {
-        $("#image" + i).remove();
-    }
-
     $(function() {
         // Replace the <textarea id="courseEditor"> with a CKEditor
         // instance, using default configuration.
@@ -123,22 +51,9 @@
                                             </textarea>
                                         </div>
                                     </div>
-                                    <div id="courseImageDiv" class="form-group">
-                                        <label class="col-sm-2 control-label">文章圖片</label>
-                                        <div class="col-sm-10">
-                                            <div class="form-inline" style="display:inline-block;">
-                                                <input type="file" id="courseImage1" name="courseImage1" data-input="false" accept="image/*">
-                                                <a class="btn btn-sm btn-primary" onclick="addCourseImg(++imgCount)"><i class="glyphicon glyphicon-plus"></i></a>
-                                            </div>
-                                            <img id="courseImg1" class="img-thumbnail" style="display:none">
-                                            <br>
-                                            <div id="addImgStart" name="addImgStart"></div>
-                                        </div>
-                                    </div>
                                 </div>
                                 <div class="box-footer" style="text-align: right;">
                                     <a href="../controller/courseController.php?action=courseAddPrepare" class="btn btn-warning">取消</a>
-                                    <input type="hidden" name="imgCount">
                                     <input type="hidden" name="action" value="courseAdd">
                                     <button type="submit" class="btn btn-success">確定</button>
                                 </div>
