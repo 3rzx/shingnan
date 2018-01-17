@@ -4,6 +4,9 @@
 <head>
     \{include file="../common/resource.html"\}
     <script type="text/javascript" src="../plugins/cytoscape/dist/cytoscape.js"></script>
+    <link rel="stylesheet" href="../theme/adminlte/plugins/datepicker/datepicker3.css">
+    <script src="../theme/adminlte/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <script src="../theme/adminlte/plugins/datepicker/locales/bootstrap-datepicker.zh-TW.js"></script>
     <script type="text/javascript">
         var children = \{$userChildrenData|json_encode\};
 
@@ -47,7 +50,15 @@
             });
 
             cy.zoomingEnabled(false);
+
+
+            $('#birthdayPicker').datepicker({
+                language: 'zh-TW',
+                format: 'yyyy/mm/dd',
+                autoclose: true
+            });
         });
+
 
     </script>
     <style type="text/css">
@@ -106,6 +117,19 @@
                                                 <option value="0">女</option>
                                                 <option value="1" selected>男</option>
                                             </select>
+                                        </div>
+                                    </div>
+
+                                    <!--birthday-->
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-2" for="birthdayPicker">生日</label>
+                                        <div class="col-sm-10">
+                                            <div class="input-group">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-clock-o"></i>
+                                                </div>
+                                                <input type="text" name="birthday" class="form-control pull-right" id="birthdayPicker" value="\{$userDetailData.birthday\}">
+                                            </div>
                                         </div>
                                     </div>
 

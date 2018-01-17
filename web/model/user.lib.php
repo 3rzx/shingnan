@@ -90,10 +90,10 @@ class User
         $now = date('Y-m-d H:i:s');
 
         $sql = "INSERT INTO `shingnan`.`user` (
-        `userId`, `userName`, `account`,`password`,`phone`,
+        `userId`, `userName`, `account`,`password`,`phone`,`birthday`,
         `gender`,`address`, `point`,`introducerId`,`downlineNum`,
         `isDelete`, `lastUpdateTime`,`createTime`)
-        VALUES (:userId, :userName, :account, :password, :phone,
+        VALUES (:userId, :userName, :account, :password, :phone, :birthday,
         :gender, :address, 0, NULL,0,
         0,:lastUpdateTime, :createTime);";
 
@@ -101,6 +101,7 @@ class User
 
         $res->bindParam(':userId', $userId, PDO::PARAM_STR);
         $res->bindParam(':userName', $input['userName'], PDO::PARAM_STR);
+        $res->bindParam(':birthday', $input['birthday'], PDO::PARAM_STR);
         $res->bindParam(':gender', intval($input['gender']), PDO::PARAM_INT);
         $res->bindParam(':phone', $input['phone'], PDO::PARAM_STR);
         $res->bindParam(':account', $input['account'], PDO::PARAM_STR);
@@ -205,7 +206,7 @@ class User
                        `user`.`account`, `user`.`password`,
                        `user`.`phone`, `user`.`gender`,
                        `user`.`address`, `user`.`point`,
-                       `user`.`downlineNum`
+                       `user`.`downlineNum`, `user`.`birthday`
                 FROM  `user`
                 WHERE  `user`.`userId` = :userId AND `user`.`isDelete` = 0";
 
@@ -216,7 +217,7 @@ class User
 
 
         //find user child
-         $sql = "SELECT `user`.`userId`, `user`.`userName`
+         $sql = "SELECT `user`.`userId`, `user`.`userName`,
                  FROM  `user` WHERE  `user`.`introducerId` = :userId AND `user`.`isDelete` = 0";
 
         $res = $this->db->prepare($sql);
@@ -246,12 +247,14 @@ class User
                 SET  `lastUpdateTime` = :lastUpdateTime,
                      `userId` = :userId, `userName` = :userName,
                      `account` = :account, `phone` = :phone,
-                     `gender` = :gender, `address` = :address
+                     `gender` = :gender, `address` = :address,
+                     `birthday` = :birthday
                 WHERE `userId` = :userId;";
 
         $now = date('Y-m-d H:i:s');
         $res = $this->db->prepare($sql);
 
+        $res->bindParam(':birthday', $input['birthday'], PDO::PARAM_STR);
         $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
         $res->bindParam(':userId', $input['userId'], PDO::PARAM_STR);
         $res->bindParam(':userName', $input['userName'], PDO::PARAM_STR);
