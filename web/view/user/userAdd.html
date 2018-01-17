@@ -9,7 +9,7 @@
     <script src="../theme/adminlte/plugins/datepicker/locales/bootstrap-datepicker.zh-TW.js"></script>
     <script>
         $(document).ready(function () {
-            var allAccount = \{ $allAccount| json_encode\ };
+            var allAccount = \{$allAccount|json_encode\};
             $("#account").focusout(function () {
                 var repeatedAccount = false;
                 for (var i in allAccount) {
