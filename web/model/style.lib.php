@@ -3,6 +3,7 @@
 require_once HOME_DIR . 'configs/config.php';
 require_once 'upload.func.php';
 require_once 'IdGenerator.php';
+require_once 'deleteImgFile.php';
 /**
  * 風格類別
  */
