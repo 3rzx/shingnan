@@ -10,18 +10,18 @@
 
     $(document).ready(function () {
 
-        var frameData = \{ $frameData| json_encode\ };
-        var glassData = \{ $glassData| json_encode\ };
-        var lenData = \{ $lenData| json_encode\ };
-        var partData = \{ $partData| json_encode\ };
+        var frameData = \{$frameData|json_encode\};
+        var glassData = \{$glassData|json_encode\};
+        var lenData = \{$lenData|json_encode\};
+        var partData = \{$partData|json_encode\};
         var allItemData = {
             'frame': frameData,
             'glass': glassData,
             'len': lenData,
             'part': partData
         };
-        var allTranDetailData = \{ $allTranDetailData| json_encode\ };
-        var tranData = \{ $tranData| json_encode\ };
+        var allTranDetailData = \{$allTranDetailData|json_encode\};
+        var tranData = \{$tranData|json_encode\};
 
         var num = 0;
         var hidden = "hidden";
@@ -176,7 +176,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="checkState" value="3">
                                         <label class="form-check-label" for="exampleRadios3">
-                                            以付訂金
+                                            已付訂金
                                         </label>
                                     </div>
                                     <div class="form-check">
