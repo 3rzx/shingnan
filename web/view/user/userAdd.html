@@ -27,6 +27,7 @@
 
             $("#account").focusin(function () {
                 $("#repeatedAccountValidataion").addClass("hidden");
+                $("button[type=submit]").attr('disabled', false);
             });
 
             $('#birthdayPicker').datepicker({
