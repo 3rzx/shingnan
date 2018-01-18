@@ -4,7 +4,7 @@ require_once HOME_DIR . 'configs/config.php';
 require_once 'upload.func.php';
 require_once 'pointFile.php';
 /**
- * 品牌類別
+ * 點數類別
  */
 class Point
 {
@@ -39,7 +39,7 @@ class Point
    
 
     /**
-     * 編輯品牌前置
+     * 編輯點數前置
      */
     public function PointEditPrepare($input) {
         if ($_SESSION['isLogin'] == false) {
@@ -50,12 +50,12 @@ class Point
             $oldRate = $pointFile->GetRate();
             $this->smarty->assign('oldRate', $oldRate);
             $this->smarty->assign('error', $this->error);
-            $this->smarty->display('Point/PointEdit.html');
+            $this->smarty->display('point/pointEdit.html');
         }
     }
 
     /**
-     * 編輯品牌
+     * 編輯點數
      */
     public function PointEdit($input) {
         if ($_SESSION['isLogin'] == false) {
@@ -67,7 +67,7 @@ class Point
             $pointFile->SetRate($newRate);
             $this->smarty->assign('oldRate', $newRate);
             $this->smarty->assign('error', $this->error);
-            $this->smarty->display('Point/PointEdit.html');
+            $this->smarty->display('point/pointEdit.html');
         }
     }
 

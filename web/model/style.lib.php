@@ -84,7 +84,7 @@ class Style
                     $fileInfo = $_FILES['styleImage'];
                     $styleImage = uploadFile($fileInfo, $uploadPath);
                     $sql = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`, 
-                                                            `itemId`, `ctr`, `path`, `link`, `crateTime`) 
+                                                            `itemId`, `ctr`, `path`, `link`, `createTime`) 
                             VALUES (:imgId, :imgName, 2, 
                                     :styleId, 0, :filePath, '', :createTime);";
                     $res = $this->db->prepare($sql);

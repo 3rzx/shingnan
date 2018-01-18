@@ -67,7 +67,7 @@ class Len
             $idGen = new IdGenerator();
             $now = date('Y-m-d H:i:s');
             $lenId = $idGen->GetID('len');
-            echo $input['quantity'];
+            //echo $input['quantity'];
             $sql = "INSERT INTO `shingnan`.`len` (`lenId`, `lenName`, `brandId`, `quantity`, `size`, `period`, 
                                                   `color`, `isDelete`, `lastUpdateTime`, `createTime`) 
                     VALUES (:lenId, :lenName, :lenBrand, :quantity, :size, :period, 
