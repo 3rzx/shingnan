@@ -7,27 +7,69 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy"
         crossorigin="anonymous">
 
-    <title>App Name - 興南眼鏡行</title>
+    <title>興南眼鏡行</title>
     <style>
         body {
-            min-height: 55rem;
-            padding-top: 4.5rem;
+            display: flex;
+            min-height: 150vh;
+            flex-direction: column;
         }
 
-        .fixed-top-2 {
-            margin-top: 59px;
-        }
-
-        .footer {
-            /* position: absolute; */
-            /* bottom: 0; */
+        footer {
             width: 100%;
-            /* Set the fixed height of the footer here */
-            height: 191px;
-            background-color: #5a5a5a;
-            line-height: 40px;
-            padding-top: 30px;
         }
+
+        .content {
+            flex: 1;
+            margin-top: 115px;
+        }
+
+        .text-black {
+            color: black;
+        }
+
+        .bg-gray {
+            background-color: #5a5a5a;
+        }
+
+        .bg-light2 {
+            background-color: #eeeeee;
+        }
+
+        .fixed-top2 {
+            margin-top: 61px;
+        }
+
+        /* 導覽列文字往下滑動 */
+
+        .nav-link-text {
+            height: 37px;
+            overflow: hidden;
+        }
+
+        .nav-link-text span {
+            color: rgba(0, 0, 0, 0.8);
+            font-size: 16px;
+            text-decoration: none;
+            text-align: center;
+            display: block;
+        }
+
+        .nav-link-text,
+        .nav-span {
+            transition: 0.3s;
+        }
+
+        .nav-span {
+            margin-top: -30px;
+            line-height: 28px;
+        }
+
+        .nav-link-text:hover .nav-span {
+            margin-top: 0px;
+        }
+
+        /* 回到最上面按鈕 */
 
         #go-top-btn {
             display: none;
@@ -45,7 +87,6 @@
             outline: none;
             /* Remove outline */
             background: rgba(0, 0, 0, 0.6);
-            /* background-color: red; Set a background color */
             color: white;
             /* Text color */
             cursor: pointer;
@@ -60,129 +101,196 @@
             background: rgba(0, 0, 0, 0.9);
         }
 
-        .nav-btn-text {
-            height: 32px;
-            width: 135px;
-            overflow: hidden;
+        /* 圖片畫廊 */
+
+        .row-cus {
+            display: -ms-flexbox;
+            /* IE10 */
+            display: flex;
+            -ms-flex-wrap: wrap;
+            /* IE10 */
+            flex-wrap: wrap;
+            margin: 0 auto;
+            justify-content: flex-start;
+            width: 80%;
         }
 
-        .nav-btn-text span {
-            color: black;
-            font-size: 16px;
-            text-decoration: none;
-            text-align: center;
-            display: block;
+        /* 1 row = 5 cols */
+
+        .column {
+            -ms-flex: 20%;
+            /* IE10 */
+            flex: 20%;
+            max-width: 20%;
+            padding: 0 0;
+            background-color: rgba(0, 0, 0, 0.9);
+            position: relative;
         }
 
-        .nav-btn-text,
-        .nav-span {
-            transition: 0.3s;
+        .column img {
+            opacity: 1;
+            vertical-align: middle;
+            width: 100%;
+            transition: .5s ease;
+            backface-visibility: hidden;
         }
 
-        .nav-span {
-            margin-top: -28px;
-            line-height: 28px;
-        }
-
-        .nav-btn-text:hover .nav-span {
-            margin-top: 0px;
-        }
-
-        .row-gray {
-            background-color: #000;
-        }
-
-        .img-center-text {
-            display: none;
-            z-index: 100;
+        .gallery-overlay {
+            transition: .5s ease;
+            opacity: 0;
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .gallery-text {
             color: blue;
-            font-size: 16px;
-            /* font-weight: bold; */
+            font-size: 18px;
+        }
+
+        .column:hover img {
+            opacity: 0.6;
+        }
+
+        .column:hover .gallery-overlay {
+            opacity: 1;
+        }
+
+        /* 眼鏡選購類別 */
+
+        .buy-class {
+            width: 30%;
+            background-color: #dddddd;
+            height: 40px;
+            text-align: right;
+            font-size: 20px;
+            padding: 5px 10px;
+            margin: 10px 0px;
+        }
+
+        .more {
+            text-align: right;
+        }
+
+
+        /* 1 row = 4 cols */
+
+        @media (max-width: 1000px) {
+            .column {
+                -ms-flex: 25%;
+                flex: 25%;
+                max-width: 25%;
+            }
+        }
+
+        /* 1 row = 2 cols */
+
+        @media (max-width: 800px) {
+            .column {
+                -ms-flex: 50%;
+                flex: 50%;
+                max-width: 50%;
+            }
+
+            .gallery-text {
+                font-size: 22px;
+            }
+        }
+
+        /* 1 row = 1 col */
+
+        @media (max-width: 480px) {
+            .column {
+                -ms-flex: 100%;
+                flex: 100%;
+                max-width: 100%;
+            }
+            .gallery-text {
+                font-size: 24px;
+            }
         }
     </style>
 </head>
 
 <body>
-    \{'gg'\}
-    <div class="container" style="width: 100%; padding: 0px;">
-        <nav class="navbar fixed-top" style="background-color: #5a5a5a;">
-            <a class="navbar-brand" href="#">
-                <img src="../image/logo.png" style="height: 35px;">
-            </a>
-        </nav>
-        <nav class="navbar navbar-light navbar-toggleable-md fixed-top fixed-top-2" style="background-color: #eeeeee;">
-            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse"
-                aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarCollapse">
-                <ul class="navbar-nav mr-auto" style="margin: 0 auto;">
-                    <li class="nav-item">
-                        <a class="nav-link nav-btn-text" href="javascript:" style="color: black;">
-                            <span class="nav-span">ABOUT US</span>
-                            <span>關於我們</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link nav-btn-text" href="javascript:" style="color: black;">
-                            <span class="nav-span">WHAT'S NEWS</span>
-                            <span>最新消息</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link nav-btn-text" href="javascript:" style="color: black;">
-                            <span class="nav-span">BRAND</span>
-                            <span>品牌介紹</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link nav-btn-text" href="javascript:" style="color: black;">
-                            <span class="nav-span">BUY</span>
-                            <span>眼鏡選購</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link nav-btn-text" href="javascript:" style="color: black;">
-                            <span class="nav-span">EDUCATION</span>
-                            <span>衛教專區</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link nav-btn-text" href="javascript:" style="color: black;">
-                            <span class="nav-span">MEMBERS</span>
-                            <span>會員專區</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link nav-btn-text" href="javascript:" style="color: black;">
-                            <span class="nav-span">CONTACT US</span>
-                            <span>聯絡我們</span>
-                        </a>
-                    </li>
-                </ul>
-                <ul class="nav navbar-nav pull-sm-right">
-                    <li class="nav-item">
-                        <a class="nav-link nav-btn-text" href="javascript:" style="width: 60px;">
-                            <span class="nav-span">LOGIN</span>
-                            <span>登入</span>
-                        </a>
-                    </li>
-                    <a class="nav-link" href="javascript:" disabled>/</a>
-                    <li class="nav-item">
-                        <a class="nav-link nav-btn-text" href="javascript:" style="width: 80px;">
-                            <span class="nav-span">REGISTER</span>
-                            <span>註冊</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-        <div id="carouselExampleControls" class="carousel slide" data-ride="carousel" style="width: 100%;">
+    <!-- brand navbar -->
+    <nav class="navbar navbar-light bg-gray fixed-top">
+        <a class="navbar-brand" href="/index" style="width: 100px;">
+            <img src="../image/logo.png" style="width: 99px; height: 37px;">
+        </a>
+    </nav>
+    <!-- web navbar -->
+    <nav class="navbar navbar-toggleable-md navbar-light bg-light2 fixed-top fixed-top2">
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarLink">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="navbar-brand invisible" href="javascript:">興南眼鏡行</a>
+        <div class="collapse navbar-collapse" id="navbarLink">
+            <ul class="navbar-nav mx-auto mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link nav-link-text" href="javascript:">
+                        <span class="nav-span">ABOUT US</span>
+                        <span>關於我們</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-link-text" href="javascript:">
+                        <span class="nav-span">WHAT'S NEWS</span>
+                        <span>最新消息</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-link-text" href="/brand">
+                        <span class="nav-span">BRAND</span>
+                        <span>品牌介紹</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-link-text" href="/buy">
+                        <span class="nav-span">BUY</span>
+                        <span>眼鏡選購</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-link-text" href="javascript:">
+                        <span class="nav-span">EDUCATION</span>
+                        <span>衛教專區</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-link-text" href="javascript:">
+                        <span class="nav-span">MEMBERS</span>
+                        <span>會員專區</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-link-text" href="javascript:">
+                        <span class="nav-span">CONTACT US</span>
+                        <span>聯絡我們</span>
+                    </a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link nav-link-text" href="javascript:">
+                        <span class="nav-span">LOGIN</span>
+                        <span>登入</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-link-text" href="javascript:">
+                        <span class="nav-span">REGISTER</span>
+                        <span>註冊</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container-fluid content p-0">
+        <div id="carouselExampleControls" class="carousel slide mw-100" data-ride="carousel">
             <div class="carousel-inner" role="listbox">
                 <div class="carousel-item active">
                     <img class="d-block img-fluid" src="\{$images['index_img_0']\}" alt="First slide">
@@ -203,134 +311,36 @@
                 <span class="sr-only">Next</span>
             </a>
         </div>
-        <nav class="navbar navbar-light navbar-toggleable-md nav-button" style="background-color: #eeeeee;">
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav mr-auto" style="margin: 0 auto;">
-                    <li class="nav-item" style="padding-left: 2rem; padding-right: 2rem;">
-                        <a class="nav-link" href="#" style="color: black;">ABOUT US</a>
-                    </li>
-                    <li class="nav-item" style="padding-left: 2rem; padding-right: 2rem;">
-                        <a class="nav-link" href="#" style="color: black;">WHAT'S NEW</a>
-                    </li>
-                    <li class="nav-item" style="padding-left: 2rem; padding-right: 2rem;">
-                        <a class="nav-link" href="#" style="color: black;">BRAND</a>
-                    </li>
-                    <li class="nav-item" style="padding-left: 2rem; padding-right: 2rem;">
-                        <a class="nav-link" href="#" style="color: black;">BUY</a>
-                    </li>
-                    <li class="nav-item" style="padding-left: 2rem; padding-right: 2rem;">
-                        <a class="nav-link" href="#" style="color: black;">EDUCATION</a>
-                    </li>
-                </ul>
+        <!-- image navbar -->
+        <nav class="navbar navbar-toggleable-md navbar-light bg-light2 d-flex justify-content-around">
+            <div>
+                <div class="navbar-nav">
+                    <a class="nav-item nav-link mx-5" href="#" style="color: black;">ABOUT US</a>
+                    <a class="nav-item nav-link mx-5" href="#" style="color: black;">WHAT'S NEW</a>
+                    <a class="nav-item nav-link mx-5" href="#" style="color: black;">BRAND</a>
+                    <a class="nav-item nav-link mx-5" href="/buy" style="color: black;">BUY</a>
+                    <a class="nav-item nav-link mx-5" href="#" style="color: black;">EDUCATION</a>
+                </div>
             </div>
         </nav>
-        <div class="row" style="margin: 0 auto;">
-            <div class="offset-md-1 col-md-2 row-gray" style="padding: 0px;">
-                <img class="d-block img-fluid img-gray-alpha" src="\{if $images['index_img_3']\}\{$images['index_img_3']\}\{else\}../image/cover_2.png\{/if\}"
-                    alt="First slide">
-                <span class="img-center-text">Hello</span>
+        <!-- image gallery -->
+        <div class="row-cus">
+            \{for $i = 3 to 22\}
+            <div class="column">
+                <img src="\{if $images[index_img_|cat:$i]\}\{$images[index_img_|cat:$i]\}\{else\}../image/cover_2.png\{/if\}" style="width: 100%;">
+                <div class="gallery-overlay">
+                    <p class="gallery-text">Welcome to Shingnan!</p>
+                </div>
             </div>
-            <div class="col-md-2 row-gray" style="padding: 0px;">
-                <img class="d-block img-fluid img-gray-alpha" src="\{if $images['index_img_4']\}\{$images['index_img_4']\}\{else\}../image/cover_2.png\{/if\}"
-                    alt="First slide">
-                <span class="img-center-text">Hello</span>
-            </div>
-            <div class="col-md-2 row-gray" style="padding: 0px;">
-                <img class="d-block img-fluid img-gray-alpha" src="\{if $images['index_img_5']\}\{$images['index_img_5']\}\{else\}../image/cover_2.png\{/if\}"
-                    alt="First slide">
-                <span class="img-center-text">Hello</span>
-            </div>
-            <div class="col-md-2 row-gray" style="padding: 0px;">
-                <img class="d-block img-fluid img-gray-alpha" src="\{if $images['index_img_6']\}\{$images['index_img_6']\}\{else\}../image/cover_2.png\{/if\}"
-                    alt="First slide">
-                <span class="img-center-text">Hello</span>
-            </div>
-            <div class="col-md-2 row-gray" style="padding: 0px;">
-                <img class="d-block img-fluid img-gray-alpha" src="\{if $images['index_img_7']\}\{$images['index_img_7']\}\{else\}../image/cover_2.png\{/if\}"
-                    alt="First slide">
-                <span class="img-center-text">Hello</span>
-            </div>
-            <div class="offset-md-1 col-md-2 row-gray" style="padding: 0px;">
-                <img class="d-block img-fluid img-gray-alpha" src="\{if $images['index_img_8']\}\{$images['index_img_8']\}\{else\}../image/cover_2.png\{/if\}"
-                    alt="First slide">
-                <span class="img-center-text">Hello</span>
-            </div>
-            <div class="col-md-2 row-gray" style="padding: 0px;">
-                <img class="d-block img-fluid img-gray-alpha" src="\{if $images['index_img_9']\}\{$images['index_img_9']\}\{else\}../image/cover_2.png\{/if\}"
-                    alt="First slide">
-                <span class="img-center-text">Hello</span>
-            </div>
-            <div class="col-md-2 row-gray" style="padding: 0px;">
-                <img class="d-block img-fluid img-gray-alpha" src="\{if $images['index_img_10']\}\{$images['index_img_10']\}\{else\}../image/cover_2.png\{/if\}"
-                    alt="First slide">
-                <span class="img-center-text">Hello</span>
-            </div>
-            <div class="col-md-2 row-gray" style="padding: 0px;">
-                <img class="d-block img-fluid img-gray-alpha" src="\{if $images['index_img_11']\}\{$images['index_img_11']\}\{else\}../image/cover_2.png\{/if\}"
-                    alt="First slide">
-                <span class="img-center-text">Hello</span>
-            </div>
-            <div class="col-md-2 row-gray" style="padding: 0px;">
-                <img class="d-block img-fluid img-gray-alpha" src="\{if $images['index_img_12']\}\{$images['index_img_12']\}\{else\}../image/cover_2.png\{/if\}"
-                    alt="First slide">
-                <span class="img-center-text">Hello</span>
-            </div>
-            <div class="offset-md-1 col-md-2 row-gray" style="padding: 0px;">
-                <img class="d-block img-fluid img-gray-alpha" src="\{if $images['index_img_13']\}\{$images['index_img_13']\}\{else\}../image/cover_2.png\{/if\}"
-                    alt="First slide">
-                <span class="img-center-text">Hello</span>
-            </div>
-            <div class="col-md-2 row-gray" style="padding: 0px;">
-                <img class="d-block img-fluid img-gray-alpha" src="\{if $images['index_img_14']\}\{$images['index_img_14']\}\{else\}../image/cover_2.png\{/if\}"
-                    alt="First slide">
-                <span class="img-center-text">Hello</span>
-            </div>
-            <div class="col-md-2 row-gray" style="padding: 0px;">
-                <img class="d-block img-fluid img-gray-alpha" src="\{if $images['index_img_15']\}\{$images['index_img_15']\}\{else\}../image/cover_2.png\{/if\}"
-                    alt="First slide">
-                <span class="img-center-text">Hello</span>
-            </div>
-            <div class="col-md-2 row-gray" style="padding: 0px;">
-                <img class="d-block img-fluid img-gray-alpha" src="\{if $images['index_img_16']\}\{$images['index_img_16']\}\{else\}../image/cover_2.png\{/if\}"
-                    alt="First slide">
-                <span class="img-center-text">Hello</span>
-            </div>
-            <div class="col-md-2 row-gray" style="padding: 0px;">
-                <img class="d-block img-fluid img-gray-alpha" src="\{if $images['index_img_17']\}\{$images['index_img_17']\}\{else\}../image/cover_2.png\{/if\}"
-                    alt="First slide">
-                <span class="img-center-text">Hello</span>
-            </div>
-            <div class="offset-md-1 col-md-2 row-gray" style="padding: 0px;">
-                <img class="d-block img-fluid img-gray-alpha" src="\{if $images['index_img_18']\}\{$images['index_img_18']\}\{else\}../image/cover_2.png\{/if\}"
-                    alt="First slide">
-                <span class="img-center-text">Hello</span>
-            </div>
-            <div class="col-md-2 row-gray" style="padding: 0px;">
-                <img class="d-block img-fluid img-gray-alpha" src="\{if $images['index_img_19']\}\{$images['index_img_19']\}\{else\}../image/cover_2.png\{/if\}"
-                    alt="First slide">
-                <span class="img-center-text">Hello</span>
-            </div>
-            <div class="col-md-2 row-gray" style="padding: 0px;">
-                <img class="d-block img-fluid img-gray-alpha" src="\{if $images['index_img_20']\}\{$images['index_img_20']\}\{else\}../image/cover_2.png\{/if\}"
-                    alt="First slide">
-                <span class="img-center-text">Hello</span>
-            </div>
-            <div class="col-md-2 row-gray" style="padding: 0px;">
-                <img class="d-block img-fluid img-gray-alpha" src="\{if $images['index_img_21']\}\{$images['index_img_21']\}\{else\}../image/cover_2.png\{/if\}"
-                    alt="First slide">
-                <span class="img-center-text">Hello</span>
-            </div>
-            <div class="col-md-2 row-gray" style="padding: 0px;">
-                <img class="d-block img-fluid img-gray-alpha" src="\{if $images['index_img_22']\}\{$images['index_img_22']\}\{else\}../image/cover_2.png\{/if\}"
-                    alt="First slide">
-                <span class="img-center-text">Hello</span>
-            </div>
-            <button id="go-top-btn">TOP</button>
+            \{/for\}
         </div>
+        <!-- got top button -->
+        <button id="go-top-btn">TOP</button>
     </div>
-    <footer class="footer">
-        <div class="d-flex justify-content-around ">
-            <img src="../image/glasses_icon.png" style="height: 90px;">
+    <!-- footer -->
+    <footer class="bg-gray p-3">
+        <div class="d-flex justify-content-around align-items-center">
+            <img src="http://127.0.0.1:8000/img/logo_2.png" style="height: 90px;">
             <span style="color: #ffffff; font-size: 20px;">【長榮店】
                 <br>地址: 台南市東區長榮路三段6號
                 <br>TEL: (06) 235-1007</span>
@@ -342,7 +352,7 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
         crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
@@ -358,18 +368,11 @@
                     $('#go-top-btn').fadeOut(200);   // Else fade out the arrow
                 }
             });
+
             $('#go-top-btn').click(function () {      // When arrow is clicked
                 $('body, html').animate({
                     scrollTop: 0                       // Scroll to top of body
                 }, 500);
-            });
-
-            $('.row-gray').hover(function () {
-                $(this).find('.img-gray-alpha').css('opacity', '0.4');
-                $(this).find('.img-center-text').css('display', 'inline');
-            }, function () {
-                $(this).find('.img-gray-alpha').css('opacity', '1');
-                $(this).find('.img-center-text').css('display', 'none');
             });
         });
     </script>
