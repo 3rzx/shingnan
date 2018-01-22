@@ -70,9 +70,9 @@ class Ui
      */
     public function editIndexCover($input) {
         $updateList = json_decode($input['updateList']);
-
+        
         foreach($updateList as $index) {
-            $sql = "SELECT `imageId` FROM `image` WHERE `itemId` = '$index'";
+            $sql = "SELECT `imageId`, `path` FROM `image` WHERE `itemId` = '$index'";
             $res = $this->db->prepare($sql);
 
             if ($res->execute()) {
@@ -84,9 +84,12 @@ class Ui
                     $sql = "UPDATE `image` SET `path` = :pathInfo
                             WHERE `imageId` = :imageId";
                     $res = $this->db->prepare($sql);
-                    $res->bindParam(':imageId', $imageId[0], PDO::PARAM_STR);
-                    $res->bindParam(':pathinfo', $path, PDO::PARAM_STR);
+                    $res->bindParam(':imageId', $imageId['imageId'], PDO::PARAM_STR);
+                    $res->bindParam(':pathInfo', $path, PDO::PARAM_STR);
                     $res->execute();
+                    //delete data file
+                    $deleter = new deleteImgFile();
+                    $deleter->deleteFile($imageId['path']);
                 } else {
                     $idGen = new IdGenerator();
                     $imgId = 'image_'. $index;
