@@ -51,14 +51,14 @@
                             <form class="form-horizontal" method="post" action="../controller/lenController.php" onsubmit="formValidation()">
                                 <div class="box-body">
                                     <div id="lenNameDiv" class="form-group">
-                                        <label for="lenName" class="col-sm-2 control-label">隱形眼鏡名稱</label>
-                                        <div class="col-sm-6">
+                                        <label for="lenName" class="col-sm-3 control-label">隱形眼鏡名稱</label>
+                                        <div class="col-sm-5">
                                             <input id="lenName" name="lenName" class="form-control" placeholder="隱形眼鏡名稱" required>
                                         </div>
                                     </div>
                                     <div id="lenBrandDiv" class="form-group">
-                                        <label for="lenBrand" class="col-sm-2 control-label">隱形眼鏡品牌</label>
-                                        <div class="col-sm-6">
+                                        <label for="lenBrand" class="col-sm-3 control-label">隱形眼鏡品牌</label>
+                                        <div class="col-sm-5">
                                             <select class="selectpicker" name="lenBrand" id="lenBrand" data-live-search="true" title="請選擇品牌">
                                                 \{foreach from=$brandData item=brand \}
                                                 <option value='\{$brand.brandId\}' selected>\{$brand.brandName\}</option>
@@ -67,19 +67,19 @@
                                         </div>
                                     </div>
                                     <div id="quantityDiv" class="form-group">
-                                        <label for="quantity" class="col-sm-2 control-label">隱形眼鏡片數</label>
-                                        <div class="col-sm-6">
+                                        <label for="quantity" class="col-sm-3 control-label">隱形眼鏡片數</label>
+                                        <div class="col-sm-5">
                                             <input type="number" id="quantity" name="quantity" class="form-control" data-bind="value:replyNumber" min="0" placeholder="隱形眼鏡片數">
                                         </div>
                                     </div>
                                     <div id="sizeDiv" class="form-group">
-                                        <label for="size" class="col-sm-2 control-label">隱形眼鏡大小</label>
-                                        <div class="col-sm-6">
+                                        <label for="size" class="col-sm-3 control-label">隱形眼鏡大小</label>
+                                        <div class="col-sm-5">
                                             <input id="size" name="size" class="form-control" placeholder="隱形眼鏡大小">
                                         </div>
                                     </div>
                                     <div id="periodDiv" class="form-group">
-                                        <label for="period" class="col-sm-2 control-label">使用天數</label>
+                                        <label for="period" class="col-sm-3 control-label">使用天數</label>
                                         <div class="col-sm-3">
                                             <select class="selectpicker" name="period" id="period">
                                                 <option value=1>日拋</option>
@@ -92,8 +92,8 @@
                                         </div>
                                     </div>
                                     <div id="colorDiv" class="form-group">
-                                        <label for="lenColor" class="col-sm-2 control-label">隱形眼鏡顏色</label>
-                                        <div class="col-sm-6">
+                                        <label for="lenColor" class="col-sm-3 control-label">隱形眼鏡顏色</label>
+                                        <div class="col-sm-5">
                                             <input id="color" name="color" class="form-control" placeholder="隱形眼鏡顏色">
                                         </div>
                                     </div>
