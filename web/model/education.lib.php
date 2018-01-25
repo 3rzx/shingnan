@@ -1,7 +1,6 @@
 <?php
 // initialize
 require_once HOME_DIR . 'configs/config.php';
-require_once 'upload.func.php';
 require_once 'IdGenerator.php';
 /**
  * 衛教類別
@@ -43,13 +42,12 @@ class Education
      */
     public function educationAddPrepare()
     {
-        if ($_SESSION['isLogin'] == true) {
-            $this->smarty->assign('error', $this->error);
-            $this->smarty->display('education/educationAdd.html');
-        } else {
+        if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
         }
+        $this->smarty->assign('error', $this->error);
+        $this->smarty->display('education/educationAdd.html');
     }
 
     /**
@@ -75,29 +73,6 @@ class Education
 
         if ($res->execute()) {
             $this->msg = '新增成功';
-
-            //deal with image
-            $uploadPath = '../media/picture';
-            $sql2 = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`,`itemId`, `ctr`, `path`, `link`, `createTime`) VALUES ";
-            for ($i = 0; $i < $input['imgCount']; $i++) {
-                $imgCount = 'educationImage' . (string) ($i + 1);
-                if (isset($_FILES[$imgCount]['error']) && $_FILES[$imgCount]['error'] == 0) {
-                    $imgId = $idGen->GetID('image') . $i;
-                    $imgName = 'education_' . $input['educationTitle'];
-                    $fileInfo = $_FILES[$imgCount];
-                    $imagePath = uploadFile($fileInfo, $uploadPath);
-                    //echo $imagePath."<br>";
-                    $sql2 .= "('" . $imgId . "', '" . $imgName . "' , 5, '" . $educationId . "', 0, '" . $imagePath . "', '', '" . $now . "'),";
-                }
-            }
-            $sql2 = substr_replace($sql2, ';', -1);
-            $res = $this->db->prepare($sql2);
-            $res->execute();
-            if (!$res) {
-                $error = $res->errorInfo();
-                $this->error = $this->error . ' 圖片新增錯誤 ' . $error[2];
-                $this->educationList();
-            }
         } else {
             $error = $res->errorInfo();
             $this->error = $error[0];
@@ -117,23 +92,13 @@ class Education
         }
         $sql = "SELECT `article`.`articleId`, `article`.`title` , `article`.`content`
                 FROM  `article`
-                LEFT JOIN  `image` ON article.`articleId` = image.`itemId`
                 WHERE  `article`.`isDelete` = 0 and `article`.`articleId` = :educationId";
         $res = $this->db->prepare($sql);
         $res->bindParam(':educationId', $input['educationId'], PDO::PARAM_STR);
         $res->execute();
         $educationData = $res->fetch();
 
-        $sql = "SELECT `image`.`imageId`, `image`.`imageId`, `image`.`imageName`, `image`.`itemId`, `image`.`path`, `image`.`link`
-                FROM `image`
-                WHERE `image`.`itemId` = :educationId;";
-        $res = $this->db->prepare($sql);
-        $res->bindParam(':educationId', $input['educationId'], PDO::PARAM_STR);
-        $res->execute();
-        $imageData = $res->fetchAll();
-
         $this->smarty->assign('educationData', $educationData);
-        $this->smarty->assign('imageData', $imageData);
         $this->smarty->assign('error', $this->error);
         $this->smarty->display('education/educationEdit.html');
     }
@@ -160,30 +125,6 @@ class Education
 
         if ($res->execute()) {
             $this->msg = '更新成功';
-
-            //deal with image
-            $uploadPath = '../media/picture';
-            $sql1 = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`,`itemId`, `ctr`, `path`, `link`, `createTime`) VALUES ";
-            for ($i = 0; $i < $input['imgCount']; $i++) {
-                $imgCount = 'frameImage' . (string) ($i + 1);
-                if (isset($_FILES[$imgCount]['error']) && $_FILES[$imgCount]['error'] == 0) {
-                    $imgId = $idGen->GetID('image') . $i;
-                    $imgName = 'frame_' . $input['frameName'];
-                    $fileInfo = $_FILES[$imgCount];
-                    $imagePath = uploadFile($fileInfo, $uploadPath);
-                    //echo $imagePath . "<br>";
-                    $sql1 .= "('" . $imgId . "', '" . $imgName . "' , 5, '" . $frameId . "', 0, '" . $imagePath . "', '', '" . $now . "'),";
-                    echo $sql1;
-                }
-            }
-            $sql1 = substr_replace($sql1, ';', -1);
-            $res = $this->db->prepare($sql1);
-            $res->execute();
-            if (!$res) {
-                $error = $res->errorInfo();
-                $this->error = $this->error . ' 圖片新增錯誤 ' . $error[2];
-                $this->frameList();
-            }
         } else {
             $error = $res->errorInfo();
             $this->error = $error[0];
@@ -198,7 +139,10 @@ class Education
      */
     public function educationList()
     {
-        if ($_SESSION['isLogin'] == true) {
+        if ($_SESSION['isLogin'] == false) {
+            $this->error = '請先登入!';
+            $this->viewLogin();
+        } else {
             // get all data from education
             $sql = 'SELECT `article`.`title`, `article`.`articleId` , `article`.`type`,`article`.`ctr` , `article`.`lastUpdateTime`
                 , `article`.`createTime`
@@ -213,9 +157,6 @@ class Education
             $this->smarty->assign('error', $this->error);
             $this->smarty->assign('msg', $this->msg);
             $this->smarty->display('education/educationList.html');
-        } else {
-            $this->error = '請先登入!';
-            $this->viewLogin();
         }
     }
 
@@ -224,15 +165,10 @@ class Education
      */
     public function educationDelete($input)
     {
-        if ($_SESSION['isLogin'] == true) {
-
-            //deal with img
-            $this->db->beginTransaction();
-            $sql = "DELETE FROM `image` WHERE `itemId` = :educationId;";
-            $res = $this->db->prepare($sql);
-            $res->bindParam(':educationId', $input['educationId'], PDO::PARAM_STR);
-            $res->execute();
-            $this->db->commit();
+        if ($_SESSION['isLogin'] == false) {
+            $this->error = '請先登入!';
+            $this->viewLogin();
+        } else {
             //
             $this->db->beginTransaction();
             $sql = "DELETE FROM `article` WHERE `articleId` = :educationId;";
@@ -243,25 +179,7 @@ class Education
             $this->error = '';
             $this->msg = '刪除成功';
             $this->educationList();
-        } else {
-            $this->error = '請先登入!';
-            $this->viewLogin();
         }
-    }
-
-    public function educationImageDelete($input)
-    {
-        if ($_SESSION['isLogin'] == false) {
-            $this->error = '請先登入!';
-            $this->viewLogin();
-        }
-        $this->db->beginTransaction();
-        $sql = "DELETE FROM `image` WHERE `image`.`imageId` = :imgId;";
-        $res = $this->db->prepare($sql);
-        $res->bindParam(':imgId', $input['imageId'], PDO::PARAM_STR);
-        $res->execute();
-        $this->db->commit();
-        $this->educationList();
     }
 
     /**

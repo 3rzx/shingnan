@@ -6,8 +6,9 @@
     <!-- CK Editor -->
     <script type="text/javascript" src="../plugins/ckeditor/ckeditor.js"></script>
     <script>
+    //    
     $(function() {
-        // Replace the <textarea id="newsEditor"> with a CKEditor
+        // Replace the <textarea id="educationEditor"> with a CKEditor
         // instance, using default configuration.
         CKEDITOR.replace('educationEditor');
     });
@@ -46,7 +47,7 @@
                                     <div id="educationEditorDiv" class="form-group">
                                         <label for="educationEditor" class="col-sm-2 control-label">內容</label>
                                         <div class="col-sm-10">
-                                            <textarea id="educationEditor" name="educationEditor">
+                                            <textarea id="educationEditor" name="educationEditor" rows="10" cols="80">
                                             </textarea>
                                         </div>
                                     </div>

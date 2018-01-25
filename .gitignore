@@ -3,5 +3,8 @@
 #################
 
 web/view/compile
-web/media/picture
 web/media/article
+.idea/*
+upload/*
+[Tt]humbs.db
+*.DS_Store

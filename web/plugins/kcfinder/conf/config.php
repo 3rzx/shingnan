@@ -29,12 +29,12 @@ $_CONFIG = array(
 
         // (F)CKEditor types
         'files' => "",
-        'flash' => "! swf",
+        'flash' => "swf",
         'images' => "*img",
 
         // TinyMCE types
         'file' => "",
-        'media' => "! swf flv avi mpg mpeg qt mov wmv asf rm",
+        'media' => "swf flv avi mpg mpeg qt mov wmv asf rm",
         'image' => "*img",
     ),
 
@@ -70,13 +70,13 @@ $_CONFIG = array(
             'delete' => true,
             'copy' => false,
             'move' => false,
-            'rename' => false,
+            'rename' => true,
         ),
 
         'dirs' => array(
-            'create' => true,
-            'delete' => true,
-            'rename' => true,
+            'create' => false,
+            'delete' => false,
+            'rename' => false,
         ),
     ),
 

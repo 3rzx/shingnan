@@ -42,12 +42,12 @@ class Store
      */
     public function storeAddPrepare()
     {
-        if ($_SESSION['isLogin'] == true) {
-            $this->smarty->assign('error', $this->error);
-            $this->smarty->display('store/storeAdd.html');
-        } else {
+        if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
+        } else {
+            $this->smarty->assign('error', $this->error);
+            $this->smarty->display('store/storeAdd.html');
         }
     }
 
@@ -75,7 +75,6 @@ class Store
         $res->bindParam(':description', $input['description'], PDO::PARAM_STR);
         $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
         $res->bindParam(':createTime', $now, PDO::PARAM_STR);
-        echo sql;
         if ($res->execute()) {
             $this->msg = '新增成功';
         } else {
@@ -150,7 +149,10 @@ class Store
      */
     public function storeList()
     {
-        if ($_SESSION['isLogin'] == true) {
+        if ($_SESSION['isLogin'] == false) {
+            $this->error = '請先登入!';
+            $this->viewLogin();
+        } else {
             // get all data from store
             $sql = 'SELECT `store`.`storeId`, `store`.`storeName` , `store`.`phoneNumber`,`store`.`address` , `store`.`businessFrom`,`store`.`businessTo`, `store`.`description` ,`store`.`lastUpdateTime`,`store`.`createTime`
                 FROM  `store`
@@ -163,9 +165,6 @@ class Store
             $this->smarty->assign('error', $this->error);
             $this->smarty->assign('msg', $this->msg);
             $this->smarty->display('store/storeList.html');
-        } else {
-            $this->error = '請先登入!';
-            $this->viewLogin();
         }
     }
 
@@ -174,7 +173,10 @@ class Store
      */
     public function storeDelete($input)
     {
-        if ($_SESSION['isLogin'] == true) {
+        if ($_SESSION['isLogin'] == false) {
+            $this->error = '請先登入!';
+            $this->viewLogin();
+        } else {
             $this->db->beginTransaction();
             $sql = "DELETE FROM `store` WHERE `storeId` = :storeId;";
             $res = $this->db->prepare($sql);
@@ -184,9 +186,6 @@ class Store
             $this->error = '';
             $this->msg = '刪除成功';
             $this->storeList();
-        } else {
-            $this->error = '請先登入!';
-            $this->viewLogin();
         }
     }
 
