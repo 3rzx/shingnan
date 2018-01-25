@@ -108,25 +108,25 @@ class Statistic
      */
     public function viewOrderHistory() {
         if ($_SESSION['isLogin'] == true) {
-            $sql = "SELECT `tran`.*, `tranDetail`.`itemNum`, `tranDetail`.`actionState`,        `user`.`userName`, `user`.`gender`, `frame`.`frameName`
+            $sql = "SELECT `tran`.*, `tranDetail`.`itemNum`, `tranDetail`.`actionState`,        `user`.`userName`, `user`.`gender`
                     FROM `tran`
                     INNER JOIN `tranDetail` ON `tran`.`tranId` = `tranDetail`.`tranId`
-                    INNER JOIN `user` ON `tran`.`userId` = `user`.`userId`
-                    INNER JOIN `frame` ON `tranDetail`.`itemId` = `frame`.`frameId`";
+                    AND `tran`.`isDelete` = 0
+                    INNER JOIN `user` ON `tran`.`userId` = `user`.`userId`";
             $res = $this->db->prepare($sql);
 
             if ($res->execute()) {
                 $orderHistory = $res->fetchAll();
                 $this->setResultMsg();
                 $fieldMap = array(
-                    1 => '女',
-                    2 => '男',
-                    3 => '購物',
-                    4 => '維修',
-                    5 => '非金錢來往行為',
-                    6 => '未付任何金錢',
-                    7 => '已付訂金',
-                    8 => '已結清尾款'
+                    0 => '女',
+                    1 => '男',
+                    2 => '購物',
+                    3 => '維修',
+                    4 => '非金錢來往行為',
+                    5 => '未付任何金錢',
+                    6 => '已付訂金',
+                    7 => '已結清尾款'
                 );
 
                 $this->smarty->assign('orderHistory', $orderHistory);
@@ -152,13 +152,13 @@ class Statistic
         if ($_SESSION['isLogin'] == true) {
             $startDate = $input['startDate'];
             $endDate = $input['endDate'];
-            $sql = "SELECT `tran`.*, `tranDetail`.`itemNum`, `tranDetail`.`actionState`,            `user`.`userName`, `user`.`gender`, `frame`.`frameName`
+            $sql = "SELECT `tran`.*, `tranDetail`.`itemNum`, `tranDetail`.`actionState`,            `user`.`userName`, `user`.`gender`
                     FROM `tran`
                     INNER JOIN `tranDetail` ON `tran`.`tranId` = `tranDetail`.`tranId`
                     AND `tran`.`lastUpdateTime` >= :startDate
                     AND `tran`.`lastUpdateTime` <= :endDate
-                    INNER JOIN `user` ON `tran`.`userId` = `user`.`userId`
-                    INNER JOIN `frame` ON `tranDetail`.`itemId` = `frame`.`frameId`";
+                    AND `tran`.`isDelete` = 0
+                    INNER JOIN `user` ON `tran`.`userId` = `user`.`userId`";
             $res = $this->db->prepare($sql);
             $res->bindParam(':startDate', $startDate, PDO::PARAM_STR);
             $res->bindParam(':endDate', $endDate, PDO::PARAM_STR);
@@ -167,14 +167,14 @@ class Statistic
                 $orderHistory = $res->fetchAll();
                 $this->setResultMsg();
                 $fieldMap = array(
-                    1 => '女',
-                    2 => '男',
-                    3 => '購物',
-                    4 => '維修',
-                    5 => '非金錢來往行為',
-                    6 => '未付任何金錢',
-                    7 => '已付訂金',
-                    8 => '已結清尾款'
+                    0 => '女',
+                    1 => '男',
+                    2 => '購物',
+                    3 => '維修',
+                    4 => '非金錢來往行為',
+                    5 => '未付任何金錢',
+                    6 => '已付訂金',
+                    7 => '已結清尾款'
                 );
 
                 $this->smarty->assign('orderHistory', $orderHistory);

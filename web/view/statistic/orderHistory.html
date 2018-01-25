@@ -74,12 +74,11 @@
                                         <tr>
                                             <th>滿意度</th>
                                             <th>會員名稱</th>
-                                            <th>商品名稱</th>
-                                            <th>商品數量</th>
                                             <th>消費種類</th>
                                             <th>點數</th>
                                             <th>結帳狀態</th>
                                             <th>最後更新日期</th>
+                                            <th>詳細內容</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -89,13 +88,15 @@
                                                 \{if $order.score == null\} 0 \{else\} \{$order.score\} \{/if\}
                                             </td>
                                             <td>\{$order.userName\}</td>
-                                            <!-- <td>\{$fieldMap[$order.gender]\}</td> -->
-                                            <td>\{$order.frameName\}</td>
-                                            <td>\{$order.itemNum\}</td>
                                             <td>\{$fieldMap[$order.actionState + 2]\}</td>
                                             <td>\{$order.point\}</td>
                                             <td>\{$fieldMap[$order.checkState + 5]\}</td>
                                             <td>\{$order.lastUpdateTime\}</td>
+                                            <td>
+                                                <a class="btn btn-sm btn-info" href="userController.php?action=userShoppingRecordPrepare&userId=\{$order.userId\}">
+                                                    <i class="glyphicon glyphicon-menu-hamburger"></i>
+                                                </a>
+                                            </td>
                                         </tr>
                                         \{/foreach\}
                                     </tbody>
@@ -120,12 +121,11 @@
                 "columnDefs": [
                     { "targets": 0, "width": "10%", "orderable": true },
                     { "targets": 1, "width": "15%", "orderable": true },
-                    { "targets": 2, "width": "10%", "orderable": true },
-                    { "targets": 3, "width": "10%", "orderable": true },
+                    { "targets": 2, "width": "15%", "orderable": true },
+                    { "targets": 3, "width": "15%", "orderable": true },
                     { "targets": 4, "width": "15%", "orderable": true },
-                    { "targets": 5, "width": "10%", "orderable": true },
+                    { "targets": 5, "width": "15%", "orderable": true },
                     { "targets": 6, "width": "15%", "orderable": true },
-                    { "targets": 7, "width": "15%", "orderable": true },
                 ]
             });
 
