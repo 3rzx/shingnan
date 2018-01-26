@@ -21,7 +21,7 @@ $_CONFIG = array(
 // GENERAL SETTINGS
 
     'disabled' => false,
-    'uploadURL' => "http://localhost/shingnan/web/media/article",
+    'uploadURL' => "../../media/article",
     'uploadDir' => "",
     'theme' => "default",
 
