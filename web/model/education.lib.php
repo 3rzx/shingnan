@@ -59,6 +59,7 @@ class Education
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
+            return 0;
         }
         $idGen = new IdGenerator();
         $now = date('Y-m-d H:i:s');
@@ -89,6 +90,7 @@ class Education
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
+            return 0;
         }
         $sql = "SELECT `article`.`articleId`, `article`.`title` , `article`.`content`
                 FROM  `article`
@@ -112,6 +114,7 @@ class Education
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
+            return 0;
         }
         $now = date('Y-m-d H:i:s');
         $sql = "UPDATE `shingnan`.`article` SET `title` = :title ,`content` = :content , `lastUpdateTime` =  :lastUpdateTime
