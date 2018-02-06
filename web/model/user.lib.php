@@ -337,6 +337,28 @@ class User
         $this->smarty->display('user/userCourseRecord.html');
     }
 
+    public function updateUserAttendance($input)
+    {
+        if ($_SESSION['isLogin'] == false) {
+            $this->error = '請先登入!';
+            $this->viewLogin();
+            return;
+        }
+
+        $now = date('Y-m-d H:i:s');
+        $attendanceState = $input["attendanceState"];
+        $courseId = $input["courseId"];
+        $sql = "UPDATE `shingnan`.`attendance` SET  `state` = '{$attendanceState}', `lastUpdateTime` = '{$now}' WHERE `courseId` = '{$courseId}';";
+        $res = $this->db->prepare($sql);
+        $res->execute();
+
+        if (!$res) {
+            $error = $res->errorInfo();
+            return $sql;
+        }
+        return $sql;
+    }
+
     public function userShoppingGetData($itemType)
     {
         $sql = null;
