@@ -217,7 +217,7 @@ class User
 
 
         //find user child
-         $sql = "SELECT `user`.`userId`, `user`.`userName`,
+         $sql = "SELECT `user`.`userId`, `user`.`userName`
                  FROM  `user` WHERE  `user`.`introducerId` = :userId AND `user`.`isDelete` = 0";
 
         $res = $this->db->prepare($sql);
