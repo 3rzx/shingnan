@@ -45,9 +45,10 @@ class Course
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
+        } else {
+            $this->smarty->assign('error', $this->error);
+            $this->smarty->display('course/courseAdd.html');
         }
-        $this->smarty->assign('error', $this->error);
-        $this->smarty->display('course/courseAdd.html');
     }
 
     /**
@@ -59,26 +60,27 @@ class Course
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
-        }
-        $idGen = new IdGenerator();
-        $now = date('Y-m-d H:i:s');
-        $courseId = $idGen->GetID('course');
-        $sql = "INSERT INTO `shingnan`.`course` (`courseId`, `courseName`, `content`, `isDelete`, `lastUpdateTime`, `createTime`) VALUES (:courseId, :courseName, :content, '0',:lastUpdateTime, :createTime);";
-        $res = $this->db->prepare($sql);
-        $res->bindParam(':courseId', $courseId, PDO::PARAM_STR);
-        $res->bindParam(':courseName', $input['courseName'], PDO::PARAM_STR);
-        $res->bindParam(':content', $input['courseEditor'], PDO::PARAM_STR);
-        $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
-        $res->bindParam(':createTime', $now, PDO::PARAM_STR);
-        if ($res->execute()) {
-            $this->msg = '新增成功';
         } else {
-            $error = $res->errorInfo();
-            $this->error = $error[0];
+            $idGen = new IdGenerator();
+            $now = date('Y-m-d H:i:s');
+            $courseId = $idGen->GetID('course');
+            $sql = "INSERT INTO `shingnan`.`course` (`courseId`, `courseName`, `content`, `isDelete`, `lastUpdateTime`, `createTime`) VALUES (:courseId, :courseName, :content, '0',:lastUpdateTime, :createTime);";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':courseId', $courseId, PDO::PARAM_STR);
+            $res->bindParam(':courseName', $input['courseName'], PDO::PARAM_STR);
+            $res->bindParam(':content', $input['courseEditor'], PDO::PARAM_STR);
+            $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
+            $res->bindParam(':createTime', $now, PDO::PARAM_STR);
+            if ($res->execute()) {
+                $this->msg = '新增成功';
+            } else {
+                $error = $res->errorInfo();
+                $this->error = $error[0];
+                $this->courseList();
+            }
+
             $this->courseList();
         }
-
-        $this->courseList();
     }
 
     /**
@@ -89,18 +91,19 @@ class Course
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
-        }
-        $sql = "SELECT `course`.`courseId`, `course`.`courseName` , `course`.`content`
-                FROM  `course`
-                WHERE  `course`.`isDelete` = 0 and `course`.`courseId` = :courseId";
-        $res = $this->db->prepare($sql);
-        $res->bindParam(':courseId', $input['courseId'], PDO::PARAM_STR);
-        $res->execute();
-        $courseData = $res->fetch();
+        } else {
+            $sql = "SELECT `course`.`courseId`, `course`.`courseName` , `course`.`content`
+                        FROM  `course`
+                        WHERE  `course`.`isDelete` = 0 and `course`.`courseId` = :courseId";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':courseId', $input['courseId'], PDO::PARAM_STR);
+            $res->execute();
+            $courseData = $res->fetch();
 
-        $this->smarty->assign('courseData', $courseData);
-        $this->smarty->assign('error', $this->error);
-        $this->smarty->display('course/courseEdit.html');
+            $this->smarty->assign('courseData', $courseData);
+            $this->smarty->assign('error', $this->error);
+            $this->smarty->display('course/courseEdit.html');
+        }
     }
 
     /**
@@ -112,26 +115,27 @@ class Course
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
-        }
-        $now = date('Y-m-d H:i:s');
-        $sql = "UPDATE `shingnan`.`course` SET `courseName` = :courseName ,`content` = :content , `lastUpdateTime` =  :lastUpdateTime
-        WHERE  `course`.`courseId` = :courseId";
-        $res = $this->db->prepare($sql);
-        $res->bindParam(':courseId', $input['courseId'], PDO::PARAM_STR);
-        $res->bindParam(':courseName', $input['courseName'], PDO::PARAM_STR);
-        $res->bindParam(':content', $input['courseEditor'], PDO::PARAM_STR);
-        $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
-        $res->execute();
-
-        if ($res->execute()) {
-            $this->msg = '更新成功';
         } else {
-            $error = $res->errorInfo();
-            $this->error = $error[0];
+            $now = date('Y-m-d H:i:s');
+            $sql = "UPDATE `shingnan`.`course` SET `courseName` = :courseName ,`content` = :content , `lastUpdateTime` =  :lastUpdateTime
+                WHERE  `course`.`courseId` = :courseId";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':courseId', $input['courseId'], PDO::PARAM_STR);
+            $res->bindParam(':courseName', $input['courseName'], PDO::PARAM_STR);
+            $res->bindParam(':content', $input['courseEditor'], PDO::PARAM_STR);
+            $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
+            $res->execute();
+
+            if ($res->execute()) {
+                $this->msg = '更新成功';
+            } else {
+                $error = $res->errorInfo();
+                $this->error = $error[0];
+                $this->courseList();
+            }
+
             $this->courseList();
         }
-
-        $this->courseList();
     }
 
     /**

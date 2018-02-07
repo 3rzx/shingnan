@@ -45,9 +45,10 @@ class Life
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
+        } else {
+            $this->smarty->assign('error', $this->error);
+            $this->smarty->display('life/lifeAdd.html');
         }
-        $this->smarty->assign('error', $this->error);
-        $this->smarty->display('life/lifeAdd.html');
     }
 
     /**
@@ -59,26 +60,27 @@ class Life
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
-        }
-        $idGen = new IdGenerator();
-        $now = date('Y-m-d H:i:s');
-        $lifeId = $idGen->GetID('life');
-        $sql = "INSERT INTO `shingnan`.`article` (`articleId`, `title`, `content`, `type`, `ctr`, `isDelete`, `lastUpdateTime`, `createTime`) VALUES (:articleId, :title, :content, '3', '0', '0', :lastUpdateTime, :createTime);";
-        $res = $this->db->prepare($sql);
-        $res->bindParam(':articleId', $lifeId, PDO::PARAM_STR);
-        $res->bindParam(':title', $input['lifeTitle'], PDO::PARAM_STR);
-        $res->bindParam(':content', $input['lifeEditor'], PDO::PARAM_STR);
-        $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
-        $res->bindParam(':createTime', $now, PDO::PARAM_STR);
-        if ($res->execute()) {
-            $this->msg = '新增成功';
         } else {
-            $error = $res->errorInfo();
-            $this->error = $error[0];
+            $idGen = new IdGenerator();
+            $now = date('Y-m-d H:i:s');
+            $lifeId = $idGen->GetID('life');
+            $sql = "INSERT INTO `shingnan`.`article` (`articleId`, `title`, `content`, `type`, `ctr`, `isDelete`, `lastUpdateTime`, `createTime`) VALUES (:articleId, :title, :content, '3', '0', '0', :lastUpdateTime, :createTime);";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':articleId', $lifeId, PDO::PARAM_STR);
+            $res->bindParam(':title', $input['lifeTitle'], PDO::PARAM_STR);
+            $res->bindParam(':content', $input['lifeEditor'], PDO::PARAM_STR);
+            $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
+            $res->bindParam(':createTime', $now, PDO::PARAM_STR);
+            if ($res->execute()) {
+                $this->msg = '新增成功';
+            } else {
+                $error = $res->errorInfo();
+                $this->error = $error[0];
+                $this->lifeList();
+            }
+
             $this->lifeList();
         }
-
-        $this->lifeList();
     }
 
     /**
@@ -89,18 +91,19 @@ class Life
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
-        }
-        $sql = "SELECT `article`.`articleId`, `article`.`title` , `article`.`content`
-                FROM  `article`
-                WHERE  `article`.`isDelete` = 0 and `article`.`articleId` = :lifeId";
-        $res = $this->db->prepare($sql);
-        $res->bindParam(':lifeId', $input['lifeId'], PDO::PARAM_STR);
-        $res->execute();
-        $lifeData = $res->fetch();
+        } else {
+            $sql = "SELECT `article`.`articleId`, `article`.`title` , `article`.`content`
+                        FROM  `article`
+                        WHERE  `article`.`isDelete` = 0 and `article`.`articleId` = :lifeId";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':lifeId', $input['lifeId'], PDO::PARAM_STR);
+            $res->execute();
+            $lifeData = $res->fetch();
 
-        $this->smarty->assign('lifeData', $lifeData);
-        $this->smarty->assign('error', $this->error);
-        $this->smarty->display('life/lifeEdit.html');
+            $this->smarty->assign('lifeData', $lifeData);
+            $this->smarty->assign('error', $this->error);
+            $this->smarty->display('life/lifeEdit.html');
+        }
     }
 
     /**
@@ -112,26 +115,27 @@ class Life
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
-        }
-        $now = date('Y-m-d H:i:s');
-        $sql = "UPDATE `shingnan`.`article` SET `title` = :title ,`content` = :content , `lastUpdateTime` =  :lastUpdateTime
-        WHERE  `article`.`articleId` = :articleId";
-        $res = $this->db->prepare($sql);
-        $res->bindParam(':articleId', $input['lifeId'], PDO::PARAM_STR);
-        $res->bindParam(':title', $input['lifeTitle'], PDO::PARAM_STR);
-        $res->bindParam(':content', $input['lifeEditor'], PDO::PARAM_STR);
-        $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
-        $res->execute();
-
-        if ($res->execute()) {
-            $this->msg = '更新成功';
         } else {
-            $error = $res->errorInfo();
-            $this->error = $error[0];
+            $now = date('Y-m-d H:i:s');
+            $sql = "UPDATE `shingnan`.`article` SET `title` = :title ,`content` = :content , `lastUpdateTime` =  :lastUpdateTime
+                WHERE  `article`.`articleId` = :articleId";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':articleId', $input['lifeId'], PDO::PARAM_STR);
+            $res->bindParam(':title', $input['lifeTitle'], PDO::PARAM_STR);
+            $res->bindParam(':content', $input['lifeEditor'], PDO::PARAM_STR);
+            $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
+            $res->execute();
+
+            if ($res->execute()) {
+                $this->msg = '更新成功';
+            } else {
+                $error = $res->errorInfo();
+                $this->error = $error[0];
+                $this->lifeList();
+            }
+
             $this->lifeList();
         }
-
-        $this->lifeList();
     }
 
     /**

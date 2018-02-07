@@ -60,30 +60,31 @@ class Store
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
-        }
-        $idGen = new IdGenerator();
-        $now = date('Y-m-d H:i:s');
-        $storeId = $idGen->GetID('store');
-        $sql = "INSERT INTO `shingnan`.`store` (`storeId`, `storeName`, `phoneNumber`, `address`, `businessFrom`,`businessTo`, `description`, `isDelete`, `lastUpdateTime`, `createTime`) VALUES (:storeId, :storeName, :phoneNumber, :address, :businessFrom , :businessTo , :description, '0', :lastUpdateTime, :createTime);";
-        $res = $this->db->prepare($sql);
-        $res->bindParam(':storeId', $storeId, PDO::PARAM_STR);
-        $res->bindParam(':storeName', $input['storeName'], PDO::PARAM_STR);
-        $res->bindParam(':phoneNumber', $input['storePhone'], PDO::PARAM_STR);
-        $res->bindParam(':address', $input['storeAddress'], PDO::PARAM_STR);
-        $res->bindParam(':businessFrom', $input['businessFrom'], PDO::PARAM_STR);
-        $res->bindParam(':businessTo', $input['businessTo'], PDO::PARAM_STR);
-        $res->bindParam(':description', $input['description'], PDO::PARAM_STR);
-        $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
-        $res->bindParam(':createTime', $now, PDO::PARAM_STR);
-        if ($res->execute()) {
-            $this->msg = '新增成功';
         } else {
-            $error = $res->errorInfo();
-            $this->error = $error[0];
+            $idGen = new IdGenerator();
+            $now = date('Y-m-d H:i:s');
+            $storeId = $idGen->GetID('store');
+            $sql = "INSERT INTO `shingnan`.`store` (`storeId`, `storeName`, `phoneNumber`, `address`, `businessFrom`,`businessTo`, `description`, `isDelete`, `lastUpdateTime`, `createTime`) VALUES (:storeId, :storeName, :phoneNumber, :address, :businessFrom , :businessTo , :description, '0', :lastUpdateTime, :createTime);";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':storeId', $storeId, PDO::PARAM_STR);
+            $res->bindParam(':storeName', $input['storeName'], PDO::PARAM_STR);
+            $res->bindParam(':phoneNumber', $input['storePhone'], PDO::PARAM_STR);
+            $res->bindParam(':address', $input['storeAddress'], PDO::PARAM_STR);
+            $res->bindParam(':businessFrom', $input['businessFrom'], PDO::PARAM_STR);
+            $res->bindParam(':businessTo', $input['businessTo'], PDO::PARAM_STR);
+            $res->bindParam(':description', $input['description'], PDO::PARAM_STR);
+            $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
+            $res->bindParam(':createTime', $now, PDO::PARAM_STR);
+            if ($res->execute()) {
+                $this->msg = '新增成功';
+            } else {
+                $error = $res->errorInfo();
+                $this->error = $error[0];
+                $this->storeList();
+            }
+
             $this->storeList();
         }
-
-        $this->storeList();
     }
 
     /**
@@ -94,18 +95,19 @@ class Store
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
-        }
-        $sql = "SELECT `store`.`storeId`, `store`.`storeName` , `store`.`phoneNumber` , `store`.`address` , `store`.`description` , `store`.`businessFrom`, `store`.`businessTo`
-                FROM  `store`
-                WHERE  `store`.`isDelete` = 0 and `store`.`storeId` = :storeId";
-        $res = $this->db->prepare($sql);
-        $res->bindParam(':storeId', $input['storeId'], PDO::PARAM_STR);
-        $res->execute();
-        $storeData = $res->fetch();
+        } else {
+            $sql = "SELECT `store`.`storeId`, `store`.`storeName` , `store`.`phoneNumber` , `store`.`address` , `store`.`description` , `store`.`businessFrom`, `store`.`businessTo`
+                        FROM  `store`
+                        WHERE  `store`.`isDelete` = 0 and `store`.`storeId` = :storeId";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':storeId', $input['storeId'], PDO::PARAM_STR);
+            $res->execute();
+            $storeData = $res->fetch();
 
-        $this->smarty->assign('storeData', $storeData);
-        $this->smarty->assign('error', $this->error);
-        $this->smarty->display('store/storeEdit.html');
+            $this->smarty->assign('storeData', $storeData);
+            $this->smarty->assign('error', $this->error);
+            $this->smarty->display('store/storeEdit.html');
+        }
     }
 
     /**
@@ -117,31 +119,32 @@ class Store
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
-        }
-        $now = date('Y-m-d H:i:s');
-        $sql = "UPDATE `shingnan`.`store` SET `storeName` = :storeName ,`phoneNumber` = :phoneNumber , `address` =  :address , `description` =  :description , `businessFrom` =  :businessFrom , `businessTo` =  :businessTo ,
-        `lastUpdateTime` = :lastUpdateTime
-        WHERE  `store`.`storeId` = :storeId";
-        $res = $this->db->prepare($sql);
-        $res->bindParam(':storeId', $input['storeId'], PDO::PARAM_STR);
-        $res->bindParam(':storeName', $input['storeName'], PDO::PARAM_STR);
-        $res->bindParam(':phoneNumber', $input['phoneNumber'], PDO::PARAM_STR);
-        $res->bindParam(':address', $input['address'], PDO::PARAM_STR);
-        $res->bindParam(':description', $input['description'], PDO::PARAM_STR);
-        $res->bindParam(':businessFrom', $input['businessFrom'], PDO::PARAM_STR);
-        $res->bindParam(':businessTo', $input['businessTo'], PDO::PARAM_STR);
-        $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
-        $res->execute();
-
-        if ($res->execute()) {
-            $this->msg = '更新成功';
         } else {
-            $error = $res->errorInfo();
-            $this->error = $error[0];
+            $now = date('Y-m-d H:i:s');
+            $sql = "UPDATE `shingnan`.`store` SET `storeName` = :storeName ,`phoneNumber` = :phoneNumber , `address` =  :address , `description` =  :description , `businessFrom` =  :businessFrom , `businessTo` =  :businessTo ,
+                `lastUpdateTime` = :lastUpdateTime
+                WHERE  `store`.`storeId` = :storeId";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':storeId', $input['storeId'], PDO::PARAM_STR);
+            $res->bindParam(':storeName', $input['storeName'], PDO::PARAM_STR);
+            $res->bindParam(':phoneNumber', $input['phoneNumber'], PDO::PARAM_STR);
+            $res->bindParam(':address', $input['address'], PDO::PARAM_STR);
+            $res->bindParam(':description', $input['description'], PDO::PARAM_STR);
+            $res->bindParam(':businessFrom', $input['businessFrom'], PDO::PARAM_STR);
+            $res->bindParam(':businessTo', $input['businessTo'], PDO::PARAM_STR);
+            $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
+            $res->execute();
+
+            if ($res->execute()) {
+                $this->msg = '更新成功';
+            } else {
+                $error = $res->errorInfo();
+                $this->error = $error[0];
+                $this->storeList();
+            }
+
             $this->storeList();
         }
-
-        $this->storeList();
     }
 
     /**
