@@ -45,9 +45,10 @@ class Education
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
+        } else {
+            $this->smarty->assign('error', $this->error);
+            $this->smarty->display('education/educationAdd.html');
         }
-        $this->smarty->assign('error', $this->error);
-        $this->smarty->display('education/educationAdd.html');
     }
 
     /**
@@ -60,26 +61,27 @@ class Education
             $this->error = '請先登入!';
             $this->viewLogin();
             return 0;
-        }
-        $idGen = new IdGenerator();
-        $now = date('Y-m-d H:i:s');
-        $educationId = $idGen->GetID('education');
-        $sql = "INSERT INTO `shingnan`.`article` (`articleId`, `title`, `content`, `type`, `ctr`, `isDelete`, `lastUpdateTime`, `createTime`) VALUES (:articleId, :title, :content, '1', '0', '0', :lastUpdateTime, :createTime);";
-        $res = $this->db->prepare($sql);
-        $res->bindParam(':articleId', $educationId, PDO::PARAM_STR);
-        $res->bindParam(':title', $input['educationTitle'], PDO::PARAM_STR);
-        $res->bindParam(':content', $input['educationEditor'], PDO::PARAM_STR);
-        $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
-        $res->bindParam(':createTime', $now, PDO::PARAM_STR);
-
-        if ($res->execute()) {
-            $this->msg = '新增成功';
         } else {
-            $error = $res->errorInfo();
-            $this->error = $error[0];
+            $idGen = new IdGenerator();
+            $now = date('Y-m-d H:i:s');
+            $educationId = $idGen->GetID('education');
+            $sql = "INSERT INTO `shingnan`.`article` (`articleId`, `title`, `content`, `type`, `ctr`, `isDelete`, `lastUpdateTime`, `createTime`) VALUES (:articleId, :title, :content, '1', '0', '0', :lastUpdateTime, :createTime);";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':articleId', $educationId, PDO::PARAM_STR);
+            $res->bindParam(':title', $input['educationTitle'], PDO::PARAM_STR);
+            $res->bindParam(':content', $input['educationEditor'], PDO::PARAM_STR);
+            $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
+            $res->bindParam(':createTime', $now, PDO::PARAM_STR);
+
+            if ($res->execute()) {
+                $this->msg = '新增成功';
+            } else {
+                $error = $res->errorInfo();
+                $this->error = $error[0];
+                $this->educationList();
+            }
             $this->educationList();
         }
-        $this->educationList();
     }
 
     /**
@@ -91,18 +93,19 @@ class Education
             $this->error = '請先登入!';
             $this->viewLogin();
             return 0;
-        }
-        $sql = "SELECT `article`.`articleId`, `article`.`title` , `article`.`content`
+        } else {
+            $sql = "SELECT `article`.`articleId`, `article`.`title` , `article`.`content`
                 FROM  `article`
                 WHERE  `article`.`isDelete` = 0 and `article`.`articleId` = :educationId";
-        $res = $this->db->prepare($sql);
-        $res->bindParam(':educationId', $input['educationId'], PDO::PARAM_STR);
-        $res->execute();
-        $educationData = $res->fetch();
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':educationId', $input['educationId'], PDO::PARAM_STR);
+            $res->execute();
+            $educationData = $res->fetch();
 
-        $this->smarty->assign('educationData', $educationData);
-        $this->smarty->assign('error', $this->error);
-        $this->smarty->display('education/educationEdit.html');
+            $this->smarty->assign('educationData', $educationData);
+            $this->smarty->assign('error', $this->error);
+            $this->smarty->display('education/educationEdit.html');
+        }
     }
 
     /**
@@ -115,26 +118,27 @@ class Education
             $this->error = '請先登入!';
             $this->viewLogin();
             return 0;
-        }
-        $now = date('Y-m-d H:i:s');
-        $sql = "UPDATE `shingnan`.`article` SET `title` = :title ,`content` = :content , `lastUpdateTime` =  :lastUpdateTime
-        WHERE  `article`.`articleId` = :articleId";
-        $res = $this->db->prepare($sql);
-        $res->bindParam(':articleId', $input['educationId'], PDO::PARAM_STR);
-        $res->bindParam(':title', $input['educationTitle'], PDO::PARAM_STR);
-        $res->bindParam(':content', $input['educationEditor'], PDO::PARAM_STR);
-        $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
-        $res->execute();
-
-        if ($res->execute()) {
-            $this->msg = '更新成功';
         } else {
-            $error = $res->errorInfo();
-            $this->error = $error[0];
+            $now = date('Y-m-d H:i:s');
+            $sql = "UPDATE `shingnan`.`article` SET `title` = :title ,`content` = :content , `lastUpdateTime` =  :lastUpdateTime
+                WHERE  `article`.`articleId` = :articleId";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':articleId', $input['educationId'], PDO::PARAM_STR);
+            $res->bindParam(':title', $input['educationTitle'], PDO::PARAM_STR);
+            $res->bindParam(':content', $input['educationEditor'], PDO::PARAM_STR);
+            $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
+            $res->execute();
+
+            if ($res->execute()) {
+                $this->msg = '更新成功';
+            } else {
+                $error = $res->errorInfo();
+                $this->error = $error[0];
+                $this->educationList();
+            }
+
             $this->educationList();
         }
-
-        $this->educationList();
     }
 
     /**
