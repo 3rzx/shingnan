@@ -163,6 +163,21 @@
                                         </div>
                                     </div>
 
+                                    <!--introducer-->
+                                    <div id="introducerDiv" class="form-group">
+                                        <label for="introducer" class="col-sm-2 control-label">介紹人</label>
+                                            <div class="col-sm-3">
+                                                <select class="selectpicker" name="introducerId" id="introducer" data-live-search="true" title="請選擇介紹人">
+                                                    \{foreach from=$allUserData item=user \}
+                                                        \{if $userDetailData.introducerId == $user.userId\}
+                                                            <option value="\{$user.userId\}" selected>\{$user.userName\} \{$user.phone\}</option>
+                                                        \{else\}
+                                                            <option value="\{$user.userId\}">\{$user.userName\} \{$user.phone\}</option>
+                                                        \{/if\}
+                                                    \{/foreach\}
+                                                </select>
+                                            </div>
+                                    </div>
                                    <!-- /.box-body -->
                                     <div class="box-footer" style="text-align: right;">
                                         <input type="hidden" name="userId" value="\{$userDetailData.userId\}">

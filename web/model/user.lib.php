@@ -53,13 +53,13 @@ class User
             return ;
         }
 
-        $sql = "SELECT `user`.`account` FROM  `user` WHERE `isDelete`='0';";
+        $sql = "SELECT `user`.`userId`, `user`.`userName`,`user`.`account`, `user`.`phone` FROM  `user` WHERE `isDelete`='0';";
         $res = $this->db->prepare($sql);
         $res->execute();
-        $allAccount = $res->fetchAll();
+        $allUserData = $res->fetchAll();
 
 
-        $this->smarty->assign('allAccount', $allAccount);
+        $this->smarty->assign('allUserData', $allUserData);
 
         $this->smarty->assign('error', $this->error);
         $this->smarty->assign('msg', $this->msg);
@@ -94,7 +94,7 @@ class User
         `gender`,`address`, `point`,`introducerId`,`downlineNum`,
         `isDelete`, `lastUpdateTime`,`createTime`)
         VALUES (:userId, :userName, :account, :password, :phone, :birthday,
-        :gender, :address, 0, NULL,0,
+        :gender, :address, 0, :introducerId,0,
         0,:lastUpdateTime, :createTime);";
 
         $res = $this->db->prepare($sql);
@@ -108,6 +108,7 @@ class User
         $res->bindParam(':password', password_hash($password, PASSWORD_BCRYPT), PDO::PARAM_STR);
         $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
         $res->bindParam(':address', $input['address'], PDO::PARAM_STR);
+        $res->bindParam(':introducerId', $input['introducerId'], PDO::PARAM_STR);
         $res->bindParam(':createTime', $now, PDO::PARAM_STR);
         if ($res->execute()) {
             return true;
@@ -206,7 +207,8 @@ class User
                        `user`.`account`, `user`.`password`,
                        `user`.`phone`, `user`.`gender`,
                        `user`.`address`, `user`.`point`,
-                       `user`.`downlineNum`, `user`.`birthday`
+                       `user`.`downlineNum`, `user`.`birthday`,
+                       `user`.`introducerId`
                 FROM  `user`
                 WHERE  `user`.`userId` = :userId AND `user`.`isDelete` = 0";
 
@@ -225,13 +227,21 @@ class User
         $res->execute();
         $userChildrenData = $res->fetchAll();
 
+
+        $sql = "SELECT `user`.`userId`, `user`.`userName`, `user`.`phone`
+               FROM  `user` WHERE `user`.`isDelete` = 0";
+        $res = $this->db->prepare($sql);
+        $res->execute();
+        $allUserData = $res->fetchAll();
+
         $this->smarty->assign('userChildrenData', $userChildrenData);
         $this->smarty->assign('userDetailData', $userDetailData);
+        $this->smarty->assign('allUserData', $allUserData);
         $this->smarty->assign('error', $this->error);
         $this->smarty->assign('msg', $this->msg);
         $this->smarty->display('user/userDetail.html');
-    }
 
+    }
     /**
      * 使用者詳細編輯動作
      */

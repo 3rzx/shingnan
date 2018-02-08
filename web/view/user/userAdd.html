@@ -125,6 +125,17 @@
                                         </div>
                                     </div>
 
+                                    <!--introducer-->
+                                    <div id="introducerDiv" class="form-group">
+                                        <label for="introducer" class="col-sm-2 control-label">介紹人</label>
+                                        <div class="col-sm-3">
+                                            <select class="selectpicker" name="introducerId" id="introducer" data-live-search="true" title="請選擇介紹人">
+                                                \{foreach from=$allUserData item=user \}
+                                                        <option value="\{$user.userId\}">\{$user.userName\} \{$user.phone\}</option>
+                                                \{/foreach\}
+                                            </select>
+                                        </div>
+                                    </div>
                                     <!-- /.box-body -->
                                     <div class="box-footer" style="text-align: right;">
                                         <input type="hidden" name="action" value="userAdd">
