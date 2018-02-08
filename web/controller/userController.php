@@ -63,6 +63,9 @@ switch ($method) {
             case 'userShoppingRecordEdit':
                 $user->userShoppingRecordEditPrepare($_GET);
                 break;
+            case 'updateUserAttendance':
+                $user->updateUserAttendance($_GET);
+                break;
             default:
                 $user->viewLogin();
         }

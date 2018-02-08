@@ -45,9 +45,10 @@ class News
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
+        } else {
+            $this->smarty->assign('error', $this->error);
+            $this->smarty->display('news/newsAdd.html');
         }
-        $this->smarty->assign('error', $this->error);
-        $this->smarty->display('news/newsAdd.html');
 
     }
 
@@ -60,26 +61,27 @@ class News
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
-        }
-        $idGen = new IdGenerator();
-        $now = date('Y-m-d H:i:s');
-        $newsId = $idGen->GetID('news');
-        $sql = "INSERT INTO `shingnan`.`article` (`articleId`, `title`, `content`, `type`, `ctr`, `isDelete`, `lastUpdateTime`, `createTime`) VALUES (:articleId, :title, :content, '2', '0', '0', :lastUpdateTime, :createTime);";
-        $res = $this->db->prepare($sql);
-        $res->bindParam(':articleId', $newsId, PDO::PARAM_STR);
-        $res->bindParam(':title', $input['newsTitle'], PDO::PARAM_STR);
-        $res->bindParam(':content', $input['newsEditor'], PDO::PARAM_STR);
-        $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
-        $res->bindParam(':createTime', $now, PDO::PARAM_STR);
-        if ($res->execute()) {
-            $this->msg = '新增成功';
         } else {
-            $error = $res->errorInfo();
-            $this->error = $error[0];
+            $idGen = new IdGenerator();
+            $now = date('Y-m-d H:i:s');
+            $newsId = $idGen->GetID('news');
+            $sql = "INSERT INTO `shingnan`.`article` (`articleId`, `title`, `content`, `type`, `ctr`, `isDelete`, `lastUpdateTime`, `createTime`) VALUES (:articleId, :title, :content, '2', '0', '0', :lastUpdateTime, :createTime);";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':articleId', $newsId, PDO::PARAM_STR);
+            $res->bindParam(':title', $input['newsTitle'], PDO::PARAM_STR);
+            $res->bindParam(':content', $input['newsEditor'], PDO::PARAM_STR);
+            $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
+            $res->bindParam(':createTime', $now, PDO::PARAM_STR);
+            if ($res->execute()) {
+                $this->msg = '新增成功';
+            } else {
+                $error = $res->errorInfo();
+                $this->error = $error[0];
+                $this->newsList();
+            }
+
             $this->newsList();
         }
-
-        $this->newsList();
     }
 
     /**
@@ -90,18 +92,19 @@ class News
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
-        }
-        $sql = "SELECT `article`.`articleId`, `article`.`title` , `article`.`content`
-                FROM  `article`
-                WHERE  `article`.`isDelete` = 0 and `article`.`articleId` = :newsId";
-        $res = $this->db->prepare($sql);
-        $res->bindParam(':newsId', $input['newsId'], PDO::PARAM_STR);
-        $res->execute();
-        $newsData = $res->fetch();
+        } else {
+            $sql = "SELECT `article`.`articleId`, `article`.`title` , `article`.`content`
+                        FROM  `article`
+                        WHERE  `article`.`isDelete` = 0 and `article`.`articleId` = :newsId";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':newsId', $input['newsId'], PDO::PARAM_STR);
+            $res->execute();
+            $newsData = $res->fetch();
 
-        $this->smarty->assign('newsData', $newsData);
-        $this->smarty->assign('error', $this->error);
-        $this->smarty->display('news/newsEdit.html');
+            $this->smarty->assign('newsData', $newsData);
+            $this->smarty->assign('error', $this->error);
+            $this->smarty->display('news/newsEdit.html');
+        }
     }
 
     /**
@@ -113,26 +116,27 @@ class News
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
-        }
-        $now = date('Y-m-d H:i:s');
-        $sql = "UPDATE `shingnan`.`article` SET `title` = :title ,`content` = :content , `lastUpdateTime` =  :lastUpdateTime
-        WHERE  `article`.`articleId` = :articleId";
-        $res = $this->db->prepare($sql);
-        $res->bindParam(':articleId', $input['newsId'], PDO::PARAM_STR);
-        $res->bindParam(':title', $input['newsTitle'], PDO::PARAM_STR);
-        $res->bindParam(':content', $input['newsEditor'], PDO::PARAM_STR);
-        $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
-        $res->execute();
-
-        if ($res->execute()) {
-            $this->msg = '更新成功';
         } else {
-            $error = $res->errorInfo();
-            $this->error = $error[0];
+            $now = date('Y-m-d H:i:s');
+            $sql = "UPDATE `shingnan`.`article` SET `title` = :title ,`content` = :content , `lastUpdateTime` =  :lastUpdateTime
+                WHERE  `article`.`articleId` = :articleId";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':articleId', $input['newsId'], PDO::PARAM_STR);
+            $res->bindParam(':title', $input['newsTitle'], PDO::PARAM_STR);
+            $res->bindParam(':content', $input['newsEditor'], PDO::PARAM_STR);
+            $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
+            $res->execute();
+
+            if ($res->execute()) {
+                $this->msg = '更新成功';
+            } else {
+                $error = $res->errorInfo();
+                $this->error = $error[0];
+                $this->newsList();
+            }
+
             $this->newsList();
         }
-
-        $this->newsList();
     }
 
     /**
@@ -140,7 +144,10 @@ class News
      */
     public function newsList()
     {
-        if ($_SESSION['isLogin'] == true) {
+        if ($_SESSION['isLogin'] == false) {
+            $this->error = '請先登入!';
+            $this->viewLogin();
+        } else {
             // get all data from news
             $sql = 'SELECT `article`.`title`, `article`.`articleId` , `article`.`type`,`article`.`ctr` , `article`.`lastUpdateTime`
                 , `article`.`createTime`
@@ -155,9 +162,6 @@ class News
             $this->smarty->assign('error', $this->error);
             $this->smarty->assign('msg', $this->msg);
             $this->smarty->display('news/newsList.html');
-        } else {
-            $this->error = '請先登入!';
-            $this->viewLogin();
         }
     }
 
