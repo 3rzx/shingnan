@@ -198,10 +198,18 @@ $(document).ready(function() {
                                             <textarea name="description" class="form-control" rows="5" ></textarea>
                                         </div>
                                     </div>
-                                    <div id="pirceDiv" class="form-group">
-                                        <label for="price" class="col-sm-2 control-label">價格</label>
+
+                                    <div id="pointDiv" class="form-group">
+                                        <label for="point" class="col-sm-2 control-label">扣除點數</label>
                                         <div class="col-sm-6">
-                                            <input id="price" name="price" class="form-control" type="number" value="0">
+                                            <input id="point" name="deletePoint" class="form-control" type="number" min="0" value="0">
+                                        </div>
+                                    </div>
+
+                                    <div id="pirceDiv" class="form-group">
+                                        <label for="price" class="col-sm-2 control-label">最後結帳金額</label>
+                                        <div class="col-sm-6">
+                                            <input id="price" name="price" class="form-control" type="number" min="0" value="0">
                                         </div>
                                     </div>
                                 </div>

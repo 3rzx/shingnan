@@ -429,18 +429,30 @@ class User
     {
         $idGen = new IdGenerator();
         $tranId = $idGen->GetID("tran");
-        
+
         $pointRateGen = new pointFile();
         $pointRate = (int)($pointRateGen->GetRate());
 
         $now = date('Y-m-d H:i:s');
-        $point = intdiv((int)$input["price"], $pointRate);
 
-        // TODO: checkState to be set
-        // create transaction row
+
+        $sql = "SELECT `user`.`point`
+                FROM  `user`
+                WHERE  `userId` = '{$input['userId']}' AND `isDelete` = 0;";
+
+        $res = $this->db->prepare($sql);
+        if(!$res->execute()){
+            return;
+        }
+        $result = $res->fetch();
+
+        $deletePoint = (int)$input["deletePoint"];
+        $getPoint = intdiv($input["price"], $pointRate);
+
+
         $sql = "INSERT INTO `shingnan`.`tran` (
-        `tranId`, `userId`, `description`,`checkState`, `price`, `point`, `isDelete`, `lastUpdateTime`,`createTime`)
-        VALUES ('{$tranId}', '{$input["userId"]}', '{$input["description"]}', '{$input["checkState"]}', '{$input["price"]}', '{$point}','0', '{$now}', '{$now}' );";
+        `tranId`, `userId`, `description`,`checkState`, `price`, `point`, `deletePoint`, `isDelete`, `lastUpdateTime`,`createTime`)
+        VALUES ('{$tranId}', '{$input["userId"]}', '{$input["description"]}', '{$input["checkState"]}', '{$input["price"]}', '{$getPoint}', '{$deletePoint}','0', '{$now}', '{$now}' );";
 
         $res = $this->db->prepare($sql);
         if (!$res->execute()) {
@@ -463,7 +475,7 @@ class User
 
 
         // sum of user point
-        $sql = "SELECT `tran`.`point`
+        $sql = "SELECT `tran`.`point`, `tran`.`deletePoint`
                 FROM  `tran`
                 WHERE  `tran`.`isDelete` = 0 And `tran`.`userId`='{$input["userId"]}';";
         $res = $this->db->prepare($sql);
@@ -471,9 +483,8 @@ class User
         $allPoints = $res->fetchAll();
         $sumOfPoints = 0;
         foreach ($allPoints as $p) {
-            $sumOfPoints += $p["point"];
+            $sumOfPoints = $sumOfPoints + $p["point"] - $p["deletePoint"];
         }
-
         // update user point
         $now = date('Y-m-d H:i:s');
         $sql = "UPDATE `shingnan`.`user` SET  `point` = '{$sumOfPoints}', `lastUpdateTime` = '{$now}' WHERE `userId` = '{$input["userId"]}';";
@@ -505,7 +516,7 @@ class User
         $this->smarty->assign('partData', $partData);
 
         // get tranData
-        $sql = "SELECT `tran`.`tranId`, `tran`.`price`, `tran`.`description`, `tran`.`userId`, `tran`.`score`, `tran`.`opinion`, `tran`.`checkState`
+        $sql = "SELECT `tran`.`tranId`, `tran`.`price`, `tran`.`description`, `tran`.`userId`, `tran`.`score`, `tran`.`opinion`, `tran`.`checkState`, `tran`.`deletePoint`
                 FROM `tran`
                 WHERE `tranId` = '{$input["tranId"]}';";
 
@@ -566,8 +577,8 @@ class User
         $res->execute();
         $result = $res->fetch();
         $originalTranPoint = $result['point'];
-        
-    
+
+
         $newPoint = (int)$userPoint - (int)$originalTranPoint + $point;
         $sql = "UPDATE `shingnan`.`user`
                 SET `point`='{$newPoint}'

@@ -83,7 +83,6 @@
 
             console.log($(`#state_${toBeDeleteBoxNum}`).val());
             if ($(`#state_${toBeDeleteBoxNum}`).val() === 'insert') {
-                console.log('YO');
                 $(`#box${toBeDeleteBoxNum}`).remove();
             }
 
@@ -129,6 +128,8 @@
         $(`textarea[name=opinion]`).val(tranData['opinion']);
         $('#score').val(tranData['score']);
 
+
+        $('#deletePoint').val(tranData['deletePoint']);
         $(`input.form-check-input[value=${tranData['checkState']}]`).attr('checked', 'true');
     });
 </script>
@@ -194,7 +195,7 @@
                                         <i class="glyphicon glyphicon-plus"></i>
                                     </a>
                                 </div>
-                            </div <!--description & price box-->
+                            </div> <!--description & price box-->
                             <div id="priceBox" class="box box-primary">
                                 <div class="box-body">
                                     <div id="descriptionDiv" class="form-group">
@@ -203,10 +204,18 @@
                                             <textarea name="description" class="form-control" rows="5"></textarea>
                                         </div>
                                     </div>
-                                    <div id="pirceDiv" class="form-group">
-                                        <label for="price" class="col-sm-2 control-label">價格</label>
+
+                                    <div id="deletePointDiv" class="form-group">
+                                        <label for="deletePoint" class="col-sm-2 control-label">扣除點數</label>
                                         <div class="col-sm-6">
-                                            <input id="price" name="price" class="form-control" type="number" value="0">
+                                            <input id="deletePoint" name="deletePoint" class="form-control" type="number" min="0" value="0">
+                                        </div>
+                                    </div>
+
+                                    <div id="pirceDiv" class="form-group">
+                                        <label for="price" class="col-sm-2 control-label">最後結帳金額</label>
+                                        <div class="col-sm-6">
+                                            <input id="price" name="price" class="form-control" type="number" min="0" value="0">
                                         </div>
                                     </div>
                                 </div>
