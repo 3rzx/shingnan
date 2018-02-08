@@ -70,7 +70,7 @@ class Ui
      */
     public function editIndexCover($input) {
         $updateList = json_decode($input['updateList']);
-        
+        // update image
         foreach($updateList as $index) {
             $sql = "SELECT `imageId`, `path` FROM `image` WHERE `itemId` = '$index'";
             $res = $this->db->prepare($sql);
@@ -113,6 +113,24 @@ class Ui
                 }
             } 
         }
+        // update text
+        for($i = 3; $i < 23; $i++) {
+            $key = "txt_$i";
+            $txt = $input[$key];
+
+            if ($txt != '') {
+                $imageId = "image_index_img_$i";
+
+                $sql = "UPDATE `image` SET `link` = :txt
+                        WHERE `imageId` = '$imageId'";
+                $res = $this->db->prepare($sql);
+                $res->bindParam(':txt', $txt, PDO::PARAM_STR);
+                $res->execute();
+            } else {
+                continue;
+            }
+        }
+
         $this->viewIndexCover();
     }
     /**
@@ -138,10 +156,30 @@ class Ui
                 
                 if ($res->execute()) {
                     $data = $res->fetch();     
-                    $images[$index] = $data[0];          
+                    $images[$index] = $data[0];
                 }
             }
         }
+
+        for($i = 3; $i < 23; $i++) {
+            $key = "txt_$i";
+            $txt = $input[$key];
+
+            if ($txt != '') {
+                $images[$key] = $txt;
+            } else {
+                $imageId = 'image_index_img_$i';
+
+                $sql = "SELECT `link` FROM `image` WHERE `imageId` = '$imageId'";
+                $res = $this->db->prepare($sql);
+
+                if ($res->execute()) {
+                    $data = $res->fetch();     
+                    $images[$key] = $data[0];       
+                }
+            }
+        }
+
         $this->smarty->assign('images', $images);
         $this->smarty->display('ui/previewIndex.html');
     }
