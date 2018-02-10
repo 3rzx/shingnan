@@ -690,4 +690,8 @@ class User
         $this->smarty->assign('homePath', APP_ROOT_DIR);
         $this->smarty->display('login.html');
     }
+
+    public function isNullOrEmptyString($question){
+        return (!isset($question) || trim($question)==='');
+    }
 }
