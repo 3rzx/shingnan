@@ -110,14 +110,46 @@ class User
         $res->bindParam(':address', $input['address'], PDO::PARAM_STR);
         $res->bindParam(':introducerId', $input['introducerId'], PDO::PARAM_STR);
         $res->bindParam(':createTime', $now, PDO::PARAM_STR);
-        if ($res->execute()) {
-            return true;
+        if (!$res->execute()) {
+            goto fail;
         }
 
 
-        $error = $res->errorInfo();
-        $this->$error = $error[0];
+        // add point to introducer
+        if($this->isNullOrEmptyString($input['introducerId'])) {
+            goto end;
+        }
+        $sql = "SELECT `user`.`userId`, `user`.`point`
+                FROM  `user`
+                WHERE  `user`.`isDelete` = 0 And `user`.`userId` = '{$input['introducerId']}';";
+
+        $res = $this->db->prepare($sql);
+        if(!$res->execute()) {
+            goto fail;
+        }
+        $result = $res->fetch();
+
+
+        $now = date('Y-m-d H:i:s');
+        $originPoint = intval($result['point']);
+        $userId = $result['userId'];
+        $finalPoint = $originPoint + 200;
+        $sql = "UPDATE `shingnan`.`user` SET  `point` = '{$finalPoint}', `lastUpdateTime` = '{$now}' WHERE `userId` = '{$userId}';";
+        $res = $this->db->prepare($sql);
+
+        if(!$res->execute()) {
+            goto fail;
+        }
+
+        end:
+            return true;
+        fail:
+            $error = $res->errorInfo();
+            $this->$error = $error[0];
+            return false;
+
     }
+
 
     /**
      * 搜尋使用者頁面
@@ -252,13 +284,14 @@ class User
             $this->viewLogin();
             return;
         }
-        //TODO: Finish this sql
+
+
         $sql = "UPDATE `shingnan`.`user`
                 SET  `lastUpdateTime` = :lastUpdateTime,
                      `userId` = :userId, `userName` = :userName,
                      `account` = :account, `phone` = :phone,
                      `gender` = :gender, `address` = :address,
-                     `birthday` = :birthday
+                     `birthday` = :birthday, `introducerId`= :introducerId
                 WHERE `userId` = :userId;";
 
         $now = date('Y-m-d H:i:s');
@@ -272,6 +305,7 @@ class User
         $res->bindParam(':phone', $input['phone'], PDO::PARAM_STR);
         $res->bindParam(':gender', intval($input['gender']), PDO::PARAM_INT);
         $res->bindParam(':address', $input['address'], PDO::PARAM_STR);
+        $res->bindParam(':introducerId', $input['introducerId'], PDO::PARAM_STR);
         $res->execute();
 
         header("Location: ../controller/userController.php?action=userDetailPrepare&userId={$input["userId"]}");
