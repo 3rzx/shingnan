@@ -116,7 +116,7 @@ class User
 
 
         // add point to introducer
-        if($this->isNullOrEmptyString($input['introducerId'])) {
+        if ($this->isNullOrEmptyString($input['introducerId'])) {
             goto end;
         }
         $sql = "SELECT `user`.`userId`, `user`.`point`
@@ -124,7 +124,7 @@ class User
                 WHERE  `user`.`isDelete` = 0 And `user`.`userId` = '{$input['introducerId']}';";
 
         $res = $this->db->prepare($sql);
-        if(!$res->execute()) {
+        if (!$res->execute()) {
             goto fail;
         }
         $result = $res->fetch();
@@ -137,7 +137,7 @@ class User
         $sql = "UPDATE `shingnan`.`user` SET  `point` = '{$finalPoint}', `lastUpdateTime` = '{$now}' WHERE `userId` = '{$userId}';";
         $res = $this->db->prepare($sql);
 
-        if(!$res->execute()) {
+        if (!$res->execute()) {
             goto fail;
         }
 
@@ -147,7 +147,6 @@ class User
             $error = $res->errorInfo();
             $this->$error = $error[0];
             return false;
-
     }
 
 
@@ -272,7 +271,6 @@ class User
         $this->smarty->assign('error', $this->error);
         $this->smarty->assign('msg', $this->msg);
         $this->smarty->display('user/userDetail.html');
-
     }
     /**
      * 使用者詳細編輯動作
@@ -366,7 +364,7 @@ class User
         $sql = "SELECT `attendance`.`joinId`, `attendance`.`courseId`, `attendance`.`state`, `attendance`.`lastUpdateTime`,`course`.`courseName`
                 FROM `attendance`
                 LEFT JOIN `course` ON `attendance`.`courseId` = `course`.`courseId`
-                WHERE  `userId` = '{$input["userId"]}';";
+                WHERE  `userId` = '{$input["userId"]}' AND `attendance`.`isDelete` = '0';";
 
         $res = $this->db->prepare($sql);
         $res->bindParam(':userId', $input['userId'], PDO::PARAM_STR);
@@ -375,11 +373,37 @@ class User
 
         $this->smarty->assign('userId', $input['userId']);
         $this->smarty->assign('allUserCourseData', $allUserCourseData);
+        $this->smarty->assign('deletedCourseId', $deletedCourseId);
 
         $this->smarty->assign('error', $this->error);
         $this->smarty->assign('msg', $this->msg);
         $this->smarty->display('user/userCourseRecord.html');
     }
+
+    public function userCourseRecordDelete($input)
+    {
+        $now = date('Y-m-d H:i:s');
+        if ($_SESSION['isLogin'] == false) {
+            $this->error = '請先登入!';
+            $this->viewLogin();
+            return;
+        }
+
+        // TODO: Fix sql condition: userId and courseId
+        // TODO: Fix deleteCourseAttendance function in html
+        $sql = "UPDATE `shingnan`.`attendance` SET  `isDelete` = 1, `lastUpdateTime` = '{$now}' WHERE `courseId` = '{$input["courseId"]}' AND `userId` = '{$input["userId"]}';";
+        $res = $this->db->prepare($sql);
+        $res->execute();
+
+        if (!$res) {
+            $error = $res->errorInfo();
+            return;
+        }
+        $this->smarty->assign('error', $this->error);
+        $this->smarty->assign('msg', $this->msg);
+        header("Location: ../controller/userController.php?action=userCourseRecordPrepare&userId={$input["userId"]}");
+    }
+
 
     public function updateUserAttendance($input)
     {
@@ -485,7 +509,7 @@ class User
                 WHERE  `userId` = '{$input['userId']}' AND `isDelete` = 0;";
 
         $res = $this->db->prepare($sql);
-        if(!$res->execute()){
+        if (!$res->execute()) {
             return;
         }
         $result = $res->fetch();
@@ -725,7 +749,8 @@ class User
         $this->smarty->display('login.html');
     }
 
-    public function isNullOrEmptyString($question){
+    public function isNullOrEmptyString($question)
+    {
         return (!isset($question) || trim($question)==='');
     }
 }

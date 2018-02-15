@@ -66,6 +66,9 @@ switch ($method) {
             case 'updateUserAttendance':
                 $user->updateUserAttendance($_GET);
                 break;
+            case 'userCourseRecordDelete':
+                $user->userCourseRecordDelete($_GET);
+                break;
             default:
                 $user->viewLogin();
         }
