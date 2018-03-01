@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    \{include file="../common/resource.html"\}
+    <script type="text/javascript" src="../plugins/bootstrap-filestyle/src/bootstrap-filestyle.min.js"> </script>
+    <script type="text/javascript" src="../plugins/bootstrap-toggle/js/bootstrap2-toggle.js"></script>
+    <link rel="stylesheet" href="../plugins/bootstrap-toggle/css/bootstrap2-toggle.css"/>
+    <script>
+        var imgCount = 1;
+        var itemCount = 1;
+        var frameData = \{$frameData|json_encode\};
+        $(document).ready(function() {
+            $("#combineImage1").filestyle({
+                size: "nr",
+                input: false,
+                buttonText: "上傳圖片",
+                buttonName: "btn-info",
+                iconName: "glyphicon glyphicon-camera"
+            });
+           
+
+            $("#combineImage1").change(function() {
+                readURL(this, '#combineImg1');
+            });
+
+            $('input[name="imgCount"]').val(imgCount);
+            $('input[name="itemCount"]').val(itemCount);
+
+        });
+
+        function readURL(input, id) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    $(id).attr('src', e.target.result);
+                    $(id).css('display', '');
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+
+        function addCombineImg(i){
+            str = '<div id = "image' + i +'"><div class = "form-inline" style="display:inline-block;">';
+            str += '<input type="file" id="combineImage' + i + '" name="combineImage' + i +'" data-input="false" accept="image/*">&nbsp';
+            str += '<a class="btn btn-sm btn-danger" onclick="deleteCombineImg(' + i + ')"><i class="glyphicon glyphicon-remove"></i></a>';
+            str += '</div>';
+            str += '<img id="combineImg' + i +'" class="img-thumbnail" style="display:none"><br></div>';
+                                            
+            $("#addImgStart").after(str);
+
+            $("#combineImage"+ i).filestyle({
+                size: "nr",
+                input: false,
+                buttonText: "上傳圖片",
+                buttonName: "btn-info",
+                iconName: "glyphicon glyphicon-camera"
+            });
+           
+            $("#combineImage"+ i).change(function() {
+                readURL(this, "#combineImg"+ i);
+            });
+
+            $('input[name="imgCount"]').val(imgCount);
+        }
+
+        function deleteCombineImg(i){
+            $("#image"+i).remove();
+        }
+
+        function addCombineItem(j){
+            str = '<div id="item' + j + '"><div class="col-sm-5">';
+            str += '<select class="selectpicker" name="combineItem' + j + '" id="combineItem' + j + '" data-live-search="true" title="請選擇鏡框">';
+            str += '</select>';
+            str += '</div>';
+            str += '<div class="col-sm-5">';
+            str += '<a class="btn btn-sm btn-danger" onclick="deleteCombineItem(' + j + ')"><i class="glyphicon glyphicon-remove"></i></a>';
+            str += '</div><br/><br/></div>';                                
+            $("#addItemStart").after(str);    
+            for(var k=0;k<frameData.length;k++)
+                $( "#combineItem"+ j ).append('<option value=' + frameData[k][0] +'>' + frameData[k][1] + frameData[k][2]+ '</option>');
+    
+            $( "#combineItem" + j ).selectpicker('refresh');
+            $('input[name="itemCount"]').val(itemCount);
+        }
+
+        function deleteCombineItem(j){
+            $("#item"+j).remove();
+        }
+
+    </script>
+</head>
+
+<body class="hold-transition skin-yellow sidebar-mini">
+    <div class="wrapper">
+        \{include file="../common/header.html"\}
+        \{include file="../common/menu.html"\}
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1>組合商品新增</h1>
+            </section>
+            <section class="content">
+                <div class="row">
+                    <div class="col-md-10">
+                        \{if $error != ''\}
+                        <div class="alert alert-warning alert-dismissable text-center">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            <h4 style="display: inline;">\{$error\}</h4>
+                        </div>
+                        \{/if\}
+                        <div class="box box-primary">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">新增組合商品</h3>
+                            </div>
+                            <!-- form-->
+                            <form class="form-horizontal" method="post" enctype="multipart/form-data" action="../controller/combineController.php">
+                                <div class="box-body">
+                                    <div id="combineNameDiv" class="form-group">
+                                        <label for="combineName" class="col-sm-2 control-label">組合商品名稱</label>
+                                        <div class="col-sm-6">
+                                            <input id="combineName" name="combineName" class="form-control" placeholder="輸入組合商品名稱">
+                                        </div>
+                                    </div>
+                                    <div id="combineItemDiv" class="form-group">
+                                        <label class="col-sm-2 control-label">組合商品</label>
+                                            <div class="col-sm-10">
+                                            <div id="item1">
+                                                <div class="col-sm-5">
+                                                <select class="selectpicker" name="combineItem1" id="combineItem1" data-live-search="true" title="請選擇鏡框">
+                                                    \{foreach from=$frameData item=frame \}
+                                                    <option value='\{$frame.frameId\}'>\{$frame.frameName\} \{$frame.no\}</option>
+                                                    \{/foreach\}
+                                                </select>
+                                                </div>
+                                                <div class="col-sm-5">
+                                                    <a class="btn btn-sm btn-primary" onclick="addCombineItem(++itemCount)"><i class="glyphicon glyphicon-plus"></i></a>
+                                                </div>
+                                                <br/><br/>
+                                            </div>
+                                            <div id="addItemStart" name="addItemStart"></div>
+                                            </div>
+                                    </div>
+                                    <div id="priceDiv" class="form-group">
+                                        <label for="price" class="col-sm-2 control-label">價格</label>
+                                        <div class="col-sm-6">
+                                            <input type="number" min=0 id="price" name="price" class="form-control" placeholder="輸入價格">
+                                        </div>
+                                    </div>
+                                    <div id="discountPriceDiv" class="form-group">
+                                        <label for="discountPrice" class="col-sm-2 control-label">會員價</label>
+                                        <div class="col-sm-6">
+                                            <input id="discountPrice" type="number" min=0 name="discountPrice" class="form-control" placeholder="輸入會員價">
+                                        </div>
+                                    </div>
+                                    <div id="descriptionDiv" class="form-group">
+                                        <label for="description" class="col-sm-2 control-label">備註</label>
+                                        <div class="col-sm-6">
+                                            <textarea id="description" name="description" class="form-control" style= "overflow:hidden;"></textarea>
+                                        </div>
+                                    </div>
+                                    <div id="combineImageDiv" class="form-group">
+                                        <label class="col-sm-2 control-label">組合商品圖片</label>
+                                        <div class="col-sm-8" >
+                                            <div class = "form-inline" style="display:inline-block;">
+                                                <input type="file" id="combineImage1" name="combineImage1" data-input="false" accept="image/*">
+                                                <a class="btn btn-sm btn-primary" onclick="addCombineImg(++imgCount)"><i class="glyphicon glyphicon-plus"></i></a>
+                                            </div>
+                                            <img id="combineImg1" class="img-thumbnail" style="display:none"><br>
+                                            <div id="addImgStart" name="addImgStart"></div>
+                                        </div>
+                                    </div>
+                                    <div id="isLaunchDiv" class="form-group">
+                                        <label for="isLaunch" class="col-sm-2 control-label">上架到網路上</label>
+                                        &nbsp&nbsp&nbsp&nbsp&nbsp<input type="checkbox" checked data-toggle="toggle" data-size="mini" name="isLaunch" value=1 >
+                                    </div>
+                                </div>
+                                <div class="box-footer" style="text-align: right;">
+                                    <a href="../controller/combineController.php?action=combineAddPrepare" class="btn btn-warning">取消</a>
+                                    <input type="hidden" name="imgCount">
+                                    <input type="hidden" name="itemCount">
+                                    <input type="hidden" name="action" value="combineAdd">
+                                    <button type="submit" class="btn btn-success">確定</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        \{include file="../common/footer.html"\}
+    </div>
+</body>
+
+</html>
