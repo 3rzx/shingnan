@@ -14,12 +14,15 @@ $(document).ready(function() {
     var glassData = \{$glassData|json_encode\};
     var lenData = \{$lenData|json_encode\};
     var partData = \{$partData|json_encode\};
+    var combineData = \{$combineData|json_encode\};
     var allItemData = {'frame': frameData,
                     'glass': glassData,
                     'len': lenData,
-                    'part': partData};
+                    'part': partData,
+                    'combine': combineData};
 
 
+    console.log(allItemData['combine']);
 
     var num = 1;
     $(document).on('click', '.shoppingRecordBtn',function(){
@@ -34,6 +37,7 @@ $(document).ready(function() {
                                 <option value="glass">鏡片</option>
                                 <option value="len">隱形眼鏡</option>
                                 <option value="part">零件(維修)</option>
+                                <option value="combine">組合商品</option>
                             </select>
                         </div>
                     </div>
@@ -160,6 +164,7 @@ $(document).ready(function() {
                                                 <option value="glass">鏡片</option>
                                                 <option value="len">隱形眼鏡</option>
                                                 <option value="part">零件(維修)</option>
+                                                <option value="combine">組合商品</option>
                                             </select>
                                         </div>
                                     </div>

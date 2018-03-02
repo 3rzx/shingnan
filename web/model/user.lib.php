@@ -451,6 +451,11 @@ class User
                     FROM  `part`
                     WHERE  `part`.`isDelete`=0;";
                 break;
+            case 'combine':
+                $sql = "SELECT  `combine`.`combineId`, `combine`.`combineName`
+                    FROM  `combine`
+                    WHERE  `combine`.`isDelete`=0;";
+                break;
             default:
                 break;
         }
@@ -475,6 +480,7 @@ class User
         $glassData = $this->userShoppingGetData('glass');
         $lenData = $this->userShoppingGetData('len');
         $partData = $this->userShoppingGetData('part');
+        $combineData = $this->userShoppingGetData('combine');
 
         $userId = $input['userId'];
 
@@ -483,6 +489,7 @@ class User
         $this->smarty->assign('glassData', $glassData);
         $this->smarty->assign('lenData', $lenData);
         $this->smarty->assign('partData', $partData);
+        $this->smarty->assign('combineData', $combineData);
 
 
         $this->smarty->assign('error', $this->error);
@@ -576,12 +583,14 @@ class User
         $glassData = $this->userShoppingGetData('glass');
         $lenData = $this->userShoppingGetData('len');
         $partData = $this->userShoppingGetData('part');
+        $combineData = $this->userShoppingGetData('combine');
 
 
         $this->smarty->assign('frameData', $frameData);
         $this->smarty->assign('glassData', $glassData);
         $this->smarty->assign('lenData', $lenData);
         $this->smarty->assign('partData', $partData);
+        $this->smarty->assign('combineData', $combineData);
 
         // get tranData
         $sql = "SELECT `tran`.`tranId`, `tran`.`price`, `tran`.`description`, `tran`.`userId`, `tran`.`score`, `tran`.`opinion`, `tran`.`checkState`, `tran`.`deletePoint`
