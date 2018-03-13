@@ -113,11 +113,10 @@ class Scroll
                             `image`.`imageId`,`image`.`path` 
                     FROM  `scroll` 
                     LEFT JOIN  `image` ON `scroll`.`scrollId` = `image`.`itemId` 
-                    WHERE  `scroll`.`isDelete` = 0
                     ORDER BY `scroll`.`scrollId`';
             $res = $this->db->prepare($sql);
             $res->execute();
-            $allscrollData = $res->fetchAll();
+            $allScrollData = $res->fetchAll();
 
             $this->smarty->assign('allScrollData', $allScrollData);
             $this->smarty->assign('error', $this->error);
@@ -135,34 +134,31 @@ class Scroll
             $this->error = '請先登入!';
             $this->viewLogin();
         }else{
-            if(isset($input['imageId'])){
-            //deal with img
-
-                //取得file path
-                $sql = "SELECT `path` FROM `image` WHERE `image`.`imageId` = :imgId;";
-                $res = $this->db->prepare($sql);
-                $res->bindParam(':imgId', $input['imageId'], PDO::PARAM_STR);
-                $res->execute();
-                $path = $res->fetch();
-
-                //delete data from db
-                $this->db->beginTransaction();
-                $sql    = "DELETE FROM `image` WHERE `imageId` = :imgId;";
-                $res = $this->db->prepare($sql);
-                $res->bindParam(':imgId', $input['imageId'], PDO::PARAM_STR);
-                $res->execute();
-                $this->db->commit();
-
-                //delete data file
-                $deleter = new deleteImgFile();
-                $deleter->deleteFile($path['path']);
-            }
-            $now = date('Y-m-d H:i:s');
-            $sql = "UPDATE `shingnan`.`scroll` SET  `isDelete` = 1, `lastUpdateTime` = :lastUpdateTime WHERE scrollId = :scrollId;";
+            //取得file path
+            $sql = "SELECT `path` FROM `image` WHERE `image`.`itemId` = :scrollId;";
             $res = $this->db->prepare($sql);
             $res->bindParam(':scrollId', $input['scrollId'], PDO::PARAM_STR);
-            $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
             $res->execute();
+            $path = $res->fetch();
+                
+            //delete data from db
+            $this->db->beginTransaction();
+            $sql    = "DELETE FROM `image` WHERE `image`.`itemId` = :scrollId;";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':scrollId', $input['scrollId'], PDO::PARAM_STR);
+            $res->execute();
+            $this->db->commit();
+
+            //delete data file
+            $deleter = new deleteImgFile();
+            $deleter->deleteFile($path['path']);
+
+            $this->db->beginTransaction();
+            $sql    = "DELETE FROM `scroll` WHERE `scrollId` = :scrollId;";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':scrollId', $input['scrollId'], PDO::PARAM_STR);
+            $res->execute();
+            $this->db->commit();
             $this->scrollList();
         }
     }

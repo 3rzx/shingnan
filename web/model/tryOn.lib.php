@@ -49,7 +49,7 @@ class TryOn
             return ;
         }
 
-        $sql = "SELECT `frameId`, `frameName`, `no` FROM `frame` WHERE `isDelete` = 0 ;" ;
+        $sql = "SELECT `frameId`, `frameName` FROM `frame` WHERE `isDelete` = 0 ;" ;
         $res = $this->db->prepare($sql);
         $res->execute();
         $frameData = $res->fetchAll();
@@ -70,13 +70,11 @@ class TryOn
             $idGen = new IdGenerator();
             $now = date('Y-m-d H:i:s');
             $tryOnId = $idGen->GetID('tryOn');
-            $sql = "INSERT INTO `shingnan`.`tryOn` (`tryOnId`, `tryOnName`, `isDelete`, `description`,`lastUpdateTime`, `createTime`) 
-                        VALUES (:tryOnId, :tryOnName, '0', :description, :lastUpdateTime, :createTime);";
+            $sql = "INSERT INTO `shingnan`.`tryOn` (`tryOnId`, `frameId`, `createTime`) 
+                        VALUES (:tryOnId, :frameId, :createTime);";
             $res = $this->db->prepare($sql);
             $res->bindParam(':tryOnId', $tryOnId, PDO::PARAM_STR);
-            $res->bindParam(':tryOnName', $input['tryOnName'], PDO::PARAM_STR);
-            $res->bindParam(':description', $input['description'], PDO::PARAM_STR);
-            $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
+            $res->bindParam(':frameId', $input['frame'], PDO::PARAM_STR);
             $res->bindParam(':createTime', $now, PDO::PARAM_STR);
             if ($res->execute()) {
             //deal with insert image
@@ -84,12 +82,12 @@ class TryOn
                 $uploadPath = '../media/picture';
                 if ($_FILES['tryOnImage']['error'] == 0) {
                     $imgId = $idGen->GetID('image');
-                    $imgName = 'tryOn_'.$input['tryOnName'];
+                    $imgName = $tryOnId;
                     $fileInfo = $_FILES['tryOnImage'];
                     $tryOnImage = uploadFile($fileInfo, $uploadPath);
                     $sql = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`, 
                                                             `itemId`, `ctr`, `path`, `link`, `createTime`) 
-                            VALUES (:imgId, :imgName, 3, 
+                            VALUES (:imgId, :imgName, 11, 
                                     :tryOnId, 0, :filePath, '', :createTime);";
                     $res = $this->db->prepare($sql);
                     $res->bindParam(':imgId', $imgId, PDO::PARAM_STR);
@@ -105,7 +103,7 @@ class TryOn
                     }
                 }
             }
-           $this->tryOnList();
+           //$this->tryOnList();
        }
     }
 
@@ -118,17 +116,17 @@ class TryOn
             $this->viewLogin();
         }else{
             // get all data from tryOn
-            $sql = 'SELECT `tryOn`.`tryOnName`, `tryOn`.`tryOnId` , `tryOn`.`description`, `tryOn`.`lastUpdateTime`,
-                            `image`.`imageId`,`image`.`path` 
-                    FROM  `tryOn` 
-                    LEFT JOIN  `image` ON `tryOn`.`tryOnId` = `image`.`itemId` 
-                    WHERE  `tryOn`.`isDelete` = 0
+            $sql = 'SELECT `tryOn`.`tryOnId` , `tryOn`.`frameId`, 
+                            `image`.`path`,  `frame`.`frameName`,  `frame`.`no`
+                    FROM `tryOn`, `image`, `frame`
+                    WHERE `tryOn`.`frameId` = `frame`.`frameId`
+                    AND `image`.`itemId` = `tryOn`.`tryOnId`
                     ORDER BY `tryOn`.`tryOnId`';
             $res = $this->db->prepare($sql);
             $res->execute();
-            $alltryOnData = $res->fetchAll();
+            $allTryOnData = $res->fetchAll();
 
-            $this->smarty->assign('alltryOnData', $alltryOnData);
+            $this->smarty->assign('allTryOnData', $allTryOnData);
             $this->smarty->assign('error', $this->error);
             $this->smarty->assign('msg', $this->msg);
             $this->smarty->display('tryOn/tryOnList.html');
@@ -144,34 +142,33 @@ class TryOn
             $this->error = '請先登入!';
             $this->viewLogin();
         }else{
-            if(isset($input['imageId'])){
-            //deal with img
 
-                //取得file path
-                $sql = "SELECT `path` FROM `image` WHERE `image`.`imageId` = :imgId;";
-                $res = $this->db->prepare($sql);
-                $res->bindParam(':imgId', $input['imageId'], PDO::PARAM_STR);
-                $res->execute();
-                $path = $res->fetch();
-
-                //delete data from db
-                $this->db->beginTransaction();
-                $sql    = "DELETE FROM `image` WHERE `imageId` = :imgId;";
-                $res = $this->db->prepare($sql);
-                $res->bindParam(':imgId', $input['imageId'], PDO::PARAM_STR);
-                $res->execute();
-                $this->db->commit();
-
-                //delete data file
-                $deleter = new deleteImgFile();
-                $deleter->deleteFile($path['path']);
-            }
-            $now = date('Y-m-d H:i:s');
-            $sql = "UPDATE `shingnan`.`tryOn` SET  `isDelete` = 1, `lastUpdateTime` = :lastUpdateTime WHERE tryOnId = :tryOnId;";
+            //取得file path
+            $sql = "SELECT `path` FROM `image` WHERE `image`.`itemId` = :tryOnId;";
             $res = $this->db->prepare($sql);
             $res->bindParam(':tryOnId', $input['tryOnId'], PDO::PARAM_STR);
-            $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
             $res->execute();
+            $path = $res->fetch();
+
+            //delete data from db
+            $this->db->beginTransaction();
+            $sql    = "DELETE FROM `image` WHERE `image`.`itemId` = :tryOnId;";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':tryOnId', $input['tryOnId'], PDO::PARAM_STR);
+            $res->execute();
+            $this->db->commit();
+
+            //delete data file
+            $deleter = new deleteImgFile();
+            $deleter->deleteFile($path['path']);
+
+            $this->db->beginTransaction();
+            $sql    = "DELETE FROM `tryOn` WHERE `tryOnId` = :tryOnId;";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':tryOnId', $input['tryOnId'], PDO::PARAM_STR);
+            $res->execute();
+            $this->db->commit();
+
             $this->tryOnList();
         }
     }
