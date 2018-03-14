@@ -81,7 +81,8 @@ class User
         $userId = $idGen->GetID('user');
         if ($this->userAddSql($userId, $input)) {
             $this->$msg = '新增成功';
-            $this->userDetailPrepare(array('userId' =>  $userId));
+            header("Location: ../controller/userController.php?action=userDetailPrepare&userId={$userId}");
+            // $this->userDetailPrepare(array('userId' =>  $userId));
         }
     }
 
