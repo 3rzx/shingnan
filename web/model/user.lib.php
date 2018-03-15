@@ -106,7 +106,7 @@ class User
         $res->bindParam(':gender', intval($input['gender']), PDO::PARAM_INT);
         $res->bindParam(':phone', $input['phone'], PDO::PARAM_STR);
         $res->bindParam(':account', $input['account'], PDO::PARAM_STR);
-        $res->bindParam(':password', password_hash($password, PASSWORD_BCRYPT), PDO::PARAM_STR);
+        $res->bindParam(':password', password_hash($input['password'], PASSWORD_BCRYPT), PDO::PARAM_STR);
         $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
         $res->bindParam(':address', $input['address'], PDO::PARAM_STR);
         $res->bindParam(':introducerId', $input['introducerId'], PDO::PARAM_STR);
