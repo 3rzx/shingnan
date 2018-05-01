@@ -46,9 +46,10 @@ class Scroll
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
+        }else{
+                $this->smarty->assign('error', $this->error);
+                $this->smarty->display('scroll/scrollAdd.html');    
         }
-        $this->smarty->assign('error', $this->error);
-        $this->smarty->display('scroll/scrollAdd.html');
     }
 
     /**
