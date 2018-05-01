@@ -79,15 +79,6 @@ class User
 
         $idGen = new IdGenerator();
         $userId = $idGen->GetID('user');
-        if ($this->userAddSql($userId, $input)) {
-            $this->$msg = '新增成功';
-            header("Location: ../controller/userController.php?action=userDetailPrepare&userId={$userId}");
-            // $this->userDetailPrepare(array('userId' =>  $userId));
-        }
-    }
-
-    public function userAddSql($userId, $input)
-    {
         $now = date('Y-m-d H:i:s');
 
         $sql = "INSERT INTO `shingnan`.`user` (
@@ -99,6 +90,7 @@ class User
         0,:lastUpdateTime, :createTime);";
 
         $res = $this->db->prepare($sql);
+       
 
         $res->bindParam(':userId', $userId, PDO::PARAM_STR);
         $res->bindParam(':userName', $input['userName'], PDO::PARAM_STR);
@@ -111,10 +103,10 @@ class User
         $res->bindParam(':address', $input['address'], PDO::PARAM_STR);
         $res->bindParam(':introducerId', $input['introducerId'], PDO::PARAM_STR);
         $res->bindParam(':createTime', $now, PDO::PARAM_STR);
+        
         if (!$res->execute()) {
             goto fail;
-        }
-
+        }            
 
         // add point to introducer
         if ($this->isNullOrEmptyString($input['introducerId'])) {
@@ -131,7 +123,7 @@ class User
         $result = $res->fetch();
 
 
-        $now = date('Y-m-d H:i:s');
+        // add point to introducer 
         $originPoint = intval($result['point']);
         $userId = $result['userId'];
         $finalPoint = $originPoint + 200;
@@ -142,14 +134,15 @@ class User
             goto fail;
         }
 
+        header("Location: ../controller/userController.php?action=userDetailPrepare&userId={$userId}");
+
         end:
-            return true;
+            return ;
         fail:
             $error = $res->errorInfo();
             $this->$error = $error[0];
-            return false;
+            return ;
     }
-
 
     /**
      * 搜尋使用者頁面
