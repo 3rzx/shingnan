@@ -117,9 +117,10 @@ class News
             $this->error = '請先登入!';
             $this->viewLogin();
         } else {
-            $sql = "SELECT `article`.`articleId`, `article`.`title` , `article`.`content`
-                        FROM  `article`
-                        WHERE  `article`.`isDelete` = 0 and `article`.`articleId` = :newsId";
+            $sql = "SELECT `article`.`articleId`, `article`.`title` , `article`.`preview` , `article`.`content`, `image`.`imageId` ,`image`.`path`
+                FROM  `article`
+                LEFT JOIN  `image` ON article.`articleId` = image.`itemId`
+                WHERE  `article`.`isDelete` = 0 and `article`.`articleId` = :newsId";
             $res = $this->db->prepare($sql);
             $res->bindParam(':newsId', $input['newsId'], PDO::PARAM_STR);
             $res->execute();
@@ -142,21 +143,56 @@ class News
             $this->viewLogin();
         } else {
             $now = date('Y-m-d H:i:s');
-            $sql = "UPDATE `shingnan`.`article` SET `title` = :title ,`content` = :content , `lastUpdateTime` =  :lastUpdateTime
+            $sql = "UPDATE `shingnan`.`article` SET `title` = :title ,`preview`= :preview ,`content` = :content , `lastUpdateTime` =  :lastUpdateTime
                 WHERE  `article`.`articleId` = :articleId";
             $res = $this->db->prepare($sql);
             $res->bindParam(':articleId', $input['newsId'], PDO::PARAM_STR);
             $res->bindParam(':title', $input['newsTitle'], PDO::PARAM_STR);
+            $res->bindParam(':preview', $input['previewEditor'], PDO::PARAM_STR);
             $res->bindParam(':content', $input['newsEditor'], PDO::PARAM_STR);
             $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
             $res->execute();
 
             if ($res->execute()) {
                 $this->msg = '更新成功';
-            } else {
-                $error = $res->errorInfo();
-                $this->error = $error[0];
-                $this->newsList();
+                if ($_FILES['newsImage']['error'] == 0) {
+                    if (isset($input['imageId'])) {
+                        $fileInfo = $_FILES['newsImage'];
+                        $newsImage = uploadFile($fileInfo, '../media/picture');
+                        $sql = "UPDATE  `shingnan`.`image` SET  `path` = :pathinfo WHERE `image`.`imageId` = :imageId;";
+                        $res = $this->db->prepare($sql);
+                        $res->bindParam(':imageId', $input['imageId'], PDO::PARAM_STR);
+                        $res->bindParam(':pathinfo', $newsImage, PDO::PARAM_STR);
+                        $res->execute();
+                        if (!$res) {
+                            $error = $res->errorInfo();
+                            $this->error = $error[0];
+                            $this->newsList();
+                        }
+                    } else {
+                        $idGen = new IdGenerator();
+                        $imgId = $idGen->GetID('image');
+                        $imgName = 'news_' . $input['newsTitle'];
+                        $fileInfo = $_FILES['newsImage'];
+                        $newsImage = uploadFile($fileInfo, '../media/picture');
+                        $sql = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`,
+                                                                `itemId`, `ctr`, `path`, `link`, `createTime`)
+                                VALUES (:imgId, :imgName, 6,
+                                        :newsId, 0, :filePath, '', :createTime);";
+                        $res = $this->db->prepare($sql);
+                        $res->bindParam(':imgId', $imgId, PDO::PARAM_STR);
+                        $res->bindParam(':imgName', $imgName, PDO::PARAM_STR);
+                        $res->bindParam(':newsId', $input['newsId'], PDO::PARAM_STR);
+                        $res->bindParam(':filePath', $newsImage, PDO::PARAM_STR);
+                        $res->bindParam(':createTime', $now, PDO::PARAM_STR);
+                        $res->execute();
+                        if (!$res) {
+                            $error = $res->errorInfo();
+                            $this->error = $error[0];
+                            $this->newsList();
+                        }
+                    }
+                }
             }
 
             $this->newsList();
@@ -207,6 +243,35 @@ class News
             $this->db->commit();
             $this->error = '';
             $this->msg = '刪除成功';
+            $this->newsList();
+        }
+    }
+
+    public function newsImageDelete($input)
+    {
+        if ($_SESSION['isLogin'] == false) {
+            $this->error = '請先登入!';
+            $this->viewLogin();
+        } else {
+            //取得file path
+            $sql = "SELECT `path` FROM `image` WHERE `image`.`imageId` = :imgId;";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':imgId', $input['imageId'], PDO::PARAM_STR);
+            $res->execute();
+            $path = $res->fetch();
+
+            //delete data from db
+            $this->db->beginTransaction();
+            $sql = "DELETE FROM `image` WHERE `image`.`imageId` = :imgId;";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':imgId', $input['imageId'], PDO::PARAM_STR);
+            $res->execute();
+            $this->db->commit();
+
+            //delete data file
+            $deleter = new deleteImgFile();
+            $deleter->deleteFile($path['path']);
+
             $this->newsList();
         }
     }

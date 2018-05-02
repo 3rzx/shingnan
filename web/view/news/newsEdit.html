@@ -6,7 +6,55 @@
     </script>
     <!-- CK Editor -->
     <script type="text/javascript" src="../plugins/ckeditor/ckeditor.js"></script>
+    <script type="text/javascript" src="../plugins/bootstrap-filestyle/src/bootstrap-filestyle.min.js">
+    </script>
     <script>
+    $(document).ready(function() {
+        $("#newsImage").filestyle({
+            size: "nr",
+            input: false,
+            buttonText: "上傳圖片",
+            buttonName: "btn-info",
+            iconName: "glyphicon glyphicon-camera"
+        });
+
+
+        $("#newsImage").change(function() {
+            readURL(this, '#newsImg');
+        });
+
+    });
+
+    function readURL(input, id) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+                $(id).attr('src', e.target.result);
+                $(id).css('display', '');
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function deleteImage(imageId) {
+        BootstrapDialog.show({
+            title: '提醒',
+            message: '確定刪除該預覽圖片嗎?',
+            buttons: [{
+                label: '確定',
+                cssClass: 'btn-danger',
+                action: function() {
+                    location = '../controller/newsController.php?action=newsImageDelete&imageId=' + imageId;
+                }
+            }, {
+                label: '取消',
+                action: function(dialogItself) {
+                    dialogItself.close();
+                }
+            }]
+        });
+    }
     //    
     $(function() {
         // Replace the <textarea id="newsEditor"> with a CKEditor
@@ -40,17 +88,32 @@
                             <form class="form-horizontal" method="post" enctype="multipart/form-data" action="../controller/newsController.php">
                                 <div class="box-body">
                                     <div id="newsTitleDiv" class="form-group">
-                                        <label for="newsTitle" class="col-sm-2 control-label">標題</label>
+                                        <label for="newsTitle" class="col-sm-2 control-label">文章標題</label>
                                         <div class="col-sm-10">
                                             <input id="newsTitle" name="newsTitle" class="form-control" value="\{$newsData.title\}">
+                                        </div>
+                                    </div>
+                                    <div id="newsImageDiv" class="form-group">
+                                        <label class="col-sm-2 control-label">預覽圖片</label>
+                                        <div class="col-sm-10">
+                                            <div class="form-inline">
+                                                <input type="file" id="newsImage" name="newsImage" data-input="false" accept="image/*"> \{if $newsData.imageId != ''\}
+                                                <a class="btn btn-sm btn-danger" onclick="deleteImage('\{$newsData.imageId\}')"><i class="glyphicon glyphicon-remove"></i>
+                                                </a> \{/if\}
+                                            </div>
+                                            <img id="newsImg" class="img-thumbnail" src="\{$newsData.path\}" alt="尚未上傳圖片">
+                                        </div>
+                                    </div>
+                                    <div id="previewEditorDiv" class="form-group">
+                                        <label for="previewEditorDiv" class="col-sm-2 control-label">預覽文字</label>
+                                        <div class="col-sm-10">
+                                            <textarea id="previewEditor" name="previewEditor" rows="10" cols="80">\{$newsData.preview\}</textarea>
                                         </div>
                                     </div>
                                     <div id="newsEditorDiv" class="form-group">
                                         <label for="newsEditor" class="col-sm-2 control-label">內容</label>
                                         <div class="col-sm-10">
-                                            <textarea id="newsEditor" name="newsEditor" rows="10" cols="80">
-                                                \{$newsData.content\}
-                                            </textarea>
+                                            <textarea id="newsEditor" name="newsEditor" rows="10" cols="80">\{$newsData.content\}</textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -58,6 +121,8 @@
                                     <a href="../controller/newsController.php?action=newsList" class="btn btn-warning">取消</a>
                                     <input type="hidden" name="action" value="newsEdit">
                                     <input type="hidden" name="newsId" value="\{$newsData.articleId\}">
+                                    \{if $newsData.imageId != ''\}
+                                    <input type="hidden" name="imageId" value="\{$newsData.imageId\}"> \{/if\}
                                     <button type="submit" class="btn btn-success">更新</button>
                                 </div>
                             </form>

@@ -117,8 +117,9 @@ class Education
             $this->viewLogin();
             return 0;
         } else {
-            $sql = "SELECT `article`.`articleId`, `article`.`title` , `article`.`content`
+            $sql = "SELECT `article`.`articleId`, `article`.`title` , `article`.`preview`, `article`.`content`, `image`.`imageId` ,`image`.`path`
                 FROM  `article`
+                LEFT JOIN  `image` ON article.`articleId` = image.`itemId`
                 WHERE  `article`.`isDelete` = 0 and `article`.`articleId` = :educationId";
             $res = $this->db->prepare($sql);
             $res->bindParam(':educationId', $input['educationId'], PDO::PARAM_STR);
@@ -143,21 +144,56 @@ class Education
             return 0;
         } else {
             $now = date('Y-m-d H:i:s');
-            $sql = "UPDATE `shingnan`.`article` SET `title` = :title ,`content` = :content , `lastUpdateTime` =  :lastUpdateTime
+            $sql = "UPDATE `shingnan`.`article` SET `title` = :title ,`preview`= :preview ,`content` = :content , `lastUpdateTime` =  :lastUpdateTime
                 WHERE  `article`.`articleId` = :articleId";
             $res = $this->db->prepare($sql);
             $res->bindParam(':articleId', $input['educationId'], PDO::PARAM_STR);
             $res->bindParam(':title', $input['educationTitle'], PDO::PARAM_STR);
+            $res->bindParam(':preview', $input['previewEditor'], PDO::PARAM_STR);
             $res->bindParam(':content', $input['educationEditor'], PDO::PARAM_STR);
             $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
             $res->execute();
 
             if ($res->execute()) {
                 $this->msg = '更新成功';
-            } else {
-                $error = $res->errorInfo();
-                $this->error = $error[0];
-                $this->educationList();
+                if ($_FILES['educationImage']['error'] == 0) {
+                    if (isset($input['imageId'])) {
+                        $fileInfo = $_FILES['educationImage'];
+                        $educationImage = uploadFile($fileInfo, '../media/picture');
+                        $sql = "UPDATE  `shingnan`.`image` SET  `path` = :pathinfo WHERE `image`.`imageId` = :imageId;";
+                        $res = $this->db->prepare($sql);
+                        $res->bindParam(':imageId', $input['imageId'], PDO::PARAM_STR);
+                        $res->bindParam(':pathinfo', $educationImage, PDO::PARAM_STR);
+                        $res->execute();
+                        if (!$res) {
+                            $error = $res->errorInfo();
+                            $this->error = $error[0];
+                            $this->educationList();
+                        }
+                    } else {
+                        $idGen = new IdGenerator();
+                        $imgId = $idGen->GetID('image');
+                        $imgName = 'education_' . $input['educationTitle'];
+                        $fileInfo = $_FILES['educationImage'];
+                        $educationImage = uploadFile($fileInfo, '../media/picture');
+                        $sql = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`,
+                                                                `itemId`, `ctr`, `path`, `link`, `createTime`)
+                                VALUES (:imgId, :imgName, 5,
+                                        :educationId, 0, :filePath, '', :createTime);";
+                        $res = $this->db->prepare($sql);
+                        $res->bindParam(':imgId', $imgId, PDO::PARAM_STR);
+                        $res->bindParam(':imgName', $imgName, PDO::PARAM_STR);
+                        $res->bindParam(':educationId', $input['educationId'], PDO::PARAM_STR);
+                        $res->bindParam(':filePath', $educationImage, PDO::PARAM_STR);
+                        $res->bindParam(':createTime', $now, PDO::PARAM_STR);
+                        $res->execute();
+                        if (!$res) {
+                            $error = $res->errorInfo();
+                            $this->error = $error[0];
+                            $this->educationList();
+                        }
+                    }
+                }
             }
 
             $this->educationList();
@@ -208,6 +244,35 @@ class Education
             $this->db->commit();
             $this->error = '';
             $this->msg = '刪除成功';
+            $this->educationList();
+        }
+    }
+
+    public function educationImageDelete($input)
+    {
+        if ($_SESSION['isLogin'] == false) {
+            $this->error = '請先登入!';
+            $this->viewLogin();
+        } else {
+            //取得file path
+            $sql = "SELECT `path` FROM `image` WHERE `image`.`imageId` = :imgId;";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':imgId', $input['imageId'], PDO::PARAM_STR);
+            $res->execute();
+            $path = $res->fetch();
+
+            //delete data from db
+            $this->db->beginTransaction();
+            $sql = "DELETE FROM `image` WHERE `image`.`imageId` = :imgId;";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':imgId', $input['imageId'], PDO::PARAM_STR);
+            $res->execute();
+            $this->db->commit();
+
+            //delete data file
+            $deleter = new deleteImgFile();
+            $deleter->deleteFile($path['path']);
+
             $this->educationList();
         }
     }
