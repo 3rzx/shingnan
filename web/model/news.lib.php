@@ -1,7 +1,9 @@
 <?php
 // initialize
 require_once HOME_DIR . 'configs/config.php';
+require_once 'upload.func.php';
 require_once 'IdGenerator.php';
+require_once 'deleteImgFile.php';
 /**
  * 趨勢類別
  */
@@ -65,19 +67,41 @@ class News
             $idGen = new IdGenerator();
             $now = date('Y-m-d H:i:s');
             $newsId = $idGen->GetID('news');
-            $sql = "INSERT INTO `shingnan`.`article` (`articleId`, `title`, `content`, `type`, `ctr`, `isDelete`, `lastUpdateTime`, `createTime`) VALUES (:articleId, :title, :content, '2', '0', '0', :lastUpdateTime, :createTime);";
+            $sql = "INSERT INTO `shingnan`.`article` (`articleId`, `title`,`preview`, `content`, `type`, `ctr`, `isDelete`, `lastUpdateTime`, `createTime`) VALUES (:articleId, :title, :preview, :content, '2', '0', '0', :lastUpdateTime, :createTime);";
             $res = $this->db->prepare($sql);
             $res->bindParam(':articleId', $newsId, PDO::PARAM_STR);
             $res->bindParam(':title', $input['newsTitle'], PDO::PARAM_STR);
+            $res->bindParam(':preview', $input['previewEditor'], PDO::PARAM_STR);
             $res->bindParam(':content', $input['newsEditor'], PDO::PARAM_STR);
             $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
             $res->bindParam(':createTime', $now, PDO::PARAM_STR);
+
             if ($res->execute()) {
+                //deal with insert image
                 $this->msg = '新增成功';
-            } else {
-                $error = $res->errorInfo();
-                $this->error = $error[0];
-                $this->newsList();
+                $uploadPath = '../media/picture';
+                if ($_FILES['newsImage']['error'] == 0) {
+                    $imgId = $idGen->GetID('image');
+                    $imgName = 'news_' . $input['newsTitle'];
+                    $fileInfo = $_FILES['newsImage'];
+                    $newsImage = uploadFile($fileInfo, $uploadPath);
+                    $sql = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`,
+                                                            `itemId`, `ctr`, `path`, `link`, `createTime`)
+                            VALUES (:imgId, :imgName, 6,
+                                    :newsId, 0, :filePath, '', :createTime);";
+                    $res = $this->db->prepare($sql);
+                    $res->bindParam(':imgId', $imgId, PDO::PARAM_STR);
+                    $res->bindParam(':imgName', $imgName, PDO::PARAM_STR);
+                    $res->bindParam(':newsId', $newsId, PDO::PARAM_STR);
+                    $res->bindParam(':filePath', $newsImage, PDO::PARAM_STR);
+                    $res->bindParam(':createTime', $now, PDO::PARAM_STR);
+                    $res->execute();
+                    if (!$res) {
+                        $error = $res->errorInfo();
+                        $this->error = $error[0];
+                        $this->newsList();
+                    }
+                }
             }
 
             $this->newsList();
