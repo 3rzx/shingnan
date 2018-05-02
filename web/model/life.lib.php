@@ -208,9 +208,10 @@ class Life
         } else {
             // get all data from life
             $sql = 'SELECT `article`.`title`, `article`.`articleId` , `article`.`type`,`article`.`ctr` , `article`.`lastUpdateTime`
-                , `article`.`createTime`
+                , `article`.`createTime`,`image`.`imageId`,`image`.`path`
                 FROM  `article`
-                WHERE type = 3
+                LEFT JOIN  `image` ON `article`.`articleId` = `image`.`itemId`
+                WHERE `article`.`type` = 3
                 ORDER BY `article`.`articleId`';
             $res = $this->db->prepare($sql);
             $res->execute();
@@ -232,6 +233,28 @@ class Life
             $this->error = '請先登入!';
             $this->viewLogin();
         } else {
+            if (isset($input['imageId'])) {
+                //deal with img
+
+                //取得file path
+                $sql = "SELECT `path` FROM `image` WHERE `image`.`imageId` = :imgId;";
+                $res = $this->db->prepare($sql);
+                $res->bindParam(':imgId', $input['imageId'], PDO::PARAM_STR);
+                $res->execute();
+                $path = $res->fetch();
+
+                //delete data from db
+                $this->db->beginTransaction();
+                $sql = "DELETE FROM `image` WHERE `imageId` = :imgId;";
+                $res = $this->db->prepare($sql);
+                $res->bindParam(':imgId', $input['imageId'], PDO::PARAM_STR);
+                $res->execute();
+                $this->db->commit();
+
+                //delete data file
+                $deleter = new deleteImgFile();
+                $deleter->deleteFile($path['path']);
+            }
             //
             $this->db->beginTransaction();
             $sql = "DELETE FROM `article` WHERE `articleId` = :lifeId;";

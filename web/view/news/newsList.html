@@ -22,6 +22,25 @@
         });
     });
 
+    function deleteNewsWithImg(articleId,imageId){
+        BootstrapDialog.show({
+            title:'提醒',
+            message: '確定刪除嗎? 文章刪除後將無法回復。',
+            buttons: [{
+                label: '確定',
+                cssClass: 'btn-danger',
+                action: function(){
+                    location='../controller/newsController.php?action=newsDelete&newsId='+ articleId + '&imageId=' + imageId;
+                }
+            },{
+                label: '取消',
+                action: function(dialogItself){
+                    dialogItself.close();
+                }
+            }]
+        });
+    }
+
     function deleteNews(articleId) {
         BootstrapDialog.show({
             title: '提醒',
@@ -75,6 +94,7 @@
                                         <tr style="background-color: #00c0ef; color: #fff;">
                                             <th>文章標題</th>
                                             <th>點擊次數</th>
+                                            <th>預覽使用圖片</th>
                                             <th>建立時間</th>
                                             <th>最後更新時間</th>
                                             <th>操作選項</th>
@@ -85,15 +105,23 @@
                                         <tr>
                                             <td>\{$article.title\}</td>
                                             <td>\{$article.ctr\}</td>
+                                            <td><img src="\{$article.path\}" alt="尚未上傳圖片" width="350px"></td>
                                             <td>\{$article.createTime\}</td>
                                             <td>\{$article.lastUpdateTime\}</td>
                                             <td>
                                                 <a href="../controller/newsController.php?action=newsEditPrepare&newsId=\{$article.articleId\}">
                                                     <button class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-pencil"></i></button>
                                                 </a>&nbsp;
+                                                \{if $article.imageId != ''\}
+                                                <a href="#">
+                                                    <button class="btn btn-sm btn-danger" onclick="deleteNewsWithImg('\{$article.articleId\}' , '\{$article.imageId\}');"><i class="glyphicon glyphicon-remove"></i></button>
+                                                </a>&nbsp;
+                                                \{else\}
                                                 <a href="#">
                                                     <button class="btn btn-sm btn-danger" onclick="deleteNews('\{$article.articleId\}');"><i class="glyphicon glyphicon-remove"></i></button>
                                                 </a>
+                                                \{/if\}
+                                            </td>
                                             </td>
                                         </tr>
                                         \{/foreach\}
