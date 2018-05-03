@@ -11,14 +11,14 @@
     $(function() {
         $('#courseListTable').DataTable({
             "columnDefs": [
-                { "orderable": false, "targets": 3 }
+                { "orderable": false, "targets": 3 },
             ],
             "paging": false,
-            "lengthChange": false,
             "searching": false,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false
+            "order": [[1,"desc"]],
+            "language":{
+                "info":"顯示 _START_ 到 _END_ -------- 課程總數 _TOTAL_ ",
+            }
         });
     });
 
