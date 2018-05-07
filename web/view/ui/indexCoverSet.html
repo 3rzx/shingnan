@@ -23,8 +23,8 @@
                         \{/if\}
                         <form id="coverForm" class="form-horizontal" method="post" enctype="multipart/form-data" action="../controller/uiController.php">
                             <div class="form-group">
-                                \{for $i = 0 to 2\}
-                                <div class="col-md-4" style="text-align: center;">
+                                \{for $i = 0 to 4\}
+                                <div class="col-md-12" style="text-align: center;">
                                     <h4>大圖 - \{$i + 1\}</h4>
                                     <div class="form-inline">
                                         <input type="file" class="uploadImage" name="index_img_\{$i\}" id="index_\{$i\}" data-input="false" accept="image/*" style="display: inline;"> \{if $images[index_img_|cat:$i].imageId != ''\}
@@ -38,105 +38,65 @@
                                 </div>
                                 \{/for\}
                             </div>
-                            \{for $i = 0 to 3\}
+                            \{for $i = 0 to 5\}
                             <div class="form-group">
-                                <div class="col-md-offset-1 col-md-2" style="text-align: center;">
-                                    <h4>小圖 - \{$i*5 + 4\}</h4>
+                                <div class="col-md-4" style="text-align: center;">
+                                    <h4>小圖 - \{$i*3 + 5\}</h4>
                                     <div class="form-inline">
-                                        <input type="file" class="uploadImage" name="index_img_\{$i*5 + 3\}" id="index_\{$i*5 + 3\}" data-input="false" accept="image/*"
-                                            style="display: inline;"> \{if isset($images[index_img_|cat:($i*5+3)])\}
-                                        <a class="btn btn-danger" onclick="deleteImg('\{$images[index_img_|cat:($i*5+3)].imageId\}');">
+                                        <input type="file" class="uploadImage" name="index_img_\{$i*3 + 5\}" id="index_\{$i*3 + 5\}" data-input="false" accept="image/*"
+                                            style="display: inline;"> \{if isset($images[index_img_|cat:($i*3 + 5)])\}
+                                        <a class="btn btn-danger" onclick="deleteImg('\{$images[index_img_|cat:($i*3 + 5)].imageId\}');">
                                             <i class="glyphicon glyphicon-remove"></i>
                                         </a>
                                         \{/if\}
                                     </div>
-                                    <img id="index_\{$i*5 + 3\}_img" class="img-thumbnail" src="\{if isset($images[index_img_|cat:($i*5+3)])\}\{$images[index_img_|cat:($i*5+3)].path\}\{else\}../image/cover_2.png\{/if\}"
+                                    <img id="index_\{$i*3 + 5\}_img" class="img-thumbnail" src="\{if isset($images[index_img_|cat:($i*5+3)])\}\{$images[index_img_|cat:($i*5+3)].path\}\{else\}../image/cover_2.png\{/if\}"
                                         alt="尚未上傳圖片">
-                                    <div id="txt_\{$i*5 + 3\}_div" class="form-group">
-                                        <p class="col-md-12">當前描述: \{if isset($images[index_img_|cat:($i*5+3)]) and $images[index_img_|cat:($i*5+3)].link
-                                            neq ''\}\{$images[index_img_|cat:($i*5+3)].link\}\{else\}尚無描述\{/if\}</p>
+                                    <div id="txt_\{$i*3 + 5\}_div" class="form-group">
+                                        <p class="col-md-12">當前描述: \{if isset($images[index_img_|cat:($i*3 + 5)]) and $images[index_img_|cat:($i*3
+                                            + 5)].link neq ''\}\{$images[index_img_|cat:($i*3 + 5)].link\}\{else\}尚無描述\{/if\}</p>
                                         <div class="col-md-12">
-                                            <input id="txt_\{$i*5 + 3\}" name="txt_\{$i*5 + 3\}" class="form-control" placeholder="輸入新的描述(20字內)">
+                                            <input id="txt_\{$i*3 + 5\}" name="txt_\{$i*3 + 5\}" class="form-control" placeholder="輸入新的描述(20字內)">
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-2" style="text-align: center;">
-                                    <h4>小圖 - \{$i*5 + 5\}</h4>
+                                <div class="col-md-4" style="text-align: center;">
+                                    <h4>小圖 - \{$i*3 + 6\}</h4>
                                     <div class="form-inline">
-                                        <input type="file" class="uploadImage" name="index_img_\{$i*5 + 4\}" id="index_\{$i*5 + 4\}" data-input="false" accept="image/*"
-                                            style="display: inline;"> \{if isset($images[index_img_|cat:($i*5 + 4)])\}
-                                        <a class="btn btn-danger" onclick="deleteImg('\{$images[index_img_|cat:($i*5 + 4)].imageId\}');">
+                                        <input type="file" class="uploadImage" name="index_img_\{$i*3 + 6\}" id="index_\{$i*3 + 6\}" data-input="false" accept="image/*"
+                                            style="display: inline;"> \{if isset($images[index_img_|cat:($i*3 + 6)])\}
+                                        <a class="btn btn-danger" onclick="deleteImg('\{$images[index_img_|cat:($i*3 + 6)].imageId\}');">
                                             <i class="glyphicon glyphicon-remove"></i>
                                         </a>
                                         \{/if\}
                                     </div>
-                                    <img id="index_\{$i*5 + 4\}_img" class="img-thumbnail" src="\{if isset($images[index_img_|cat:($i*5 + 4)])\}\{$images[index_img_|cat:($i*5 + 4)].path\}\{else\}../image/cover_2.png\{/if\}"
+                                    <img id="index_\{$i*3 + 6\}_img" class="img-thumbnail" src="\{if isset($images[index_img_|cat:($i*6+3)])\}\{$images[index_img_|cat:($i*6+3)].path\}\{else\}../image/cover_2.png\{/if\}"
                                         alt="尚未上傳圖片">
-                                    <div id="txt_\{$i*5 + 4\}_div" class="form-group">
-                                        <p class="col-md-12">當前描述: \{if isset($images[index_img_|cat:($i*5+4)]) and $images[index_img_|cat:($i*5+4)].link
-                                            neq ''\}\{$images[index_img_|cat:($i*5+4)].link\}\{else\}尚無描述\{/if\}</p>
+                                    <div id="txt_\{$i*3 + 6\}_div" class="form-group">
+                                        <p class="col-md-12">當前描述: \{if isset($images[index_img_|cat:($i*3 + 6)]) and $images[index_img_|cat:($i*3
+                                            + 6)].link neq ''\}\{$images[index_img_|cat:($i*3 + 6)].link\}\{else\}尚無描述\{/if\}</p>
                                         <div class="col-md-12">
-                                            <input id="txt_\{$i*5 + 4\}" name="txt_\{$i*5 + 4\}" class="form-control" placeholder="輸入新的描述(20字內)">
+                                            <input id="txt_\{$i*3 + 6\}" name="txt_\{$i*3 + 6\}" class="form-control" placeholder="輸入新的描述(20字內)">
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-2" style="text-align: center;">
-                                    <h4>小圖 - \{$i*5 + 6\}</h4>
+                                <div class="col-md-4" style="text-align: center;">
+                                    <h4>小圖 - \{$i*3 + 7\}</h4>
                                     <div class="form-inline">
-                                        <input type="file" class="uploadImage" name="index_img_\{$i*5 + 5\}" id="index_\{$i*5 + 5\}" data-input="false" accept="image/*"
-                                            style="display: inline;"> \{if isset($images[index_img_|cat:($i*5 + 5)])\}
-                                        <a class="btn btn-danger" onclick="deleteImg('\{$images[index_img_|cat:($i*5 + 5)].imageId\}');">
+                                        <input type="file" class="uploadImage" name="index_img_\{$i*3 + 7\}" id="index_\{$i*3 + 7\}" data-input="false" accept="image/*"
+                                            style="display: inline;"> \{if isset($images[index_img_|cat:($i*3 + 7)])\}
+                                        <a class="btn btn-danger" onclick="deleteImg('\{$images[index_img_|cat:($i*3 + 7)].imageId\}');">
                                             <i class="glyphicon glyphicon-remove"></i>
                                         </a>
                                         \{/if\}
                                     </div>
-                                    <img id="index_\{$i*5 + 5\}_img" class="img-thumbnail" src="\{if isset($images[index_img_|cat:($i*5 + 5)].path)\}\{$images[index_img_|cat:($i*5 + 5)].path\}\{else\}../image/cover_2.png\{/if\}"
+                                    <img id="index_\{$i*3 + 7\}_img" class="img-thumbnail" src="\{if isset($images[index_img_|cat:($i*7+3)])\}\{$images[index_img_|cat:($i*7+3)].path\}\{else\}../image/cover_2.png\{/if\}"
                                         alt="尚未上傳圖片">
-                                    <div id="txt_\{$i*5 + 5\}_div" class="form-group">
-                                        <p class="col-md-12">當前描述: \{if isset($images[index_img_|cat:($i*5+5)]) and $images[index_img_|cat:($i*5+5)].link
-                                            neq ''\}\{$images[index_img_|cat:($i*5+5)].link\}\{else\}尚無描述\{/if\}</p>
+                                    <div id="txt_\{$i*3 + 7\}_div" class="form-group">
+                                        <p class="col-md-12">當前描述: \{if isset($images[index_img_|cat:($i*3 + 7)]) and $images[index_img_|cat:($i*3
+                                            + 7)].link neq ''\}\{$images[index_img_|cat:($i*3 + 7)].link\}\{else\}尚無描述\{/if\}</p>
                                         <div class="col-md-12">
-                                            <input id="txt_\{$i*5 + 5\}" name="txt_\{$i*5 + 5\}" class="form-control" placeholder="輸入新的描述(20字內)">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-2" style="text-align: center;">
-                                    <h4>小圖 - \{$i*5 + 7\}</h4>
-                                    <div class="form-inline">
-                                        <input type="file" class="uploadImage" name="index_img_\{$i*5 + 6\}" id="index_\{$i*5 + 6\}" data-input="false" accept="image/*"
-                                            style="display: inline;"> \{if isset($images[index_img_|cat:($i*5 + 6)])\}
-                                        <a class="btn btn-danger" onclick="deleteImg('\{$images[index_img_|cat:($i*5 + 6)].imageId\}');">
-                                            <i class="glyphicon glyphicon-remove"></i>
-                                        </a>
-                                        \{/if\}
-                                    </div>
-                                    <img id="index_\{$i*5 + 6\}_img" class="img-thumbnail" src="\{if isset($images[index_img_|cat:($i*5 + 6)].path)\}\{$images[index_img_|cat:($i*5 + 6)].path\}\{else\}../image/cover_2.png\{/if\}"
-                                        alt="尚未上傳圖片">
-                                    <div id="txt_\{$i*5 + 6\}_div" class="form-group">
-                                        <p class="col-md-12">當前描述: \{if isset($images[index_img_|cat:($i*5+6)]) and $images[index_img_|cat:($i*5+6)].link
-                                            neq ''\}\{$images[index_img_|cat:($i*5+6)].link\}\{else\}尚無描述\{/if\}</p>
-                                        <div class="col-md-12">
-                                            <input id="txt_\{$i*5 + 6\}" name="txt_\{$i*5 + 6\}" class="form-control" placeholder="輸入新的描述(20字內)">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-2" style="text-align: center;">
-                                    <h4>小圖 - \{$i*5 + 8\}</h4>
-                                    <div class="form-inline">
-                                        <input type="file" class="uploadImage" name="index_img_\{$i*5 + 7\}" id="index_\{$i*5 + 7\}" data-input="false" accept="image/*"
-                                            style="display: inline;"> \{if isset($images[index_img_|cat:($i*5 + 7)])\}
-                                        <a class="btn btn-danger" onclick="deleteImg('\{$images[index_img_|cat:($i*5 + 7)].imageId\}');">
-                                            <i class="glyphicon glyphicon-remove"></i>
-                                        </a>
-                                        \{/if\}
-                                    </div>
-                                    <img id="index_\{$i*5 + 7\}_img" class="img-thumbnail" src="\{if isset($images[index_img_|cat:($i*5 + 7)].path)\}\{$images[index_img_|cat:($i*5 + 7)].path\}\{else\}../image/cover_2.png\{/if\}"
-                                        alt="尚未上傳圖片">
-                                    <div id="txt_\{$i*5 + 7\}_div" class="form-group">
-                                        <p class="col-md-12">當前描述: \{if isset($images[index_img_|cat:($i*5+7)]) and $images[index_img_|cat:($i*5+7)].link
-                                            neq ''\}\{$images[index_img_|cat:($i*5+7)].link\}\{else\}尚無描述\{/if\}</p>
-                                        <div class="col-md-12">
-                                            <input id="txt_\{$i*5 + 7\}" name="txt_\{$i*5 + 7\}" class="form-control" placeholder="輸入新的描述(20字內)">
+                                            <input id="txt_\{$i*3 + 7\}" name="txt_\{$i*3 + 7\}" class="form-control" placeholder="輸入新的描述(20字內)">
                                         </div>
                                     </div>
                                 </div>

@@ -114,7 +114,7 @@ class Ui
             } 
         }
         // update text
-        for($i = 3; $i < 23; $i++) {
+        for($i = 5; $i < 23; $i++) {
             $key = "txt_$i";
             $txt = $input[$key];
 
@@ -161,7 +161,7 @@ class Ui
             }
         }
 
-        for($i = 3; $i < 23; $i++) {
+        for($i = 5; $i < 23; $i++) {
             $key = "txt_$i";
             $txt = $input[$key];
 
