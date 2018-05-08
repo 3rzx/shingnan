@@ -76,16 +76,19 @@ class Admin
         try {
             //驗證帳密
             $file = fopen('../userkey', 'r');
-            $account = trim(fgets($file));
-            $pass = fgets($file);
+            $admin = trim(fgets($file));
+            $pass1 = trim(fgets($file));
+            $staff = trim(fgets($file));
+            $pass2 = trim(fgets($file));
             fclose($file);
 
-            if($input['account'] == $account){
-                if (password_verify($input['password'], $pass)) {
+            if($input['account'] == $admin){
+                if (password_verify($input['password'], $pass1)) {
                     $_SESSION['isLogin'] = true;
                     $_SESSION['user']    = array(
                         'account'      => $input['account'],
                         'userId'       => 'glassAdmin',
+                        'competence'   => '0'
                     );
 
                     $this->error = '';
@@ -94,6 +97,23 @@ class Admin
                     $this->error = '密碼輸入錯誤';
                     $this->viewLogin();
                 }
+            } elseif($input['account'] == $staff){
+                if (password_verify($input['password'], $pass2)) {
+                    $_SESSION['isLogin'] = true;
+                    $_SESSION['user']    = array(
+                        'account'      => $input['account'],
+                        'userId'       => 'glassStaff',
+                        'competence'   => '1'
+                    );
+
+                    $this->error = '';
+                    header('Location:' . APP_ROOT_DIR . 'controller/adminController.php?action=main');
+                } else {
+                    $this->error = '密碼輸入錯誤';
+                    $this->viewLogin();
+                }
+
+
             } else {
                 $this->error = '帳號輸入錯誤';
                 $this->viewLogin();
