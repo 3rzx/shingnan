@@ -55,8 +55,6 @@ class Statistic
                 $this->setResultMsg('failure', $error[0]);
             }
 
-            $this->smarty->assign('error', $this->error);
-            $this->smarty->assign('msg', $this->msg);
             $this->smarty->display('statistic/articleClick.html');
         } else {
             $this->setResultMsg('failure', '請先登入!');
@@ -94,8 +92,6 @@ class Statistic
                 $this->setResultMsg('failure', $error[0]);
             }
 
-            $this->smarty->assign('error', $this->error);
-            $this->smarty->assign('msg', $this->msg);
             $this->smarty->display('statistic/goodsClick.html');
         } else {
             $this->setResultMsg('failure', '請先登入!');
@@ -121,12 +117,11 @@ class Statistic
                 $fieldMap = array(
                     0 => '女',
                     1 => '男',
-                    2 => '購物',
-                    3 => '維修',
-                    4 => '非金錢來往行為',
-                    5 => '未付任何金錢',
-                    6 => '已付訂金',
-                    7 => '已結清尾款'
+                    2 => '非金錢來往行為',
+                    3 => '未付任何金錢',
+                    4 => '已付訂金',
+                    5 => '已結清尾款',
+                    6 => '運送中'
                 );
 
                 $this->smarty->assign('orderHistory', $orderHistory);
@@ -136,8 +131,6 @@ class Statistic
                 $this->setResultMsg('failure', $error[0]);
             }
 
-            $this->smarty->assign('error', $this->error);
-            $this->smarty->assign('msg', $this->msg);
             $this->smarty->display('statistic/orderHistory.html');
         } else {
             $this->setResultMsg('failure', '請先登入!');
@@ -146,7 +139,7 @@ class Statistic
     }
 
     /**
-     * 使用日期查詢消費紀錄列表
+     * 使用日期查詢消費紀錄列表 - 根據交易建立時間
      */
     public function orderHistoryQueryByDate($input) {
         if ($_SESSION['isLogin'] == true) {
@@ -155,8 +148,8 @@ class Statistic
             $sql = "SELECT `tran`.*, `tranDetail`.`itemNum`, `tranDetail`.`actionState`,            `user`.`userName`, `user`.`gender`
                     FROM `tran`
                     INNER JOIN `tranDetail` ON `tran`.`tranId` = `tranDetail`.`tranId`
-                    AND `tran`.`lastUpdateTime` >= :startDate
-                    AND `tran`.`lastUpdateTime` <= :endDate
+                    AND `tran`.`createTime` >= :startDate
+                    AND `tran`.`createTime` <= :endDate
                     AND `tran`.`isDelete` = 0
                     INNER JOIN `user` ON `tran`.`userId` = `user`.`userId`";
             $res = $this->db->prepare($sql);
@@ -169,14 +162,15 @@ class Statistic
                 $fieldMap = array(
                     0 => '女',
                     1 => '男',
-                    2 => '購物',
-                    3 => '維修',
-                    4 => '非金錢來往行為',
-                    5 => '未付任何金錢',
-                    6 => '已付訂金',
-                    7 => '已結清尾款'
+                    2 => '非金錢來往行為',
+                    3 => '未付任何金錢',
+                    4 => '已付訂金',
+                    5 => '已結清尾款',
+                    6 => '運送中'
                 );
 
+                $this->smarty->assign('startDate', $startDate);
+                $this->smarty->assign('endDate', $endDate);
                 $this->smarty->assign('orderHistory', $orderHistory);
                 $this->smarty->assign('fieldMap', $fieldMap);
             } else {        
@@ -184,8 +178,6 @@ class Statistic
                 $this->setResultMsg('failure', $error[0]);
             }
 
-            $this->smarty->assign('error', $this->error);
-            $this->smarty->assign('msg', $this->msg);
             $this->smarty->display('statistic/orderHistory.html');
         } else {        
             $this->setResultMsg('failure', '請先登入!');
@@ -194,7 +186,7 @@ class Statistic
     }
 
     /**
-     * 使用日期查詢文章點擊率列表
+     * 使用日期查詢文章點擊率列表 - 根據文章建立時間
      */
     public function articleQueryByDate($input) {
         if ($_SESSION['isLogin'] == true) {
@@ -202,8 +194,8 @@ class Statistic
             $endDate = $input['endDate'];
 
             $sql = "SELECT * FROM `article` 
-                    WHERE `lastUpdateTime` >= :startDate 
-                    AND `lastUpdateTime` <= :endDate";
+                    WHERE `createTime` >= :startDate 
+                    AND `createTime` <= :endDate";
             $res = $this->db->prepare($sql);
             $res->bindParam(':startDate', $startDate, PDO::PARAM_STR);
             $res->bindParam(':endDate', $endDate, PDO::PARAM_STR);
@@ -217,6 +209,8 @@ class Statistic
                     3 => '興南生活'
                 );
 
+                $this->smarty->assign('startDate', $startDate);
+                $this->smarty->assign('endDate', $endDate);
                 $this->smarty->assign('articleList', $articleList);   
                 $this->smarty->assign('typeMap', $typeMap);
             } else {        
@@ -224,8 +218,6 @@ class Statistic
                 $this->setResultMsg('failure', $error[0]);
             }
 
-            $this->smarty->assign('error', $this->error);
-            $this->smarty->assign('msg', $this->msg);
             $this->smarty->display('statistic/articleClick.html');
         } else {
             $this->setResultMsg('failure', '請先登入!');
@@ -234,7 +226,7 @@ class Statistic
     }
 
     /**
-     * 使用日期查詢商品點擊率列表
+     * 使用日期查詢商品點擊率列表 - 根據商品建立時間
      */
     public function goodsQueryByDate($input) {
         if ($_SESSION['isLogin'] == true) {
@@ -263,15 +255,16 @@ class Statistic
                     6 => '混合'
                 );
 
+                $this->smarty->assign('startDate', $startDate);
+                $this->smarty->assign('endDate', $endDate);
                 $this->smarty->assign('frameList', $frameList);
                 $this->smarty->assign('shapeMap', $shapeMap);
             } else {        
                 $error = $res->errorInfo();
                 $this->setResultMsg('failure', $error[0]);
+                $this->smarty->assign('frameList', ['123']);
             }
 
-            $this->smarty->assign('error', $this->error);
-            $this->smarty->assign('msg', $this->msg);
             $this->smarty->display('statistic/goodsClick.html');
         } else {
             $this->setResultMsg('failure', '請先登入!');
@@ -285,6 +278,8 @@ class Statistic
     public function setResultMsg($resultMsg = 'success', $errorMsg = '') {
         $this->msg = $resultMsg;
         $this->error = $errorMsg;
+        $this->smarty->assign('error', $this->error);
+        $this->smarty->assign('msg', $this->msg);
     }
 
     /**

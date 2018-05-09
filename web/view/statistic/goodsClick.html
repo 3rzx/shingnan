@@ -69,6 +69,9 @@
                     <div class="col-xs-12">
                         <div class="box box-info">
                             <div class="box-body">
+                                \{if isset($startDate)\}
+                                <h3 style="color: red;">\{$startDate\} ~ \{$endDate\}</h3>
+                                \{/if\}
                                 <table id="manTable" class="row-border" cellspacing="0" style="width: 100%;">
                                     <thead>
                                         <tr>
@@ -76,8 +79,7 @@
                                             <th>鏡框名稱</th>
                                             <th>鏡框型號</th>
                                             <th>鏡框框形</th>
-                                            <th>建立時間</th>
-                                            <th>最後更新時間</th>
+                                            <th>鏡框建立時間</th>
                                             <th>詳細內容</th>
                                         </tr>
                                     </thead>
@@ -89,7 +91,6 @@
                                             <td>\{$frame.no\}</td>
                                             <td>\{$shapeMap[$frame.shape]\}</td>
                                             <td>\{$frame.createTime\}</td>
-                                            <td>\{$frame.lastUpdateTime\}</td>
                                             <td>
                                                 <a class="btn btn-sm btn-info" href="frameController.php?action=frameEditPrepare&frameId=\{$frame.frameId\}">
                                                     <i class="glyphicon glyphicon-menu-hamburger"></i>
@@ -117,13 +118,12 @@
                 "info": false,
                 "searching": true,
                 "columnDefs": [
-                    { "targets": 0, "width": "10%", "orderable": true },
-                    { "targets": 1, "width": "15%", "orderable": true },
-                    { "targets": 2, "width": "15%", "orderable": true },
-                    { "targets": 3, "width": "10%", "orderable": true },
+                    { "targets": 0, "width": "15%", "orderable": true },
+                    { "targets": 1, "width": "20%", "orderable": true },
+                    { "targets": 2, "width": "20%", "orderable": true },
+                    { "targets": 3, "width": "15%", "orderable": true },
                     { "targets": 4, "width": "20%", "orderable": true },
-                    { "targets": 5, "width": "20%", "orderable": true },
-                    { "targets": 6, "width": "10%", "orderable": true }
+                    { "targets": 5, "width": "10%", "orderable": true }
                 ]
             });
 
