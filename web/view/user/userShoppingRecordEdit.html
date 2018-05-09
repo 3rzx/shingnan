@@ -133,7 +133,10 @@
 
 
         $('#deletePoint').val(tranData['deletePoint']);
-        $(`input.form-check-input[value=${tranData['checkState']}]`).attr('checked', 'true');
+        $(`.checkState[value=${tranData['checkState']}]`).attr('checked', 'true');
+       
+
+    });
     });
 </script>
 
@@ -166,27 +169,34 @@
                             <div id="checkStateBox" class="box box-primary">
                                 <div class="box-body">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="checkState" value="1" checked>
+                                        <input class="form-check-input checkState" type="radio" name="checkState" value="1" checked>
                                         <label class="form-check-label" for="exampleRadios1">
                                             非金錢往來行為
                                         </label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="checkState" value="2">
-                                        <label class="form-check-label" for="exampleRadios2">
+                                        <input class="form-check-input checkState" type="radio" name="checkState" value="2">
+                                        <label class="form-check-label checkState" for="exampleRadios2">
                                             未付款
                                         </label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="checkState" value="3">
+                                        <input class="form-check-input checkState" type="radio" name="checkState" value="3">
                                         <label class="form-check-label" for="exampleRadios3">
                                             已付訂金
                                         </label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="checkState" value="4">
+                                        <input class="form-check-input checkState" type="radio" name="checkState" value="4">
                                         <label class="form-check-label" for="exampleRadios3">
                                             已結清
+                                        </label>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input checkState" type="radio" name="checkState" value="5">
+                                        <label class="form-check-label" for="exampleRadios3">
+                                            運送中
                                         </label>
                                     </div>
                                 </div>
