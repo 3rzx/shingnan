@@ -676,7 +676,7 @@ class User
 
         // update tran data
         $sql = "UPDATE `shingnan`.`tran`
-                SET `description`='{$input["description"]}', `price`='{$input["price"]}', `lastUpdateTime`='{$now}', `checkState`='{$input["checkState"]}', `point`='{$point}'
+                SET `description`='{$input["description"]}', `price`='{$input["price"]}', `lastUpdateTime`='{$now}', `checkState`='{$input["checkState"]}', `point`='{$point}', `deletePoint`='{$input["deletePoint"]}'
                 WHERE `tran`.`tranId`='{$tranId}';";
 
         $res = $this->db->prepare($sql);
