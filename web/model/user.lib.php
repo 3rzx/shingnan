@@ -485,7 +485,20 @@ class User
         $this->smarty->assign('partData', $partData);
         $this->smarty->assign('combineData', $combineData);
 
+        $sql = "SELECT `user`.`point`
+        FROM  `user`
+        WHERE  `userId` = '{$userId}' AND `isDelete` = 0;";
+        $res = $this->db->prepare($sql);
+        $res->execute();
+        $result = $res->fetch();
+        $point = $result["point"];
 
+        if (!$res) {
+            $error = $res->errorInfo();
+            return;
+        }
+
+        $this->smarty->assign('point', $point);
         $this->smarty->assign('error', $this->error);
         $this->smarty->assign('msg', $this->msg);
         $this->smarty->display('user/userShoppingAdd.html');

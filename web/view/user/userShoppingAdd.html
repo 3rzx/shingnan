@@ -95,6 +95,22 @@ $(document).ready(function() {
     });
 
 
+
+    var origPoint = \{$point|json_encode\};
+    
+    $("#point").focusout(function () {
+        point = $("#point").val();
+        if(origPoint - point < 0 ) {
+            $("#submitbtn").attr("disabled", true);
+            $("#pointDiv").addClass("has-error");
+            $("#point-warning").text(`點數只剩${origPoint}點`);
+
+        } else {
+            $("#submitbtn").attr("disabled", false);
+            $("#pointDiv").removeClass("has-error");
+            $("#point-warning").text("");
+        }
+    });
 });
 </script>
 <body class="hold-transition skin-yellow sidebar-mini">
@@ -208,7 +224,10 @@ $(document).ready(function() {
                                         <label for="point" class="col-sm-2 control-label">扣除點數</label>
                                         <div class="col-sm-6">
                                             <input id="point" name="deletePoint" class="form-control" type="number" min="0" value="0">
+                                            <div id="point-warning" style="color: red">
+                                            </div>
                                         </div>
+                                        
                                     </div>
 
                                     <div id="pirceDiv" class="form-group">
@@ -223,7 +242,7 @@ $(document).ready(function() {
                                     <input type="hidden" name="action" value="userShoppingAdd">
                                     <input type="hidden" name="userId" value="\{$userId\}">
                                     <input type="hidden" name="tranDetailLength" value="1">
-                                    <button type="submit" class="btn btn-success">更新</button>
+                                    <button id="submitbtn" type="submit" class="btn btn-success">更新</button>
                                 </div>
                             </div>
 
