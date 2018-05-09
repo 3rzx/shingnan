@@ -27,7 +27,7 @@
                                 <div class="col-md-12" style="text-align: center;">
                                     <h4>大圖 - \{$i + 1\}</h4>
                                     <div class="form-inline">
-                                        <input type="file" class="uploadImage" name="index_img_\{$i\}" id="index_\{$i\}" data-input="false" accept="image/*" style="display: inline;"> \{if $images[index_img_|cat:$i].imageId != ''\}
+                                        <input type="file" class="uploadImage" name="index_img_\{$i\}" id="index_\{$i\}" data-input="false" accept="image/*" style="display: inline;"> \{if isset($images[index_img_|cat:$i])\}
                                         <a class="btn btn-danger" onclick="deleteImg('\{$images[index_img_|cat:$i].imageId\}');">
                                             <i class="glyphicon glyphicon-remove"></i>
                                         </a>
