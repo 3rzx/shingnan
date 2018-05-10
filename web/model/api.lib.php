@@ -107,8 +107,19 @@ class Api
         if(!checkAccount($input)){                  //預約前先卻確認帳號密碼正確性
             return json_encode('0');
         }
-        $sql = "INSERT;";                           //TODO 俊逸insert booking data
+        $idGen = new IdGenerator();
+        $now = date('Y-m-d H:i:s');
+        $bookId = $idGen->GetID('book');
+        $sql = "INSERT INTO `booking` (`bookingId`, `userId`, `storeId`, `appointmentTime`, `memo`, `createTime`, `lastUpdateTime`, `isDelete`) 
+                VALUES (:bookId, :userId, :storeId, :bookingTime, :memo, :createTime, :lastUpdateTime, '0');";                           
         $res = $this->db->prepare($sql);
+        $res->bindParam(':bookId', $bookId, PDO::PARAM_STR);
+        $res->bindParam(':userId', $input['userId'], PDO::PARAM_STR);
+        $res->bindParam(':storeId', $input['status'], PDO::PARAM_STR);
+        $res->bindParam(':bookingTime', $input['bookingTime'], PDO::PARAM_STR);
+        $res->bindParam(':memo', $input['memo'], PDO::PARAM_STR);
+        $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
+        $res->bindParam(':createTime', $now, PDO::PARAM_STR);
         if($res->execute()){
             return json_encode("1");
         }
