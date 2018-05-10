@@ -93,20 +93,20 @@
             </ol>
             <div class="carousel-inner" role="listbox">
                 <div class="carousel-item active">
-                    <img class="d-block img-fluid" src="\{$images['index_img_0']\}">
+                    <img class="d-block img-fluid" src="\{if isset($images['index_img_0'])\}\{$images['index_img_0']\}\{else\}../image/cover_2.png\{/if\}">
                 </div>
                 <div class="carousel-item">
-                    <img class="d-block img-fluid" src="\{$images['index_img_1']\}">
+                    <img class="d-block img-fluid" src="\{if isset($images['index_img_1'])\}\{$images['index_img_1']\}\{else\}../image/cover_2.png\{/if\}">
                 </div>
                 <div class="carousel-item">
-                    <img class="d-block img-fluid" src="\{$images['index_img_2']\}">
+                    <img class="d-block img-fluid" src="\{if isset($images['index_img_2'])\}\{$images['index_img_2']\}\{else\}../image/cover_2.png\{/if\}">
                 </div>
                 <div class="carousel-item">
-                    <img class="d-block img-fluid" src="\{$images['index_img_3']\}">
+                    <img class="d-block img-fluid" src="\{if isset($images['index_img_3'])\}\{$images['index_img_3']\}\{else\}../image/cover_2.png\{/if\}">
                 </div>
                 <div class="carousel-item">
                     <!-- style="background-image: url('http://placehold.it/1900x1024')" -->
-                    <img class="d-block img-fluid" src="\{$images['index_img_4']\}">
+                    <img class="d-block img-fluid" src="\{if isset($images['index_img_4'])\}\{$images['index_img_4']\}\{else\}../image/cover_2.png\{/if\}">
                 </div>
             </div>
         </div>
@@ -114,52 +114,69 @@
         <!-- test gallery -->
         <div class="d-flex justify-content-between gallery mx-auto">
             <div class="my-auto d-flex flex-column">
-                <div class="gallery-col-1" style="margin-top:0px;">
+                <div class="gallery-col-1" style="margin-top:0px; background-image: url(\{if isset($images['index_img_5'])\}\{$images['index_img_5']\}\{else\}../image/cover_2.png\{/if\})"
+                    data-txt="\{if isset($images['txt_5'])\}\{$images['txt_5']\}\{else\}暫無描述\{/if\}">
                 </div>
-                <div class="gallery-col-2">
-                </div>
-            </div>
-            <div class="my-auto d-flex flex-column">
-                <div class="gallery-col-3" style="margin-top:0px;">
-                </div>
-                <div class="gallery-col-3">
-                </div>
-                <div class="gallery-col-3">
-                </div>
-                <div class="gallery-col-3">
+                <div class="gallery-col-2" style="background-image: url(\{if isset($images['index_img_6'])\}\{$images['index_img_6']\}\{else\}../image/cover_2.png\{/if\});"
+                    data-txt="\{if isset($images['txt_6'])\}\{$images['txt_6']\}\{else\}暫無描述\{/if\}">
                 </div>
             </div>
             <div class="my-auto d-flex flex-column">
-                <div class="gallery-col-4" style="margin-top:0px;">
+                <div class="gallery-col-3" style="margin-top:0px; background-image: url(\{if isset($images['index_img_7'])\}\{$images['index_img_7']\}\{else\}../image/cover_2.png\{/if\})"
+                    data-txt="\{if isset($images['txt_7'])\}\{$images['txt_7']\}\{else\}暫無描述\{/if\}">
                 </div>
-                <div class="gallery-col-4">
+                <div class="gallery-col-3" style="background-image: url(\{if isset($images['index_img_8'])\}\{$images['index_img_8']\}\{else\}../image/cover_2.png\{/if\})"
+                    data-txt="\{if isset($images['txt_8'])\}\{$images['txt_8']\}\{else\}暫無描述\{/if\}">
                 </div>
-                <div class="gallery-col-4">
+                <div class="gallery-col-3" style="background-image: url(\{if isset($images['index_img_9'])\}\{$images['index_img_9']\}\{else\}../image/cover_2.png\{/if\})"
+                    data-txt="\{if isset($images['txt_9'])\}\{$images['txt_9']\}\{else\}暫無描述\{/if\}">
                 </div>
-                <div class="gallery-col-4">
-                </div>
-                <div class="gallery-col-4">
-                </div>
-                <div class="gallery-col-4">
-                </div>
-            </div>
-            <div class="my-auto d-flex flex-column">
-                <div class="gallery-col-3" style="margin-top:0px;">
-                </div>
-                <div class="gallery-col-3">
-                </div>
-                <div class="gallery-col-3">
-                </div>
-                <div class="gallery-col-3">
+                <div class="gallery-col-3" style="background-image: url(\{if isset($images['index_img_10'])\}\{$images['index_img_10']\}\{else\}../image/cover_2.png\{/if\})"
+                    data-txt="\{if isset($images['txt_10'])\}\{$images['txt_10']\}\{else\}暫無描述\{/if\}">
                 </div>
             </div>
             <div class="my-auto d-flex flex-column">
-                <div class="gallery-col-1" style="margin-top:0px;">
+                <div class="gallery-col-4" style="margin-top:0px; background-image: url(\{if isset($images['index_img_11'])\}\{$images['index_img_11']\}\{else\}../image/cover_2.png\{/if\})"
+                    data-txt="\{if isset($images['txt_11'])\}\{$images['txt_11']\}\{else\}暫無描述\{/if\}">
                 </div>
-                <div class="gallery-col-2">
+                <div class="gallery-col-4" style="background-image: url(\{if isset($images['index_img_12'])\}\{$images['index_img_12']\}\{else\}../image/cover_2.png\{/if\})"
+                    data-txt="\{if isset($images['txt_12'])\}\{$images['txt_12']\}\{else\}暫無描述\{/if\}">
+                </div>
+                <div class="gallery-col-4" style="background-image: url(\{if isset($images['index_img_13'])\}\{$images['index_img_13']\}\{else\}../image/cover_2.png\{/if\})"
+                    data-txt="\{if isset($images['txt_13'])\}\{$images['txt_13']\}\{else\}暫無描述\{/if\}">
+                </div>
+                <div class="gallery-col-4" style="background-image: url(\{if isset($images['index_img_14'])\}\{$images['index_img_14']\}\{else\}../image/cover_2.png\{/if\})"
+                    data-txt="\{if isset($images['txt_14'])\}\{$images['txt_14']\}\{else\}暫無描述\{/if\}">
+                </div>
+                <div class="gallery-col-4" style="background-image: url(\{if isset($images['index_img_15'])\}\{$images['index_img_15']\}\{else\}../image/cover_2.png\{/if\})"
+                    data-txt="\{if isset($images['txt_15'])\}\{$images['txt_15']\}\{else\}暫無描述\{/if\}">
+                </div>
+                <div class="gallery-col-4" style="background-image: url(\{if isset($images['index_img_16'])\}\{$images['index_img_16']\}\{else\}../image/cover_2.png\{/if\})"
+                    data-txt="\{if isset($images['txt_16'])\}\{$images['txt_16']\}\{else\}暫無描述\{/if\}">
                 </div>
             </div>
-
+            <div class="my-auto d-flex flex-column">
+                <div class="gallery-col-3" style="margin-top:0px; background-image: url(\{if isset($images['index_img_17'])\}\{$images['index_img_17']\}\{else\}../image/cover_2.png\{/if\})"
+                    data-txt="\{if isset($images['txt_17'])\}\{$images['txt_17']\}\{else\}暫無描述\{/if\}">
+                </div>
+                <div class="gallery-col-3" style="background-image: url(\{if isset($images['index_img_18'])\}\{$images['index_img_18']\}\{else\}../image/cover_2.png\{/if\})"
+                    data-txt="\{if isset($images['txt_18'])\}\{$images['txt_18']\}\{else\}暫無描述\{/if\}">
+                </div>
+                <div class="gallery-col-3" style="background-image: url(\{if isset($images['index_img_19'])\}\{$images['index_img_19']\}\{else\}../image/cover_2.png\{/if\})"
+                    data-txt="\{if isset($images['txt_19'])\}\{$images['txt_19']\}\{else\}暫無描述\{/if\}">
+                </div>
+                <div class="gallery-col-3" style="background-image: url(\{if isset($images['index_img_20'])\}\{$images['index_img_20']\}\{else\}../image/cover_2.png\{/if\})"
+                    data-txt="\{if isset($images['txt_20'])\}\{$images['txt_20']\}\{else\}暫無描述\{/if\}">
+                </div>
+            </div>
+            <div class="my-auto d-flex flex-column">
+                <div class="gallery-col-1" style="margin-top:0px; background-image: url(\{if isset($images['index_img_21'])\}\{$images['index_img_21']\}\{else\}../image/cover_2.png\{/if\})"
+                    data-txt="\{if isset($images['txt_21'])\}\{$images['txt_21']\}\{else\}暫無描述\{/if\}">
+                </div>
+                <div class="gallery-col-2" style="background-image: url(\{if isset($images['index_img_22'])\}\{$images['index_img_22']\}\{else\}../image/cover_2.png\{/if\})"
+                    data-txt="\{if isset($images['txt_22'])\}\{$images['txt_22']\}\{else\}暫無描述\{/if\}">
+                </div>
+            </div>
         </div>
         <hr class="m-0 w-100 hr-1">
         <!-- brand col -->
@@ -177,15 +194,15 @@
         <!-- gradient shape -->
         <div class="bg-yellow w-100 p-3 trapezoidal d-flex justify-content-center mx-auto">
             <div class="bg-black trapezoidal-1">
-                <img class="img-1" src="../image/cover.png">
-                <img class="img-2" src="../image/cover.png">
+                <img class="img-1" src="\{if isset($images['index_img_23'])\}\{$images['index_img_23']\}\{else\}../image/cover_2.png\{/if\}">
+                <img class="img-2" src="\{if isset($images['index_img_24'])\}\{$images['index_img_24']\}\{else\}../image/cover_2.png\{/if\}">
             </div>
             <div class="bg-black trapezoidal-3">
-                <img class="img-1" src="../image/cover.png">
+                <img class="img-1" src="\{if isset($images['index_img_25'])\}\{$images['index_img_25']\}\{else\}../image/cover_2.png\{/if\}">
             </div>
             <div class="bg-black trapezoidal-2">
-                <img class="img-1" src="../image/cover.png">
-                <img class="img-2" src="../image/cover.png">
+                <img class="img-1" src="\{if isset($images['index_img_26'])\}\{$images['index_img_26']\}\{else\}../image/cover_2.png\{/if\}">
+                <img class="img-2" src="\{if isset($images['index_img_27'])\}\{$images['index_img_27']\}\{else\}../image/cover_2.png\{/if\}">
             </div>
         </div>
         <!-- got top button -->

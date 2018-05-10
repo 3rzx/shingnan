@@ -33,15 +33,15 @@
                                         </a>
                                         \{/if\}
                                     </div>
-                                    <img id="index_\{$i\}_img" class="img-thumbnail" src="\{if $images[index_img_|cat:$i].imageName 
-                                        \}\{$images[index_img_|cat:$i].path\}\{else\}../image/cover_1.png\{/if\}" alt="尚未上傳圖片">
+                                    <img id="index_\{$i\}_img" class="img-thumbnail" src="\{if isset($images[index_img_|cat:$i])\}\{$images[index_img_|cat:$i].path\}\{else\}../image/cover_1.png\{/if\}"
+                                        alt="尚未上傳圖片">
                                 </div>
                                 \{/for\}
                             </div>
                             \{for $i = 0 to 5\}
                             <div class="form-group">
                                 <div class="col-md-4" style="text-align: center;">
-                                    <h4>小圖 - \{$i*3 + 5\}</h4>
+                                    <h4>小圖 - \{$i*3 + 6\}</h4>
                                     <div class="form-inline">
                                         <input type="file" class="uploadImage" name="index_img_\{$i*3 + 5\}" id="index_\{$i*3 + 5\}" data-input="false" accept="image/*"
                                             style="display: inline;"> \{if isset($images[index_img_|cat:($i*3 + 5)])\}
@@ -50,7 +50,7 @@
                                         </a>
                                         \{/if\}
                                     </div>
-                                    <img id="index_\{$i*3 + 5\}_img" class="img-thumbnail" src="\{if isset($images[index_img_|cat:($i*5+3)])\}\{$images[index_img_|cat:($i*5+3)].path\}\{else\}../image/cover_2.png\{/if\}"
+                                    <img id="index_\{$i*3 + 5\}_img" class="img-thumbnail" src="\{if isset($images[index_img_|cat:($i*3+5)])\}\{$images[index_img_|cat:($i*3+5)].path\}\{else\}../image/cover_2.png\{/if\}"
                                         alt="尚未上傳圖片">
                                     <div id="txt_\{$i*3 + 5\}_div" class="form-group">
                                         <p class="col-md-12">當前描述: \{if isset($images[index_img_|cat:($i*3 + 5)]) and $images[index_img_|cat:($i*3
@@ -61,7 +61,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-4" style="text-align: center;">
-                                    <h4>小圖 - \{$i*3 + 6\}</h4>
+                                    <h4>小圖 - \{$i*3 + 7\}</h4>
                                     <div class="form-inline">
                                         <input type="file" class="uploadImage" name="index_img_\{$i*3 + 6\}" id="index_\{$i*3 + 6\}" data-input="false" accept="image/*"
                                             style="display: inline;"> \{if isset($images[index_img_|cat:($i*3 + 6)])\}
@@ -70,7 +70,7 @@
                                         </a>
                                         \{/if\}
                                     </div>
-                                    <img id="index_\{$i*3 + 6\}_img" class="img-thumbnail" src="\{if isset($images[index_img_|cat:($i*6+3)])\}\{$images[index_img_|cat:($i*6+3)].path\}\{else\}../image/cover_2.png\{/if\}"
+                                    <img id="index_\{$i*3 + 6\}_img" class="img-thumbnail" src="\{if isset($images[index_img_|cat:($i*3+6)])\}\{$images[index_img_|cat:($i*3+6)].path\}\{else\}../image/cover_2.png\{/if\}"
                                         alt="尚未上傳圖片">
                                     <div id="txt_\{$i*3 + 6\}_div" class="form-group">
                                         <p class="col-md-12">當前描述: \{if isset($images[index_img_|cat:($i*3 + 6)]) and $images[index_img_|cat:($i*3
@@ -81,7 +81,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-4" style="text-align: center;">
-                                    <h4>小圖 - \{$i*3 + 7\}</h4>
+                                    <h4>小圖 - \{$i*3 + 8\}</h4>
                                     <div class="form-inline">
                                         <input type="file" class="uploadImage" name="index_img_\{$i*3 + 7\}" id="index_\{$i*3 + 7\}" data-input="false" accept="image/*"
                                             style="display: inline;"> \{if isset($images[index_img_|cat:($i*3 + 7)])\}
@@ -90,7 +90,7 @@
                                         </a>
                                         \{/if\}
                                     </div>
-                                    <img id="index_\{$i*3 + 7\}_img" class="img-thumbnail" src="\{if isset($images[index_img_|cat:($i*7+3)])\}\{$images[index_img_|cat:($i*7+3)].path\}\{else\}../image/cover_2.png\{/if\}"
+                                    <img id="index_\{$i*3 + 7\}_img" class="img-thumbnail" src="\{if isset($images[index_img_|cat:($i*3+7)])\}\{$images[index_img_|cat:($i*3+7)].path\}\{else\}../image/cover_2.png\{/if\}"
                                         alt="尚未上傳圖片">
                                     <div id="txt_\{$i*3 + 7\}_div" class="form-group">
                                         <p class="col-md-12">當前描述: \{if isset($images[index_img_|cat:($i*3 + 7)]) and $images[index_img_|cat:($i*3
@@ -104,7 +104,7 @@
                             \{/for\}
                             <div class="form-group">
                                 <div class="col-md-4" style="text-align: center;">
-                                    <h4>小圖 - 23</h4>
+                                    <h4>小圖 - 24</h4>
                                     <div class="form-inline">
                                         <input type="file" class="uploadImage" name="index_img_23" id="index_23" data-input="false" accept="image/*" style="display: inline;"> \{if isset($images['index_img_23'])\}
                                         <a class="btn btn-danger" onclick="deleteImg('\{$images[23].imageId\}');">
@@ -116,7 +116,7 @@
                                         alt="尚未上傳圖片">
                                 </div>
                                 <div class="col-md-4" style="text-align: center;">
-                                    <h4>小圖 - 24</h4>
+                                    <h4>小圖 - 25</h4>
                                     <div class="form-inline">
                                         <input type="file" class="uploadImage" name="index_img_24" id="index_24" data-input="false" accept="image/*" style="display: inline;"> \{if isset($images['index_img_24'])\}
                                         <a class="btn btn-danger" onclick="deleteImg('\{$images[24].imageId\}');">
@@ -128,7 +128,7 @@
                                         alt="尚未上傳圖片">
                                 </div>
                                 <div class="col-md-4" style="text-align: center;">
-                                    <h4>小圖 - 25</h4>
+                                    <h4>小圖 - 26</h4>
                                     <div class="form-inline">
                                         <input type="file" class="uploadImage" name="index_img_25" id="index_25" data-input="false" accept="image/*" style="display: inline;"> \{if isset($images['index_img_25'])\}
                                         <a class="btn btn-danger" onclick="deleteImg('\{$images[25].imageId\}');">
@@ -139,8 +139,10 @@
                                     <img id="index_25_img" class="img-thumbnail" src="\{if isset($images[25])\}\{$images[25].path\}\{else\}../image/cover_2.png\{/if\}"
                                         alt="尚未上傳圖片">
                                 </div>
+                            </div>
+                            <div class="form-group">
                                 <div class="col-md-4" style="text-align: center;">
-                                    <h4>小圖 - 26</h4>
+                                    <h4>小圖 - 27</h4>
                                     <div class="form-inline">
                                         <input type="file" class="uploadImage" name="index_img_26" id="index_26" data-input="false" accept="image/*" style="display: inline;"> \{if isset($images['index_img_26'])\}
                                         <a class="btn btn-danger" onclick="deleteImg('\{$images[26].imageId\}');">
@@ -152,7 +154,7 @@
                                         alt="尚未上傳圖片">
                                 </div>
                                 <div class="col-md-4" style="text-align: center;">
-                                    <h4>小圖 - 27</h4>
+                                    <h4>小圖 - 28</h4>
                                     <div class="form-inline">
                                         <input type="file" class="uploadImage" name="index_img_27" id="index_27" data-input="false" accept="image/*" style="display: inline;"> \{if isset($images['index_img_27'])\}
                                         <a class="btn btn-danger" onclick="deleteImg('\{$images[27].imageId\}');">

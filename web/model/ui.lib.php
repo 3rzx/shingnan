@@ -2,7 +2,6 @@
 // initialize
 require_once HOME_DIR . 'configs/config.php';
 require_once 'upload.func.php';
-require_once 'IdGenerator.php';
 require_once 'deleteImgFile.php';
 /**
  * 前台 UI 設定
@@ -38,26 +37,21 @@ class Ui
      * 顯示首頁封面設定
      */
     public function viewIndexCover() {
-        // cover(3) => index_item_0~2
-        // 3~22 (5 * 4) => index_item_3~22
+        // cover(5) => index_item_0~4
+        // 5~22 (3 * 6) => index_item_5~22
+        // 23~27 (5) => index_item_23~27
         if ($_SESSION['isLogin'] == true) {
             $sql = "SELECT * FROM `image` WHERE `itemId` like 'index_%'";
-            $res = $this->db->prepare($sql);
-            
-            if ($res->execute()) {
-                $rows = $res->fetchAll();
-                $images = array();
+            $rows = $this->getSQLResult($sql);
+
+            $images = array();
+            if (!is_null($rows)) {
                 foreach($rows as $img) {
                     $images[$img['imageName']] = $img;
                 }
-                $this->setResultMsg();
-
-                $this->smarty->assign('images', $images);             
-            } else {
-                $error = $res->errorInfo();
-                $this->setResultMsg('failure', $error[0]);
             }
 
+            $this->smarty->assign('images', $images);
             $this->smarty->display('ui/indexCoverSet.html');
         } else {
             $this->setResultMsg('failure', '請先登入!');
@@ -77,7 +71,7 @@ class Ui
 
             if ($res->execute()) {
                 $count = $res->rowCount();
-                if($count == 1) {
+                if($count == 1) { // 已有圖片，需要先刪除舊圖再上傳新圖
                     $imageId = $res->fetch();
                     $fileInfo = $_FILES[$index];
                     $path = uploadFile($fileInfo, '../media/picture');
@@ -90,8 +84,7 @@ class Ui
                     //delete data file
                     $deleter = new deleteImgFile();
                     $deleter->deleteFile($imageId['path']);
-                } else {
-                    $idGen = new IdGenerator();
+                } else { // 沒有圖片，直接上傳新圖
                     $imgId = 'image_'. $index;
                     $imgName = $index;
                     $fileInfo = $_FILES[$index];
@@ -137,8 +130,12 @@ class Ui
      * 預覽首頁
      */
     public function previewIndexCover($input) {
+        // cover(5) => index_item_0~4
+        // 5~22 (3 * 6) => index_item_5~22
+        // 23~27 (5) => index_item_23~27
         $images = array();
-        for($i = 0; $i < 23; $i++) {
+        // 抓取新圖以及舊圖
+        for($i = 0; $i < 27; $i++) {
             $index = "index_img_$i";
             if ($_FILES[$index]['name'] != "") {
                 if ($_FILES[$index]['error'] != 0) {
@@ -160,7 +157,7 @@ class Ui
                 }
             }
         }
-
+        // 取得圖 5~23 描述
         for($i = 5; $i < 23; $i++) {
             $key = "txt_$i";
             $txt = $input[$key];
@@ -175,7 +172,7 @@ class Ui
 
                 if ($res->execute()) {
                     $data = $res->fetch();     
-                    $images[$key] = $data[0];       
+                    $images[$key] = $data[0];
                 }
             }
         }
@@ -211,6 +208,31 @@ class Ui
             $deleter->deleteFile($path['path']);
 
             $this->viewIndexCover();
+        }
+    }
+
+    /**
+     * SQL query
+     */
+    public function getSQLResult($sql = '')
+    {
+        // check $sql if is empty string
+        if (empty($sql)) {
+            return NULL;
+        } else {
+            $res = $this->db->prepare($sql);
+
+            if ($res->execute()) {
+                $data = $res->fetchAll();
+                $this->setResultMsg();
+
+                return $data;
+            } else {
+                $error = $res->errorInfo();
+                $this->setResultMsg('failure', $error[0]);
+
+                return NULL;
+            }
         }
     }
 
