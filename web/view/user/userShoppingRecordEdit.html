@@ -102,6 +102,7 @@
         $(document).on('change', 'select[id^=itemType]', function () {
             var selectedItemNameNum = $(this).attr('id').split('_')[1];
             var selectedType = $(this).val();
+            if(selectedType) { // if user has not selected
             var correspondingItems = [];
             var optionsHtml = "";
             for (var i = 0; i < allItemData[selectedType].length; i++) {
@@ -109,6 +110,7 @@
             }
             $(`select[id=itemName_${selectedItemNameNum}]`).html(optionsHtml);
             $(`select[id=itemName_${selectedItemNameNum}]`).selectpicker('refresh');
+            }
         });
 
         //  produce tranDetail in database
