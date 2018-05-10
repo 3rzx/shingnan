@@ -315,7 +315,6 @@ class User
             $this->viewLogin();
             return;
         }
-        //TODO: Get user id and get the correspondin user data (use uql)
         $sql = "SELECT `tran`.`tranId`, `tran`.`point`, `tran`.`checkState`, `tran`.`createTime`, `tran`.`score`, `tran`.`lastUpdateTime`, `tran`.`price`
                 FROM  `tran`
                 WHERE  `userId` = '{$input['userId']}' AND `isDelete` = 0;";
@@ -349,7 +348,6 @@ class User
      */
     public function userCourseRecordPrepare($input)
     {
-        //TODO
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
