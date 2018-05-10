@@ -315,7 +315,6 @@ class User
             $this->viewLogin();
             return;
         }
-        //TODO: Get user id and get the correspondin user data (use uql)
         $sql = "SELECT `tran`.`tranId`, `tran`.`point`, `tran`.`checkState`, `tran`.`createTime`, `tran`.`score`, `tran`.`lastUpdateTime`, `tran`.`price`
                 FROM  `tran`
                 WHERE  `userId` = '{$input['userId']}' AND `isDelete` = 0;";
@@ -349,13 +348,13 @@ class User
      */
     public function userCourseRecordPrepare($input)
     {
-        //TODO
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
             return;
         }
-        $sql = "SELECT `attendance`.`joinId`, `attendance`.`courseId`, `attendance`.`state`, `attendance`.`lastUpdateTime`,`course`.`courseName`
+
+        $sql = "SELECT `attendance`.`courseId`, `attendance`.`state`, `attendance`.`lastUpdateTime`,`course`.`courseName`
                 FROM `attendance`
                 LEFT JOIN `course` ON `attendance`.`courseId` = `course`.`courseId`
                 WHERE  `userId` = '{$input["userId"]}' AND `attendance`.`isDelete` = '0';";
@@ -485,7 +484,20 @@ class User
         $this->smarty->assign('partData', $partData);
         $this->smarty->assign('combineData', $combineData);
 
+        $sql = "SELECT `user`.`point`
+        FROM  `user`
+        WHERE  `userId` = '{$userId}' AND `isDelete` = 0;";
+        $res = $this->db->prepare($sql);
+        $res->execute();
+        $result = $res->fetch();
+        $point = $result["point"];
 
+        if (!$res) {
+            $error = $res->errorInfo();
+            return;
+        }
+
+        $this->smarty->assign('point', $point);
         $this->smarty->assign('error', $this->error);
         $this->smarty->assign('msg', $this->msg);
         $this->smarty->display('user/userShoppingAdd.html');
@@ -533,7 +545,7 @@ class User
         for ($i = 0; $i < (int)$input['tranDetailLength']; $i++) {
             $itemId = $input["itemName_{$i}"];
             $itemNum = $input["amount_{$i}"];
-            $actionState = 0; //TODO: actionState to be set
+            $actionState = $input["actionState_{$i}"];
             $sql .= "('{$tranId}', '{$itemId}', '{$itemNum}', '{$actionState}', '0'),";
         }
         $sql = substr_replace($sql, ';', -1);
@@ -598,8 +610,18 @@ class User
         $tranData = $res->fetch();
         $this->smarty->assign('tranData', $tranData);
 
+        // get user point
+        $sql = "SELECT `user`.`point`
+                FROM  `user` WHERE `user`.`userId` = '{$tranData["userId"]}';";
+        $res = $this->db->prepare($sql);
+        if (!$res->execute()) {
+            return ;
+        }
+        $result = $res->fetch();
+        $this->smarty->assign('nowPoint', $result["point"]);
+
         // get corresponding trainDetail data
-        $sql = "SELECT  `tranDetail`.`itemId` ,  `tranDetail`.`itemNum`
+        $sql = "SELECT  `tranDetail`.`itemId` ,  `tranDetail`.`itemNum`, `tranDetail`.`actionState`
                 FROM  `tranDetail`
                 WHERE  `tranId` =  '{$input['tranId']}' AND `isDelete` = 0;";
 
@@ -663,7 +685,7 @@ class User
 
         // update tran data
         $sql = "UPDATE `shingnan`.`tran`
-                SET `description`='{$input["description"]}', `price`='{$input["price"]}', `lastUpdateTime`='{$now}', `checkState`='{$input["checkState"]}', `point`='{$point}'
+                SET `description`='{$input["description"]}', `price`='{$input["price"]}', `lastUpdateTime`='{$now}', `checkState`='{$input["checkState"]}', `point`='{$point}', `deletePoint`='{$input["deletePoint"]}'
                 WHERE `tran`.`tranId`='{$tranId}';";
 
         $res = $this->db->prepare($sql);
@@ -684,12 +706,12 @@ class User
         for ($i = 0; $i < (int)$input['tranDetailLength']; $i++) {
             $itemId = $input["itemName_{$i}"];
             $itemNum = $input["amount_{$i}"];
-
+            $actionState = $input["actionState_{$i}"];
             if ($input["state_{$i}"] === "insert" || $input["state_{$i}"] === "update") {
-                $sql .= "('{$tranId}', '{$itemId}', '{$itemNum}', '0', '0'),";
+                $sql .= "('{$tranId}', '{$itemId}', '{$itemNum}', '{$actionState}', '0'),";
             }
             if ($input["state_{$i}"] === "delete") {
-                $sql .= "('{$tranId}', '{$itemId}', '{$itemNum}', '0', '1'),";
+                $sql .= "('{$tranId}', '{$itemId}', '{$itemNum}', '{$actionState}', '1'),";
             }
         }
 
@@ -726,7 +748,7 @@ class User
         $res->execute();
 
         // get user point
-        $sql = "SELECT `tran`.`point` AS `tranPoint`, `tran`.`userId`, `user`.`point` AS `userPoint`
+        $sql = "SELECT `tran`.`point` AS `tranPoint`, `tran`.`userId`, `user`.`point` AS `userPoint`, `tran`.`deletePoint`
                 FROM  `tran`
                 LEFT JOIN `user` ON `tran`.`userId` = `user`.`userId`
                 WHERE  `tranId` = '{$input["tranId"]}';";
@@ -734,7 +756,7 @@ class User
         $res->execute();
         $result = $res->fetch();
 
-        $remainPoint = (int)$result["userPoint"] - (int)$result["tranPoint"];
+        $remainPoint = (int)$result["userPoint"] - (int)$result["tranPoint"] + (int)$result["deletePoint"];
         $sql = "UPDATE `shingnan`.`user` SET  `point` = '{$remainPoint}', `lastUpdateTime` = '{$now}' WHERE `userId` = '{$result["userId"]}';";
         $res = $this->db->prepare($sql);
         $res->execute();

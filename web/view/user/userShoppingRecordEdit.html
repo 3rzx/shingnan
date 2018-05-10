@@ -62,6 +62,26 @@
                         </div>
                     </div>
 
+                    <div id="actionStateBox">
+                        <div class="form-check">
+                            <input class="form-check-input actionState_${num}" type="radio" name="actionState_${num}" value="1" checked>
+                                <label class="form-check-label" for="exampleRadios1">
+                                    購物
+                                </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input actionState_${num}" type="radio" name="actionState_${num}" value="2">
+                                <label class="form-check-label" for="exampleRadios2">
+                                    維修
+                                </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input actionState_${num}" type="radio" name="actionState_${num}" value="3">
+                                <label class="form-check-label" for="exampleRadios3">
+                                    非金錢往來行為
+                                </label>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="box-footer" style="text-align: right;">
@@ -84,7 +104,6 @@
         $(document).on('click', '.deleteShoppingRecordBtn', function () {
             var toBeDeleteBoxNum = $(this).attr('id').split('_')[1];
 
-            console.log($(`#state_${toBeDeleteBoxNum}`).val());
             if ($(`#state_${toBeDeleteBoxNum}`).val() === 'insert') {
                 $(`#box${toBeDeleteBoxNum}`).remove();
             }
@@ -95,20 +114,20 @@
             }
         });
 
-
-
-
+ 
         // get itemName when itemType was selecting(changing)
         $(document).on('change', 'select[id^=itemType]', function () {
             var selectedItemNameNum = $(this).attr('id').split('_')[1];
             var selectedType = $(this).val();
-            var correspondingItems = [];
-            var optionsHtml = "";
-            for (var i = 0; i < allItemData[selectedType].length; i++) {
-                optionsHtml += `<option value=${allItemData[selectedType][i][`${selectedType}Id`]}>${allItemData[selectedType][i][`${selectedType}Name`]}</option>`;
+            if(selectedType) { // if user has not selected
+                var correspondingItems = [];
+                var optionsHtml = "";
+                for (var i = 0; i < allItemData[selectedType].length; i++) {
+                    optionsHtml += `<option value=${allItemData[selectedType][i][`${selectedType}Id`]}>${allItemData[selectedType][i][`${selectedType}Name`]}</option>`;
+                }
+                $(`select[id=itemName_${selectedItemNameNum}]`).html(optionsHtml);
+                $(`select[id=itemName_${selectedItemNameNum}]`).selectpicker('refresh');
             }
-            $(`select[id=itemName_${selectedItemNameNum}]`).html(optionsHtml);
-            $(`select[id=itemName_${selectedItemNameNum}]`).selectpicker('refresh');
         });
 
         //  produce tranDetail in database
@@ -118,14 +137,14 @@
             itemType = allTranDetailData[i]['itemId'].split('_')[0];
             $(`select[id=itemType_${i}]`).val(itemType).change(); //  change trigger when itemName is selected and itemType changed at the same Time
             $(`select[id=itemName_${i}]`).val(allTranDetailData[i]['itemId']);
+
             $(`#state_${i}`).val('update');
             $(`#amount_${i}`).val(allTranDetailData[i]['itemNum']);
-
+            $(`.actionState_${i}[value=${allTranDetailData[i]['actionState']}]`).attr('checked', 'true');
 
             $(`select[id=itemType_${i}]`).selectpicker('refresh');
             $(`select[id=itemName_${i}]`).selectpicker('refresh');
         }
-
         $(`textarea[name=description]`).val(tranData['description']);
         $('#price').val(tranData['price']);
         $(`textarea[name=opinion]`).val(tranData['opinion']);
@@ -133,7 +152,9 @@
 
 
         $('#deletePoint').val(tranData['deletePoint']);
-        $(`input.form-check-input[value=${tranData['checkState']}]`).attr('checked', 'true');
+        $(`.checkState[value=${tranData['checkState']}]`).attr('checked', 'true');
+       
+
     });
 </script>
 
@@ -166,27 +187,34 @@
                             <div id="checkStateBox" class="box box-primary">
                                 <div class="box-body">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="checkState" value="1" checked>
+                                        <input class="form-check-input checkState" type="radio" name="checkState" value="1" checked>
                                         <label class="form-check-label" for="exampleRadios1">
                                             非金錢往來行為
                                         </label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="checkState" value="2">
-                                        <label class="form-check-label" for="exampleRadios2">
+                                        <input class="form-check-input checkState" type="radio" name="checkState" value="2">
+                                        <label class="form-check-label checkState" for="exampleRadios2">
                                             未付款
                                         </label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="checkState" value="3">
+                                        <input class="form-check-input checkState" type="radio" name="checkState" value="3">
                                         <label class="form-check-label" for="exampleRadios3">
                                             已付訂金
                                         </label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="checkState" value="4">
+                                        <input class="form-check-input checkState" type="radio" name="checkState" value="4">
                                         <label class="form-check-label" for="exampleRadios3">
                                             已結清
+                                        </label>
+                                    </div>
+
+                                    <div class="form-check">
+                                        <input class="form-check-input checkState" type="radio" name="checkState" value="5">
+                                        <label class="form-check-label" for="exampleRadios3">
+                                            運送中
                                         </label>
                                     </div>
                                 </div>
@@ -212,6 +240,7 @@
                                         <label for="deletePoint" class="col-sm-2 control-label">扣除點數</label>
                                         <div class="col-sm-6">
                                             <input id="deletePoint" name="deletePoint" class="form-control" type="number" min="0" value="0">
+                                            <div id="point-warning" style="color: red"></div>
                                         </div>
                                     </div>
 

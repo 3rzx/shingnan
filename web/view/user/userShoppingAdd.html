@@ -56,6 +56,28 @@ $(document).ready(function() {
                             <input id="amount_${num}" name="amount_${num}" class="form-control" type="number" min="1" value="1">
                         </div>
                     </div>
+                    
+                    <div id="actionStateBox">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="actionState_${num}" value="1" checked>
+                                <label class="form-check-label" for="exampleRadios1">
+                                    購物
+                                </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="actionState_${num}" value="2">
+                                <label class="form-check-label" for="exampleRadios2">
+                                    維修
+                                </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="actionState_${num}" value="3">
+                                <label class="form-check-label" for="exampleRadios3">
+                                    非金錢往來行為
+                                </label>
+                        </div>
+                    </div>
+    
 
                 </div>
 
@@ -95,6 +117,20 @@ $(document).ready(function() {
     });
 
 
+
+    var origPoint = \{$point|json_encode\};
+    
+    $("#deletePoint").focusout(function () {
+        point = $("#deletePoint").val();
+        if(origPoint - point < 0 ) {
+            $("#deletePointDiv").addClass("has-error");
+            $("#point-warning").text(`點數只剩${origPoint}點`);
+
+        } else {
+            $("#deletePointDiv").removeClass("has-error");
+            $("#point-warning").text("");
+        }
+    });
 });
 </script>
 <body class="hold-transition skin-yellow sidebar-mini">
@@ -149,6 +185,13 @@ $(document).ready(function() {
                                                 已結清
                                             </label>
                                         </div>
+
+                                        <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="checkState" value="5">
+                                                <label class="form-check-label" for="exampleRadios3">
+                                                    運送中
+                                                </label>
+                                        </div>
                                 </div>
                             </div>
 
@@ -184,6 +227,26 @@ $(document).ready(function() {
                                         </div>
                                     </div>
 
+                                    <div id="actionStateBox">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="actionState_0" value="1" checked>
+                                                <label class="form-check-label" for="exampleRadios1">
+                                                    購物
+                                                </label>
+                                            </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="actionState_0" value="2">
+                                                <label class="form-check-label" for="exampleRadios2">
+                                                    維修
+                                                </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="actionState_0" value="3">
+                                                <label class="form-check-label" for="exampleRadios3">
+                                                    非金錢往來行為
+                                                </label>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <!--box-footer-->
@@ -204,11 +267,14 @@ $(document).ready(function() {
                                         </div>
                                     </div>
 
-                                    <div id="pointDiv" class="form-group">
-                                        <label for="point" class="col-sm-2 control-label">扣除點數</label>
+                                    <div id="deletePointDiv" class="form-group">
+                                        <label for="deletePointDiv" class="col-sm-2 control-label">扣除點數</label>
                                         <div class="col-sm-6">
-                                            <input id="point" name="deletePoint" class="form-control" type="number" min="0" value="0">
+                                            <input id="deletePoint" name="deletePoint" class="form-control" type="number" min="0" value="0">
+                                            <div id="point-warning" style="color: red">
+                                            </div>
                                         </div>
+                                        
                                     </div>
 
                                     <div id="pirceDiv" class="form-group">
@@ -223,7 +289,7 @@ $(document).ready(function() {
                                     <input type="hidden" name="action" value="userShoppingAdd">
                                     <input type="hidden" name="userId" value="\{$userId\}">
                                     <input type="hidden" name="tranDetailLength" value="1">
-                                    <button type="submit" class="btn btn-success">更新</button>
+                                    <button id="submitbtn" type="submit" class="btn btn-success">更新</button>
                                 </div>
                             </div>
 
