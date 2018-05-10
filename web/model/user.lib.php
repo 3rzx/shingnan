@@ -355,7 +355,8 @@ class User
             $this->viewLogin();
             return;
         }
-        $sql = "SELECT `attendance`.`joinId`, `attendance`.`courseId`, `attendance`.`state`, `attendance`.`lastUpdateTime`,`course`.`courseName`
+
+        $sql = "SELECT `attendance`.`courseId`, `attendance`.`state`, `attendance`.`lastUpdateTime`,`course`.`courseName`
                 FROM `attendance`
                 LEFT JOIN `course` ON `attendance`.`courseId` = `course`.`courseId`
                 WHERE  `userId` = '{$input["userId"]}' AND `attendance`.`isDelete` = '0';";
