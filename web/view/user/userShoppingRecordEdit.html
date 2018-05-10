@@ -68,7 +68,7 @@
                                 <label class="form-check-label" for="exampleRadios1">
                                     購物
                                 </label>
-                </div>
+                        </div>
                         <div class="form-check">
                             <input class="form-check-input actionState_${num}" type="radio" name="actionState_${num}" value="2">
                                 <label class="form-check-label" for="exampleRadios2">
@@ -104,7 +104,6 @@
         $(document).on('click', '.deleteShoppingRecordBtn', function () {
             var toBeDeleteBoxNum = $(this).attr('id').split('_')[1];
 
-            console.log($(`#state_${toBeDeleteBoxNum}`).val());
             if ($(`#state_${toBeDeleteBoxNum}`).val() === 'insert') {
                 $(`#box${toBeDeleteBoxNum}`).remove();
             }
@@ -115,21 +114,19 @@
             }
         });
 
-
-
-
+ 
         // get itemName when itemType was selecting(changing)
         $(document).on('change', 'select[id^=itemType]', function () {
             var selectedItemNameNum = $(this).attr('id').split('_')[1];
             var selectedType = $(this).val();
             if(selectedType) { // if user has not selected
-            var correspondingItems = [];
-            var optionsHtml = "";
-            for (var i = 0; i < allItemData[selectedType].length; i++) {
-                optionsHtml += `<option value=${allItemData[selectedType][i][`${selectedType}Id`]}>${allItemData[selectedType][i][`${selectedType}Name`]}</option>`;
-            }
-            $(`select[id=itemName_${selectedItemNameNum}]`).html(optionsHtml);
-            $(`select[id=itemName_${selectedItemNameNum}]`).selectpicker('refresh');
+                var correspondingItems = [];
+                var optionsHtml = "";
+                for (var i = 0; i < allItemData[selectedType].length; i++) {
+                    optionsHtml += `<option value=${allItemData[selectedType][i][`${selectedType}Id`]}>${allItemData[selectedType][i][`${selectedType}Name`]}</option>`;
+                }
+                $(`select[id=itemName_${selectedItemNameNum}]`).html(optionsHtml);
+                $(`select[id=itemName_${selectedItemNameNum}]`).selectpicker('refresh');
             }
         });
 
@@ -145,11 +142,9 @@
             $(`#amount_${i}`).val(allTranDetailData[i]['itemNum']);
             $(`.actionState_${i}[value=${allTranDetailData[i]['actionState']}]`).attr('checked', 'true');
 
-
             $(`select[id=itemType_${i}]`).selectpicker('refresh');
             $(`select[id=itemName_${i}]`).selectpicker('refresh');
         }
-
         $(`textarea[name=description]`).val(tranData['description']);
         $('#price').val(tranData['price']);
         $(`textarea[name=opinion]`).val(tranData['opinion']);
@@ -160,7 +155,6 @@
         $(`.checkState[value=${tranData['checkState']}]`).attr('checked', 'true');
        
 
-    });
     });
 </script>
 
@@ -246,6 +240,7 @@
                                         <label for="deletePoint" class="col-sm-2 control-label">扣除點數</label>
                                         <div class="col-sm-6">
                                             <input id="deletePoint" name="deletePoint" class="form-control" type="number" min="0" value="0">
+                                            <div id="point-warning" style="color: red"></div>
                                         </div>
                                     </div>
 

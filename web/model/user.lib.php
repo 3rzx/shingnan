@@ -610,6 +610,16 @@ class User
         $tranData = $res->fetch();
         $this->smarty->assign('tranData', $tranData);
 
+        // get user point
+        $sql = "SELECT `user`.`point`
+                FROM  `user` WHERE `user`.`userId` = '{$tranData["userId"]}';";
+        $res = $this->db->prepare($sql);
+        if (!$res->execute()) {
+            return ;
+        }
+        $result = $res->fetch();
+        $this->smarty->assign('nowPoint', $result["point"]);
+
         // get corresponding trainDetail data
         $sql = "SELECT  `tranDetail`.`itemId` ,  `tranDetail`.`itemNum`, `tranDetail`.`actionState`
                 FROM  `tranDetail`
@@ -738,7 +748,7 @@ class User
         $res->execute();
 
         // get user point
-        $sql = "SELECT `tran`.`point` AS `tranPoint`, `tran`.`userId`, `user`.`point` AS `userPoint`
+        $sql = "SELECT `tran`.`point` AS `tranPoint`, `tran`.`userId`, `user`.`point` AS `userPoint`, `tran`.`deletePoint`
                 FROM  `tran`
                 LEFT JOIN `user` ON `tran`.`userId` = `user`.`userId`
                 WHERE  `tranId` = '{$input["tranId"]}';";
@@ -746,7 +756,7 @@ class User
         $res->execute();
         $result = $res->fetch();
 
-        $remainPoint = (int)$result["userPoint"] - (int)$result["tranPoint"];
+        $remainPoint = (int)$result["userPoint"] - (int)$result["tranPoint"] + (int)$result["deletePoint"];
         $sql = "UPDATE `shingnan`.`user` SET  `point` = '{$remainPoint}', `lastUpdateTime` = '{$now}' WHERE `userId` = '{$result["userId"]}';";
         $res = $this->db->prepare($sql);
         $res->execute();

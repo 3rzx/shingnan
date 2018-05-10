@@ -56,7 +56,7 @@ $(document).ready(function() {
                             <input id="amount_${num}" name="amount_${num}" class="form-control" type="number" min="1" value="1">
                         </div>
                     </div>
-
+                    
                     <div id="actionStateBox">
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="actionState_${num}" value="1" checked>
@@ -75,9 +75,9 @@ $(document).ready(function() {
                                 <label class="form-check-label" for="exampleRadios3">
                                     非金錢往來行為
                                 </label>
-                </div>
+                        </div>
                     </div>
-
+    
 
                 </div>
 
@@ -120,16 +120,14 @@ $(document).ready(function() {
 
     var origPoint = \{$point|json_encode\};
     
-    $("#point").focusout(function () {
-        point = $("#point").val();
+    $("#deletePoint").focusout(function () {
+        point = $("#deletePoint").val();
         if(origPoint - point < 0 ) {
-            $("#submitbtn").attr("disabled", true);
-            $("#pointDiv").addClass("has-error");
+            $("#deletePointDiv").addClass("has-error");
             $("#point-warning").text(`點數只剩${origPoint}點`);
 
         } else {
-            $("#submitbtn").attr("disabled", false);
-            $("#pointDiv").removeClass("has-error");
+            $("#deletePointDiv").removeClass("has-error");
             $("#point-warning").text("");
         }
     });
@@ -247,7 +245,7 @@ $(document).ready(function() {
                                                 <label class="form-check-label" for="exampleRadios3">
                                                     非金錢往來行為
                                                 </label>
-                                </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -269,10 +267,10 @@ $(document).ready(function() {
                                         </div>
                                     </div>
 
-                                    <div id="pointDiv" class="form-group">
-                                        <label for="point" class="col-sm-2 control-label">扣除點數</label>
+                                    <div id="deletePointDiv" class="form-group">
+                                        <label for="deletePointDiv" class="col-sm-2 control-label">扣除點數</label>
                                         <div class="col-sm-6">
-                                            <input id="point" name="deletePoint" class="form-control" type="number" min="0" value="0">
+                                            <input id="deletePoint" name="deletePoint" class="form-control" type="number" min="0" value="0">
                                             <div id="point-warning" style="color: red">
                                             </div>
                                         </div>
