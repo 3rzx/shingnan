@@ -546,7 +546,7 @@ class User
         for ($i = 0; $i < (int)$input['tranDetailLength']; $i++) {
             $itemId = $input["itemName_{$i}"];
             $itemNum = $input["amount_{$i}"];
-            $actionState = 0; //TODO: actionState to be set
+            $actionState = $input["actionState_{$i}"];
             $sql .= "('{$tranId}', '{$itemId}', '{$itemNum}', '{$actionState}', '0'),";
         }
         $sql = substr_replace($sql, ';', -1);
@@ -612,7 +612,7 @@ class User
         $this->smarty->assign('tranData', $tranData);
 
         // get corresponding trainDetail data
-        $sql = "SELECT  `tranDetail`.`itemId` ,  `tranDetail`.`itemNum`
+        $sql = "SELECT  `tranDetail`.`itemId` ,  `tranDetail`.`itemNum`, `tranDetail`.`actionState`
                 FROM  `tranDetail`
                 WHERE  `tranId` =  '{$input['tranId']}' AND `isDelete` = 0;";
 
@@ -697,12 +697,12 @@ class User
         for ($i = 0; $i < (int)$input['tranDetailLength']; $i++) {
             $itemId = $input["itemName_{$i}"];
             $itemNum = $input["amount_{$i}"];
-
+            $actionState = $input["actionState_{$i}"];
             if ($input["state_{$i}"] === "insert" || $input["state_{$i}"] === "update") {
-                $sql .= "('{$tranId}', '{$itemId}', '{$itemNum}', '0', '0'),";
+                $sql .= "('{$tranId}', '{$itemId}', '{$itemNum}', '{$actionState}', '0'),";
             }
             if ($input["state_{$i}"] === "delete") {
-                $sql .= "('{$tranId}', '{$itemId}', '{$itemNum}', '0', '1'),";
+                $sql .= "('{$tranId}', '{$itemId}', '{$itemNum}', '{$actionState}', '1'),";
             }
         }
 

@@ -62,6 +62,26 @@
                         </div>
                     </div>
 
+                    <div id="actionStateBox">
+                        <div class="form-check">
+                            <input class="form-check-input actionState_${num}" type="radio" name="actionState_${num}" value="1" checked>
+                                <label class="form-check-label" for="exampleRadios1">
+                                    購物
+                                </label>
+                </div>
+                        <div class="form-check">
+                            <input class="form-check-input actionState_${num}" type="radio" name="actionState_${num}" value="2">
+                                <label class="form-check-label" for="exampleRadios2">
+                                    維修
+                                </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input actionState_${num}" type="radio" name="actionState_${num}" value="3">
+                                <label class="form-check-label" for="exampleRadios3">
+                                    非金錢往來行為
+                                </label>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="box-footer" style="text-align: right;">
@@ -120,8 +140,10 @@
             itemType = allTranDetailData[i]['itemId'].split('_')[0];
             $(`select[id=itemType_${i}]`).val(itemType).change(); //  change trigger when itemName is selected and itemType changed at the same Time
             $(`select[id=itemName_${i}]`).val(allTranDetailData[i]['itemId']);
+
             $(`#state_${i}`).val('update');
             $(`#amount_${i}`).val(allTranDetailData[i]['itemNum']);
+            $(`.actionState_${i}[value=${allTranDetailData[i]['actionState']}]`).attr('checked', 'true');
 
 
             $(`select[id=itemType_${i}]`).selectpicker('refresh');
