@@ -528,7 +528,7 @@ class User
         $result = $res->fetch();
 
         $deletePoint = (int)$input["deletePoint"];
-        $getPoint = intdiv($input["price"], $pointRate);
+        $getPoint = round((int)$input["price"]/ $pointRate);
 
 
         $sql = "INSERT INTO `shingnan`.`tran` (
@@ -650,7 +650,7 @@ class User
         $pointRate = (int)($pointRateGen->GetRate());
 
         $now = date('Y-m-d H:i:s');
-        $point = intdiv((int)$input["price"], $pointRate);
+        $point = round((int)$input["price"]/ $pointRate);
         $tranId = $input["tranId"];
 
         // user point minus the original point and add the  point which is modified
