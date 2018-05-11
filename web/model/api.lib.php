@@ -48,11 +48,12 @@ class Api
         }
         $sql = "SELECT * FROM `coupon`, `pushCoupon` 
                 WHERE `pushCoupon`.`userId` = :$userId 
-                AND `pushCoupon`.`couponId` = `coupon`.`couponId` 
-                AND `conpon`.`isDelete` = 0 
-                AND `pushCoupon`.`isUsed` = 0;";
+                AND `pushCoupon`.`couponId` = `coupon`.`couponId`  
+                AND `pushCoupon`.`isUsed` = 0 
+                AND `coupon`.`lastUpdateTime` = :lastUpdateTime ;";
         $res = $this->db->prepare($sql);
         $res->bindParam(':userId', $input['userId'], PDO::PARAM_STR);
+        $res->bindParam(':lastUpdateTime', $input['lastUpdateTime'], PDO::PARAM_STR);
         $res->execute();
         $couponData = $res->fetchAll(PDO::FETCH_ASSOC);
         return json_encode($couponData);
@@ -185,7 +186,7 @@ class Api
 
     public function getCourseData($input){
         $appDate = $input['newestDate'];
-        $sql = "SELECT `lastUpdateTime` FROM `course` WHERE `lastUpdateTime` >= :appDate;";
+        $sql = "SELECT * FROM `course` WHERE `lastUpdateTime` >= :appDate;";
         $res = $this->db->prepare($sql);
         $res->bindParam(':appDate', $appDate, PDO::PARAM_STR);
         $res->execute();
@@ -193,9 +194,6 @@ class Api
         if($rowCount == 0){
             return json_encode("0");
         }else{
-            $sql = "SELECT * FROM `course` WHERE `isDelete` = 0;";
-            $res = $this->db->prepare($sql);
-            $res->execute();
             $allCourseData = $res->fetchAll(PDO::FETCH_ASSOC);
             return json_encode($allCourseData);
         }
@@ -211,12 +209,13 @@ class Api
         if($rowCount == 0){
             return json_encode("0");
         }else{
-            $sql = "SELECT `article`.`articleId`, `article`.`title`, `article`.`preview`, 
-                            `article`.`content`, `article`.`type`,`article`.`lastUpdateTime`, `image`.`path` 
+            $sql = "SELECT `article`.`articleId`, `article`.`title`, `article`.`preview`, `article`.`content`, `article`.`type`, 
+                            `article`.`lastUpdateTime`, `article`.`isDelete`, `image`.`path` 
                     FROM `article` ,  `image` 
                     WHERE `article`.`articleId` = `image`.`itemId` 
-                    AND `article`.`isDelete` = 0;";
+                    AND `lastUpdateTime` >= :appDate;";
             $res = $this->db->prepare($sql);
+            $res->bindParam(':appDate', $appDate, PDO::PARAM_STR);
             $res->execute();
             $allArticleData = $res->fetchAll(PDO::FETCH_ASSOC);
             return json_encode($allArticleData);
