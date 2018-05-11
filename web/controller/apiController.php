@@ -2,7 +2,6 @@
 //initialize
 require_once '../configs/source.php';
 require_once HOME_DIR . 'model/api.lib.php';
-
 $api = new Api();
 
 $method = $_SERVER['REQUEST_METHOD'];
@@ -33,7 +32,7 @@ switch ($method) {
                 $api->booking($_POST);
                 break;
             default :
-                return json_encode("Ooh wrong POST method!");
+                echo json_encode("Ooh wrong POST method!");
                 break;
         }
         break;
@@ -56,8 +55,9 @@ switch ($method) {
                 $api->getStoreData($_GET);
                 break;
             default :
-                return json_encode("Ooh wrong GET method!");
+                echo json_encode("Ooh wrong GET method!");
                 break;
         }
         break;
 }
+
