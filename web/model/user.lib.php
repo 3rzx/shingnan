@@ -5,7 +5,7 @@ require_once 'IdGenerator.php';
 require_once 'pointFile.php';
 
 /**
- * 風格類別
+ * 使用者類別
  */
 class User
 {
