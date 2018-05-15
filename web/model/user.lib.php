@@ -101,42 +101,44 @@ class User
         $res->bindParam(':password', password_hash($input['password'], PASSWORD_BCRYPT), PDO::PARAM_STR);
         $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
         $res->bindParam(':address', $input['address'], PDO::PARAM_STR);
-        $res->bindParam(':introducerId', $input['introducerId'], PDO::PARAM_STR);
         $res->bindParam(':createTime', $now, PDO::PARAM_STR);
+        
+                // add point to introducer
+        if ($this->isNullOrEmptyString($input['introducerId'])) {
+            $res->bindValue(':introducerId', null ,PDO::PARAM_INT);
+
+        } else {
+            $res->bindParam(':introducerId', $input['introducerId'], PDO::PARAM_STR);
+        }
         
         if (!$res->execute()) {
             goto fail;
         }            
 
-        // add point to introducer
-        if ($this->isNullOrEmptyString($input['introducerId'])) {
-            goto end;
-        }
-        $sql = "SELECT `user`.`userId`, `user`.`point`
-                FROM  `user`
-                WHERE  `user`.`isDelete` = 0 And `user`.`userId` = '{$input['introducerId']}';";
 
+        if (!$this->isNullOrEmptyString($input['introducerId'])) {
+        $sql = "SELECT `user`.`userId`, `user`.`point`
+                    FROM `user`
+                    WHERE `user`.`isDelete` = 0 And `user`.`userId` = '{$input['introducerId']}';";
         $res = $this->db->prepare($sql);
         if (!$res->execute()) {
             goto fail;
         }
         $result = $res->fetch();
 
-
         // add point to introducer 
         $originPoint = intval($result['point']);
-        $userId = $result['userId'];
+            $introducer = $result['userId'];
         $finalPoint = $originPoint + 200;
-        $sql = "UPDATE `shingnan`.`user` SET  `point` = '{$finalPoint}', `lastUpdateTime` = '{$now}' WHERE `userId` = '{$userId}';";
+            $sql = "UPDATE `shingnan`.`user` SET  `point` = '{$finalPoint}', `lastUpdateTime` = '{$now}' WHERE `userId` = '{$introducer}';";
         $res = $this->db->prepare($sql);
 
         if (!$res->execute()) {
             goto fail;
         }
-
-        header("Location: ../controller/userController.php?action=userDetailPrepare&userId={$userId}");
-
+        }
         end:
+        header("Location: ../controller/userController.php?action=userDetailPrepare&userId={$userId}");
             return ;
         fail:
             $error = $res->errorInfo();
