@@ -10,31 +10,31 @@
     <script>
         $(document).ready(function () {
             var allUserData = \{$allUserData|json_encode\};
-            $("#account").focusout(function () {
-                var repeatedAccount = false;
-                for (var i in allUserData) {
-                    if ($(this).val() === allUserData[i]['account']) {
-                        repeatedAccount = true;
-                    }
-
+        $("#account").focusout(function () {
+            var repeatedAccount = false;
+            for (var i in allUserData) {
+                if ($(this).val() === allUserData[i]['account']) {
+                    repeatedAccount = true;
                 }
-                if (repeatedAccount) {
-                    $("#repeatedAccountValidataion").removeClass("hidden");
-                    $("button[type=submit]").attr('disabled', true);
 
-                }
-            });
+            }
+            if (repeatedAccount) {
+                $("#repeatedAccountValidataion").removeClass("hidden");
+                $("button[type=submit]").attr('disabled', true);
 
-            $("#account").focusin(function () {
-                $("#repeatedAccountValidataion").addClass("hidden");
-                $("button[type=submit]").attr('disabled', false);
-            });
+            }
+        });
 
-            $('#birthdayPicker').datepicker({
-                language: 'zh-TW',
-                format: 'yyyy/mm/dd',
-                autoclose: true
-            });
+        $("#account").focusin(function () {
+            $("#repeatedAccountValidataion").addClass("hidden");
+            $("button[type=submit]").attr('disabled', false);
+        });
+
+        $('#birthdayPicker').datepicker({
+            language: 'zh-TW',
+            format: 'yyyy/mm/dd',
+            autoclose: true
+        });
 
         });
     </script>
@@ -70,8 +70,8 @@
                                         <label for="gender" class="col-sm-2 control-label">性別</label>
                                         <div class="col-sm-10">
                                             <select class="form-control" id="gender" name="gender">
-                                                <option value="1">男</option>
-                                                <option value="0">女</option>
+                                                <option value="1">女</option>
+                                                <option value="2">男</option>
                                             </select>
                                         </div>
 
@@ -115,7 +115,7 @@
                                         <div class="col-sm-3">
                                             <select class="selectpicker" name="introducerId" id="introducer" data-live-search="true" title="請選擇介紹人">
                                                 \{foreach from=$allUserData item=user \}
-                                                        <option value="\{$user.userId\}">\{$user.userName\} \{$user.phone\}</option>
+                                                <option value="\{$user.userId\}">\{$user.userName\} \{$user.phone\}</option>
                                                 \{/foreach\}
                                             </select>
                                         </div>
@@ -149,7 +149,7 @@
                     </div>
                 </div>
             </section>
-    
+
         </div>
         \{include file="../common/footer.html"\}
     </div>
