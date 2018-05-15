@@ -50,6 +50,13 @@
             <section class="content">
                 <div class="row">
                     <div class="col-md-6">
+                        \{if $error != ''\}
+                        <div class="alert alert-danger" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                            \{$error\}
+                        </div>
+                        \{/if\}
+
                         <div class="box box-primary">
                             <div class="box-header with-border">
                                 <h3 class="box-title">新增使用者</h3>

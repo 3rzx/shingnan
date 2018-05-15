@@ -77,6 +77,17 @@ class User
             return ;
         }
 
+        $sql = "SELECT * FROM `user` WHERE `user`.`account`=:account;";
+        $res = $this->db->prepare($sql);
+        $res->bindParam(':account', $input['account'], PDO::PARAM_STR);
+        $res->execute();
+        if($res->fetch()) {            
+            $this->smarty->assign('error', '帳號重複, 請重新新增');
+            $this->smarty->display('user/userAdd.html');
+            return;
+        }
+        
+
         $idGen = new IdGenerator();
         $userId = $idGen->GetID('user');
         $now = date('Y-m-d H:i:s');
