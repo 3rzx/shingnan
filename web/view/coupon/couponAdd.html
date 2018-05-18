@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    \{include file="../common/resource.html"\}
+    <!-- datepicker -->
+    <link rel="stylesheet" href="../theme/adminlte/plugins/datepicker/datepicker3.css">
+    <script src="../theme/adminlte/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <script src="../theme/adminlte/plugins/datepicker/locales/bootstrap-datepicker.zh-TW.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            $('#couponType').on('change' ,function() {
+                if($(this).val() === '2') {
+                    $('#priceDiv').removeClass('hidden');
+                    $("#price").prop("required", "true");
+
+                } else {
+                    $('#priceDiv').addClass('hidden');
+                    $("#price").removeAttr("required");
+
+                }
+            });
+
+            $('#activityStartDate, #activityEndDate, #birthdayStartDate, #birthdayEndDate, #lastTranStartDate, #lastTranEndDate').datepicker({
+                language: 'zh-TW',
+                format: 'yyyy/mm/dd',
+                autoclose: true
+            });
+
+            $("#singlePayCheckbox").change(function () {
+                $("#singlePayMin").prop('required', true);
+                $("#singlePayMax").prop('required', true);
+            });
+
+            $("#allPayCheckbox").change(function () {
+                $("#allPayMin").prop('required', true);
+                $("#allPayMax").prop('required', true);
+            });
+            $("#singlePayCheckbox").change(function () {
+                $("#singlePayMin").prop('required', true);
+                $("#singlePayMax").prop('required', true);
+            });
+            $("#lastTranCheckbox").change(function () {
+                $("#lastTranStartDate").prop('required', true);
+                $("#lastTranEndDate").prop('required', true);
+            });
+            $("#birthdayCheckbox").change(function () {
+                $("#birthdayStartDate").prop('required', true);
+                $("#birthdayEndDate").prop('required', true);
+            });
+
+            $('#activityStartDate, #activityEndDate').datepicker({
+                language: 'zh-TW',
+                format: 'yyyy/mm/dd',
+                autoclose: true
+            }).on('changeDate', function (ev) {
+                startDate = $('#activityStartDate').val();
+                endDate = $('#activityEndDate').val();
+                if (ev.target.id === 'activityStartDate') {
+                    $('#activityEndDate').datepicker('setStartDate', startDate);
+                } else {
+                    $('#activityStartDate').datepicker('setEndDate', endDate);
+                }
+            });
+
+
+            $('#lastTranStartDate, #lastTranEndDate').datepicker({
+                language: 'zh-TW',
+                format: 'yyyy/mm/dd',
+                autoclose: true
+            }).on('changeDate', function (ev) {
+                startDate = $('#lastTranStartDate').val();
+                endDate = $('#lastTranEndDate').val();
+                if (ev.target.id === 'lastTranStartDate') {
+                    $('#lastTranEndDate').datepicker('setStartDate', startDate);
+                } else {
+                    $('#lastTranStartDate').datepicker('setEndDate', endDate);
+                }
+            });
+
+            $('#birthdayStartDate, #birthdayEndDate').datepicker({
+                language: 'zh-TW',
+                format: 'yyyy/mm/dd',
+                autoclose: true
+            }).on('changeDate', function (ev) {
+                startDate = $('#birthdayStartDate').val();
+                endDate = $('#birthdayEndDate').val();
+                if (ev.target.id === 'birthdayStartDate') {
+                    $('#birthdayEndDate').datepicker('setStartDate', startDate);
+                } else {
+                    $('#birthdayStartDate').datepicker('setEndDate', endDate);
+                }
+            });
+
+            $('form').submit(function (e) {
+                if ($('#singlePayCheckbox').is(":checked")) {
+                    if ($('#singlePayMin').val() > $('#singlePayMax').val()) {
+                        $('#alertBox').removeClass('hidden');
+                        $('#alertMsg').text('單筆消費金額: 上限值不得小於下限值')
+                        $('body, html').animate({ scrollTop: 0 }, 500); // Scroll to top of body
+                        e.preventDefault();
+                    }
+                }
+
+                if ($('#allPayCheckbox').is(":checked")) {
+                    if ($('#allPayMin').val() > $('#allPayMax').val()) {
+                        $('#alertBox').removeClass('hidden');
+                        $('#alertMsg').text('消費總金額: 上限值不得小於下限值')
+                        $('body, html').animate({ scrollTop: 0 }, 500); // Scroll to top of body
+                        e.preventDefault();
+                    }
+                }
+
+            });
+        });
+
+    </script>
+</head>
+
+<body class="hold-transition skin-yellow sidebar-mini">
+    <div class="wrapper">
+        \{include file="../common/header.html"\} \{include file="../common/menu.html"\}
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1>訊息or折價卷 推播</h1>
+            </section>
+            <section class="content">
+                <div class="row">
+                    <div class="col-md-10">
+                        <!-- error message -->
+                        <div id="alertBox" class="alert alert-danger alert-dismissable text-center hidden">
+                            <h4 id="alertMsg" style="display: inline;"></h4>
+                        </div>
+
+                        <div class="box box-primary">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">新增訊息or折價卷</h3>
+                            </div>
+                            <!-- form-->
+                            <div class="box-body">
+                                <form class="form-horizontal" method="post" action="../controller/couponController.php">
+
+
+                                    <div class="form-group row">
+                                        <label for="couponType" class="col-md-2 control-label">選擇種類</label>
+                                        <div class="input-group col-md-7">
+
+                                            <select class="form-control" id="couponType" name="couponType">
+                                                <option value="1">訊息</option>
+                                                <option value="2">折價卷</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div id="priceDiv" class="form-group row hidden">
+                                        <label for="price" class="col-md-2 control-label">面額</label>
+                                        <div class="col-sm-2">
+                                            <input id="price" name="price" class="form-control" type="number" min="0" placeholder="輸入面額">
+                                        </div>
+                                    </div>
+
+                                    <div class="row form-group">
+                                        <div class="col-md-6 form-group">
+                                            <label class="control-label col-md-4" for="activityStartDate">活動開始日期</label>
+                                            <div class="input-group col-md-7">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-clock-o"></i>
+                                                </div>
+                                                <input type="text" class="form-control pull-right" name="activity[startDate]" id="activityStartDate" placeholder="活動開始日期"
+                                                    required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 form-group">
+                                            <div class="input-group col-md-7">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-clock-o"></i>
+                                                </div>
+                                                <input type="text" class="form-control pull-right" name="activity[endDate]" id="activityEndDate" placeholder="活動結束日期" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr>
+
+                                    <!--gender-->
+                                    <div class="form-group row">
+                                        <label for="gender" class="col-md-2 control-label">性別</label>
+                                        <div class="input-group col-md-7">
+                                            <span class="input-group-addon">
+                                                <input type="checkbox" name="gender[enable]" id="genderCheckbox">
+                                            </span>
+                                            <select class="form-control" id="gender" name="gender[val]">
+                                                <option value="2">男</option>
+                                                <option value="1">女</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+
+                                    <!--單比消費金額-->
+                                    <div class="form-group row">
+                                        <label for="account" class="col-md-2 control-label">單筆消費金額</label>
+                                        <input type="checkbox" class="col-md-1" name="singlePay[enable]" id="singlePayCheckbox">
+                                        <div class="col-md-2">
+                                            <input id="singlePayMin" name="singlePay[min]" class="form-control" type="number" min="0" placeholder="輸入下限">
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <input id="singlePayMax" name="singlePay[max]" class="form-control" type="number" min="0" placeholder="輸入上限">
+                                        </div>
+                                    </div>
+
+                                    <!--消費總金額-->
+                                    <div class="form-group row">
+                                        <label for="account" class="col-md-2 control-label">消費總金額</label>
+                                        <input type="checkbox" class="col-md-1" name="allPay[enable]" id="allPayCheckbox">
+                                        <div class="col-md-2">
+                                            <input id="allPayMin" name="allPay[min]" class="form-control" type="number" min="0" placeholder="輸入下限">
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <input id="allPayMax" name="allPay[max]" class="form-control" type="number" min="0" placeholder="輸入上限">
+                                        </div>
+                                    </div>
+
+                                    <!-- duration of activity -->
+
+
+                                    <!-- range of last trancation time -->
+                                    <div class="row form-group">
+                                        <div class="col-md-6 form-group">
+                                            <label class="control-label col-md-3" for="lastTranStartDate">最後交易日期</label>
+                                            <input type="checkbox" class="col-md-1" name="lastTran[enable]" id="lastTranCheckbox">
+                                            <div class="input-group col-md-7">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-clock-o"></i>
+                                                </div>
+                                                <input type="text" class="form-control pull-right" name="lastTran[startDate]" id="lastTranStartDate" placeholder="開始日期">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 form-group">
+                                            <div class="input-group col-md-7">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-clock-o"></i>
+                                                </div>
+                                                <input type="text" class="form-control pull-right" name="lastTran[endDate]" id="lastTranEndDate" placeholder="結束日期">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!--range of birthday-->
+                                    <div class="row form-group">
+                                        <div class="col-md-6 form-group">
+                                            <label class="control-label col-md-3" for="birthdayStartDate">生日開始日期</label>
+                                            <input type="checkbox" class="col-md-1" name="birthday[enable]" id="birthdayCheckbox">
+                                            <div class="input-group col-md-7">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-clock-o"></i>
+                                                </div>
+                                                <input type="text" class="form-control pull-right" name="birthday[startDate]" id="birthdayStartDate" placeholder="開始日期">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 form-group">
+                                            <div class="input-group col-md-7">
+                                                <div class="input-group-addon">
+                                                    <i class="fa fa-clock-o"></i>
+                                                </div>
+                                                <input type="text" class="form-control pull-right" name="birthday[endDate]" id="birthdayEndDate" placeholder="結束日期">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <hr>
+                                    <div class="form-group">
+                                        <label for="title" class="col-md-2 control-label">標題</label>
+                                        <div class="col-md-8">
+                                            <input name="title" class="form-control" placeholder="輸入標題" required>
+                                        </div>
+                                    </div>
+                                    <!-- image -- >
+                                    <!-- TODO -->
+
+                                    <!--content-->
+                                    <div id="contentDiv" class="form-group">
+                                        <label for="content" class="col-md-2 control-label">內容</label>
+                                        <div class="col-md-8">
+                                            <textarea name="content" class="form-control" rows="5" required></textarea>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="box-footer" style="text-align: right;">
+                                        <input type="hidden" name="action" value="couponAdd">
+                                        <button type="submit" class="btn btn-primary">確定</button>
+                                    </div>
+                                </form>
+                                <!-- /.box-body -->
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+        \{include file="../common/footer.html"\}
+    </div>
+</body>
+
+</html>
