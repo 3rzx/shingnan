@@ -154,20 +154,6 @@ class Coupon
 
     }
 
-    /**
-     * 新增訊息 or 折價卷推播 動作
-     */
-    public function couponEdit($input)
-    {
-        if ($_SESSION['isLogin'] == false) {
-            $this->error = '請先登入!';
-            $this->viewLogin();
-            return;
-        }
-
-        // TODO:  the rule like AND OR for each limition
-
-    }
 
     /**
      * 折價卷 列表頁面

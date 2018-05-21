@@ -25,24 +25,6 @@
         });
 
 
-        function deleteCoupon(couponId) {
-            BootstrapDialog.show({
-                title: '提醒',
-                message: '確定要刪除活動嗎',
-                buttons: [{
-                    label: '確定',
-                    cssClass: 'btn-danger',
-                    action: function () {
-                        location = '../controller/couponController.php?action=couponDelete&couponId=' + couponId;
-                    }
-                }, {
-                    label: '取消',
-                    action: function (dialogItself) {
-                        dialogItself.close();
-                    }
-                }]
-            });
-        }
     </script>
 </head>
 
@@ -89,12 +71,6 @@
                                                 <a href="">
                                                     <button class="btn btn-sm btn-primary">
                                                         <i class="glyphicon glyphicon-pencil"></i>
-                                                    </button>
-                                                </a>
-
-                                                <a href="#">
-                                                    <button class="btn btn-sm btn-danger" onclick="deleteCoupon('\{$coupon.couponId\}');">
-                                                        <i class="glyphicon glyphicon-remove"></i>
                                                     </button>
                                                 </a>
                                             </td>
