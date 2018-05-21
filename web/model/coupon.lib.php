@@ -73,9 +73,35 @@ class Coupon
         $couponId = $idGen->GetID('coupon');
         $now = date('Y-m-d H:i:s');
 
+        // insert coupon
         $couponPrice = $input["couponType"] === "2" ? intval($input["price"]) : 0; // type=1 -> info   type=2 -> coupon
-        $sql = "INSERT INTO `coupon`(`couponId`, `type`, `price`, `title`, `content`, `startTime`, `endTime`, `isDelete`, `createTime`, `lastUpdateTime`)
-                 VALUES ('{$couponId}', '{$input["couponType"]}' , '{$couponPrice}', '{$input["title"]}', '{$input["content"]}', '{$input["activity"]["startDate"]}', '{$input["activity"]["endDate"]}','0', '{$now}', '{$now}')";
+        $limitStrTemplate= "性別::genderStatement\n".
+                   "生日::birthdayStatement\n".
+                   "最後交易時間::lastTranStatement\n".
+                   "單筆交易金額::singlePayStatement\n".
+                   "交易總金額::allPayStatement\n";
+        $genderStatement =  $input['gender']['enable'] === 'on' ? ($intput["gender"]["val"] === '1' ?  '女' : '男') : '-' ;
+        $birthdayStatement = $input['birthday']['enable'] === 'on' ? 
+                            "{$input["birthday"]["startDate"]} - {$input["birthday"]["endDate"]}" : '-';
+        $lastTranStatement = $input['lastTran']['enable'] === 'on' ?
+                            "{$input["lastTran"]["startDate"]} - {$input["lastTran"]["endDate"]}" : '-';
+        $singlePayStatement = $input['singlePay']['enable'] === 'on' ? 
+                            "{$input["singlePay"]["min"]} - {$input["singlePay"]["max"]}" : '-';
+        $allPayStatement = $input['allPay']['enable'] === 'on' ?
+                            "{$input["allPay"]["min"]} - {$input["allPay"]["max"]}" : '-';
+
+        $mapping = [
+            ":couponId" => $couponId,
+            ":genderStatement" => $genderStatement,
+            ":birthdayStatement" => $birthdayStatement,
+            ":lastTranStatement" => $lastTranStatement,
+            ":singlePayStatement" => $singlePayStatement,
+            ":allPayStatement" => $allPayStatement
+        ];
+        $limitStr = strtr($limitStrTemplate, $mapping);
+
+        $sql = "INSERT INTO `coupon`(`couponId`, `type`, `price`, `title`, `content`, `limit`,`startTime`, `endTime`, `isDelete`, `createTime`, `lastUpdateTime`)
+                 VALUES ('{$couponId}', '{$input["couponType"]}' , '{$couponPrice}', '{$input["title"]}', '{$input["content"]}', '{$limitStr}','{$input["activity"]["startDate"]}', '{$input["activity"]["endDate"]}','0', '{$now}', '{$now}')";
 
         $res = $this->db->prepare($sql);
         if(!$res->execute()) {
