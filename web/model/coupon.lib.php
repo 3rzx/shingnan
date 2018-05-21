@@ -124,7 +124,7 @@ class Coupon
         $singlePayStatement = $input['singlePay']['enable'] === 'on' ? 
             "(MAX(IFNULL((`tran`.`price`),0)) BETWEEN {$input["singlePay"]["min"]} AND {$input["singlePay"]["max"]})" : '1';
         $allPayStatement = $input['allPay']['enable'] === 'on' ?
-            "(SUM(IFNULL((`tran`.`price`),0)) BETWEEN {$input["singlePay"]["min"]} AND {$input["singlePay"]["max"]})" : '1';
+            "(SUM(IFNULL((`tran`.`price`),0)) BETWEEN {$input["allPay"]["min"]} AND {$input["allPay"]["max"]})" : '1';
         
         $sqlTemplate = "INSERT INTO `pushCoupon`(`userId`,`couponId`,`isUsed`)
                         SELECT `user`.`userId`, ':couponId', '0'
@@ -148,10 +148,12 @@ class Coupon
             goto failed;
         }
 
+        //info
         if ($input["couponType"] === '1') {
             header("Location: ../controller/couponController.php?action=infoList");
         }
 
+        // coupon
         if ($input["couponType"] === '2') {
             header("Location: ../controller/couponController.php?action=couponList");
         }
