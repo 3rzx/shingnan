@@ -58,7 +58,11 @@
                 autoclose: true
             });
         });
-
+        
+        $(document).ready(function () {
+            $("#gender").val(\{$userDetailData.gender\});
+            $('#gender').selectpicker('refresh');
+        });
 
     </script>
     <style type="text/css">
@@ -114,8 +118,8 @@
                                         <label for="gender" class="col-sm-2 control-label">性別</label>
                                         <div class="col-sm-6">
                                             <select class="selectpicker" name="gender" id="gender">
-                                                <option value="0">女</option>
-                                                <option value="1" selected>男</option>
+                                                <option value="1">女</option>
+                                                <option value="2">男</option>
                                             </select>
                                         </div>
                                     </div>
