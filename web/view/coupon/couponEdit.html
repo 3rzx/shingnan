@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    \{include file="../common/resource.html"\}
+    <!-- datepicker -->
+    <link rel="stylesheet" href="../theme/adminlte/plugins/datepicker/datepicker3.css">
+    <script src="../theme/adminlte/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <script src="../theme/adminlte/plugins/datepicker/locales/bootstrap-datepicker.zh-TW.js"></script>
+    <script>
+        $(document).ready(function () {
+        });
+    </script>
+</head>
+
+<body class="hold-transition skin-yellow sidebar-mini">
+    <div class="wrapper">
+        \{include file="../common/header.html"\} \{include file="../common/menu.html"\}
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1>折價卷檢視</h1>
+            </section>
+            <section class="content">
+                <div class="row">
+                    <div class="col-md-10">
+                        <div class="box box-primary">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">折價卷細節</h3>
+                            </div>
+                            <div class="box-body">
+
+                                <div id="priceDiv" class="form-group row">
+                                    <label for="price" class="col-md-2 control-label">面額</label>
+                                    <div class="col-sm-2">
+                                        <input id="price" class="form-control" type="number" min="0" value="\{$couponDetail["面額"]\}" readonly>
+                                    </div>
+                                </div>
+
+                                <div id="activityDateDiv" class="form-group row">
+                                    <label for="activityDate" class="col-md-2 control-label">活動日期</label>
+                                    <div class="col-sm-2">
+                                        <input id="activityDate" class="form-control" value="\{$couponDetail["活動日期"]\}" readonly>
+                                    </div>
+                                </div>
+
+                               
+
+                                <!--gender-->
+                                
+                                <div id="genderDiv" class="form-group row">
+                                    <label for="gender" class="col-md-2 control-label">性別</label>
+                                    <div class="col-sm-2">
+                                            <input id="gender" class="form-control" value="\{$couponDetail["性別"]\}" readonly>
+                                    </div>
+                                </div>
+
+
+                                <!--單筆交易金額-->
+                                <div id="singlePayDiv" class="form-group row">
+                                    <label for="singlePay" class="col-md-2 control-label">單筆交易金額</label>
+                                    <div class="col-sm-2">
+                                            <input id="singlePay" class="form-control" value="\{$couponDetail["單筆交易金額"]\}" readonly>
+                                    </div>
+                                </div>
+
+                                <!--消費總金額-->
+                                <div id="allPayDiv" class="form-group row">
+                                    <label for="allPay" class="col-md-2 control-label">單筆交易金額</label>
+                                    <div class="col-sm-2">
+                                        <input id="allPay" class="form-control" value="\{$couponDetail["交易總金額"]\}" readonly>
+                                    </div>
+                                </div>
+
+
+                                <!--消費總金額-->
+                                <div id="birthdayDiv" class="form-group row">
+                                    <label for="birthday" class="col-md-2 control-label">生日</label>
+                                    <div class="col-sm-2">
+                                        <input id="birthday" class="form-control" value="\{$couponDetail["生日"]\}" readonly>
+                                    </div>
+                                </div>
+
+ 
+
+                                <hr>
+                                <!-- title -->
+                                <div class="form-group row">
+                                    <label for="title" class="col-md-2 control-label">標題</label>
+                                    <div class="col-md-8">
+                                        <input name="title" class="form-control" value="\{$couponDetail["標題"]\}" readonly>
+                                    </div>
+                                </div>
+
+
+                                <!--content-->
+                                <div id="contentDiv" class="form-group row">
+                                    <label for="content" class="col-md-2 control-label">內容</label>
+                                    <div class="col-md-8">
+                                        <textarea name="content" class="form-control" rows="5" readonly>
+                                                \{$couponDetail["內容"]\}
+                                        </textarea>
+                                    </div>
+                                </div>
+
+
+                                <div class="box-footer" style="text-align: right;">
+                                    <input type="hidden" name="action" value="couponAdd">
+                                    <button type="submit" class="btn btn-primary">確定</button>
+                                </div>
+
+                            </div>
+                            <div class="box-footer" style="text-align: right;">
+                                <a href="../controller/couponController.php?action=couponList" class="btn btn-primary">確定</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+        \{include file="../common/footer.html"\}
+    </div>
+</body>
+
+</html>

@@ -34,6 +34,9 @@ switch ($method) {
             case 'couponDelete':
                 $coupon->couponDelete($_GET);
                 break;
+            case 'infoEditPrepare':
+                $coupon->infoEditPrepare($_GET);
+                break;
             case 'infoList':
                 $coupon->infoList($_GET);
                 break;

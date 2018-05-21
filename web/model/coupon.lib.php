@@ -75,11 +75,13 @@ class Coupon
 
         // insert coupon
         $couponPrice = $input["couponType"] === "2" ? intval($input["price"]) : 0; // type=1 -> info   type=2 -> coupon
-        $limitStrTemplate= "性別::genderStatement\n".
-                   "生日::birthdayStatement\n".
-                   "最後交易時間::lastTranStatement\n".
-                   "單筆交易金額::singlePayStatement\n".
-                   "交易總金額::allPayStatement\n";
+        $limitStrTemplate= ":couponPriceStatement;".
+                   "活動日期:{$input["activity"]["startDate"]} - {$input["activity"]["endDate"]};".
+                   "性別::genderStatement;".
+                   "生日::birthdayStatement;".
+                   "最後交易時間::lastTranStatement;".
+                   "單筆交易金額::singlePayStatement;".
+                   "交易總金額::allPayStatement";
         $genderStatement =  $input['gender']['enable'] === 'on' ? ($intput["gender"]["val"] === '1' ?  '女' : '男') : '-' ;
         $birthdayStatement = $input['birthday']['enable'] === 'on' ? 
                             "{$input["birthday"]["startDate"]} - {$input["birthday"]["endDate"]}" : '-';
@@ -89,8 +91,10 @@ class Coupon
                             "{$input["singlePay"]["min"]} - {$input["singlePay"]["max"]}" : '-';
         $allPayStatement = $input['allPay']['enable'] === 'on' ?
                             "{$input["allPay"]["min"]} - {$input["allPay"]["max"]}" : '-';
+        $couponPriceStatement = $couponPrice === 0 ? "" :  "面額:{$couponPrice}" ;
 
         $mapping = [
+            ":couponPriceStatement" => $couponPriceStatement,
             ":couponId" => $couponId,
             ":genderStatement" => $genderStatement,
             ":birthdayStatement" => $birthdayStatement,
@@ -168,7 +172,7 @@ class Coupon
     }
 
     /**
-     * 編輯訊息 or 折價卷推播 頁面
+     * 編輯折價卷推播 頁面
      */
     public function couponEditPrepare($input)
     {
@@ -177,8 +181,27 @@ class Coupon
             $this->viewLogin();
             return;
         }
+        $sql = "SELECT `coupon`.`limit`,  `coupon`.`title`, `coupon`.`content`
+                FROM `coupon` 
+                WHERE `coupon`.`couponId` = :couponId;";
+        $res = $this->db->prepare($sql);
+        $res->bindParam(':couponId', $input['couponId'], PDO::PARAM_STR);
+        $res->execute();
+        $result = $res->fetch();
+        $constrains = explode(";", $result['limit']);
+        $couponDetail = [];
+        foreach ($constrains as &$constrain) {
+            $constrainName = explode(":", $constrain)[0];
+            $constrainVal = explode(":", $constrain)[1];
+            $couponDetail += [$constrainName => $constrainVal];
+        }
+        $couponDetail += ["標題" => $result["title"]];
+        $couponDetail += ["內容" => $result["content"]];
 
-        // TODO:  the rule like AND OR for each limition
+        $this->smarty->assign('couponDetail', $couponDetail);
+        $this->smarty->display('coupon/couponEdit.html');
+
+       
 
     }
 
@@ -194,7 +217,7 @@ class Coupon
             return;
         }
 
-        $sql = "SELECT `couponId`, `type`, `title`, `startTime`, `endTime`, `isDelete`, `createTime`, `lastUpdateTime` 
+        $sql = "SELECT `couponId`, `type`, `title`, `startTime`, `endTime`, `limit`,`isDelete`, `createTime`, `lastUpdateTime` 
                 FROM `coupon` 
                 WHERE `coupon`.`isDelete` = 0 AND `coupon`.`type` = 2
                 ORDER BY `coupon`.`couponId`;";
@@ -205,6 +228,36 @@ class Coupon
         $this->smarty->assign('error', $this->error);
         $this->smarty->assign('msg', $this->msg);
         $this->smarty->display('coupon/couponList.html');
+    }
+
+    /**
+     * 訊息 編輯頁面
+     */
+    public function infoEditPrepare($input) {
+        if ($_SESSION['isLogin'] == false) {
+            $this->error = '請先登入!';
+            $this->viewLogin();
+            return;
+        }
+        $sql = "SELECT `coupon`.`limit`,  `coupon`.`title`, `coupon`.`content`
+                FROM `coupon` 
+                WHERE `coupon`.`couponId` = :couponId;";
+        $res = $this->db->prepare($sql);
+        $res->bindParam(':couponId', $input['couponId'], PDO::PARAM_STR);
+        $res->execute();
+        $result = $res->fetch();
+        $constrains = explode(";", $result['limit']);
+        $infoDetail = [];
+        foreach ($constrains as &$constrain) {
+            $constrainName = explode(":", $constrain)[0];
+            $constrainVal = explode(":", $constrain)[1];
+            $infoDetail += [$constrainName => $constrainVal];
+        }
+        $infoDetail += ["標題" => $result["title"]];
+        $infoDetail += ["內容" => $result["content"]];
+
+        $this->smarty->assign('infoDetail', $infoDetail);
+        $this->smarty->display('coupon/infoEdit.html');
     }
 
     /**
@@ -233,7 +286,7 @@ class Coupon
     }
 
     /**
-     * 刪除訊息 or 折價卷推播 動作
+     * 刪除折價卷推播 動作
      */
     public function couponDelete($input)
     {
