@@ -188,7 +188,7 @@ class Api
         }
         $result = $res->fetch();
 
-        if (password_verify($input['passwd'], $result['password'])){
+        if (strcmp($input['passwd'], $result['password']) == 0){
             return true;
         }
         return false;
