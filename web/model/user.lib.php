@@ -290,10 +290,13 @@ class User
             return;
         }
 
+        if($this->isNullOrEmptyString($input)){
+            $input['introducerId'] = NULL;
+        }
 
         $sql = "UPDATE `shingnan`.`user`
                 SET  `lastUpdateTime` = :lastUpdateTime,
-                     `userId` = :userId, `userName` = :userName,
+                     `userName` = :userName,
                      `account` = :account, `phone` = :phone,
                      `gender` = :gender, `address` = :address,
                      `birthday` = :birthday, `introducerId`= :introducerId
