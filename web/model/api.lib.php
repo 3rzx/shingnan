@@ -7,6 +7,15 @@ require_once 'IdGenerator.php';
  */
 class Api
 {
+
+    if ($db->userLogin($_POST['username'], $_POST['password'])) {
+            $response['error'] = false;
+            $response['user'] = $db->getUserByUsername($_POST['username']);
+        } else {
+            $response['error'] = true;
+            $response['message'] = 'Invalid username or password';
+        }
+
     public $db = null;
 
     /**
@@ -20,8 +29,10 @@ class Api
 
     // POST function
     public function getUserData($input) {
-        if(!$this->checkAccount($input)){                  //取得資料前先卻確認帳號密碼正確性
-            echo json_encode("0");
+        if(!$this->checkAccount($input)){   //取得資料前先卻確認帳號密碼正確性            
+            $res['error'] = true;
+            $res['message'] = 'wrong password';                 
+            echo json_encode(array($res));
             return;
         }
         $sql = "SELECT * FROM `user` WHERE `account` = :account;";
@@ -35,14 +46,18 @@ class Api
 
     public function modifyUserData($input) {
         if(!$this->checkAccount($input)){                  //修改前先卻確認帳號密碼正確性
-            echo json_encode('0');
+            $res['error'] = true;
+            $res['message'] = 'wrong password';                 
+            echo json_encode(array($res));
             return;
         }
     }    
 
     public function getCouponData($input) {
         if(!$this->checkAccount($input)){                  //取得折價券先卻確認帳號密碼正確性
-            echo json_encode("0");
+            $res['error'] = true;
+            $res['message'] = 'wrong password';                 
+            echo json_encode(array($res));            
             return;
         }
         $sql = "SELECT * FROM `coupon`, `pushCoupon` 
@@ -61,7 +76,9 @@ class Api
 
     public function useCoupon($input) {
         if(!$this->checkAccount($input)){                  //使用折價券前先卻確認帳號密碼正確性
-            echo json_encode('0');
+            $res['error'] = true;
+            $res['message'] = 'wrong password';                 
+            echo json_encode(array($res));
             return;
         }
         $sql = "INSERT INTO `pushCoupon` ( `couponId`, `userId`,`isUsed`)
@@ -79,7 +96,9 @@ class Api
 
     public function getTranData($input) {           //TODO 雲凱
         if(!$this->checkAccount($input)){
-            echo json_encode('0');
+            $res['error'] = true;
+            $res['message'] = 'wrong password';                 
+            echo json_encode(array($res));
             return;
         }
         $userId = $input["userId"];
@@ -128,7 +147,9 @@ class Api
 
     public function bookingCourse($input){
         if(!$this->checkAccount($input)){                  //參與課程前先卻確認帳號密碼正確性
-            echo json_encode('0');    
+            $res['error'] = true;
+            $res['message'] = 'wrong password';                 
+            echo json_encode(array($res));    
             return;
         }
         $idGen = new IdGenerator();
@@ -152,7 +173,9 @@ class Api
 
     public function booking($input){
         if(!$this->checkAccount($input)){                  //預約前先卻確認帳號密碼正確性
-            echo json_encode('0');
+            $res['error'] = true;
+            $res['message'] = 'wrong password';                 
+            echo json_encode(array($res));
             return;
         }
         $idGen = new IdGenerator();
