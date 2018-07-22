@@ -7,15 +7,6 @@ require_once 'IdGenerator.php';
  */
 class Api
 {
-
-    if ($db->userLogin($_POST['username'], $_POST['password'])) {
-            $response['error'] = false;
-            $response['user'] = $db->getUserByUsername($_POST['username']);
-        } else {
-            $response['error'] = true;
-            $response['message'] = 'Invalid username or password';
-        }
-
     public $db = null;
 
     /**
