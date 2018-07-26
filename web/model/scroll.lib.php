@@ -82,12 +82,13 @@ class Scroll
                     $sql = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`, 
                                                             `itemId`, `ctr`, `path`, `link`, `createTime`) 
                             VALUES (:imgId, :imgName, 10, 
-                                    :scrollId, 0, :filePath, '', :createTime);";
+                                    :scrollId, 0, :filePath, ':link', :createTime);";
                     $res = $this->db->prepare($sql);
                     $res->bindParam(':imgId', $imgId, PDO::PARAM_STR);
                     $res->bindParam(':imgName', $imgName, PDO::PARAM_STR);
                     $res->bindParam(':scrollId', $scrollId, PDO::PARAM_STR);
                     $res->bindParam(':filePath', $scrollImage, PDO::PARAM_STR);
+                    $res->bindParam(':link', $scrollLink, PDO::PARAM_STR);
                     $res->bindParam(':createTime', $now, PDO::PARAM_STR);
                     $res->execute();
                     if (!$res) { 
@@ -111,7 +112,7 @@ class Scroll
         }else{
             // get all data from scroll
             $sql = 'SELECT `scroll`.`scrollName`, `scroll`.`scrollId` , `scroll`.`description`,
-                            `image`.`imageId`,`image`.`path` 
+                            `image`.`imageId`,`image`.`path`,`image`.`link`  
                     FROM  `scroll` 
                     LEFT JOIN  `image` ON `scroll`.`scrollId` = `image`.`itemId` 
                     ORDER BY `scroll`.`scrollId`';

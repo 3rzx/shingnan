@@ -73,6 +73,7 @@
                                             <th>跑馬燈名稱</th>
                                             <th>跑馬燈描述</th>
                                             <th>使用圖片</th>
+                                            <th>圖片連結</th>
                                             <th>操作選項</th>
                                         </tr>
                                     </thead>
@@ -82,6 +83,7 @@
                                             <td>\{$scroll.scrollName\}</td>
                                             <td>\{$scroll.description\}</td>
                                             <td><img src="\{$scroll.path\}" alt="尚未上傳圖片" width="350px"></td>
+                                            <td>\{$scroll.link\}</td>
                                             <td>
                                                 <a href="#">
                                                     <button class="btn btn-sm btn-danger" onclick="deletescroll('\{$scroll.scrollId\}');"><i class="glyphicon glyphicon-remove"></i></button>
