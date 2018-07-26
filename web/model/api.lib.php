@@ -22,7 +22,7 @@ class Api
     public function getUserData($input) {
         if(!$this->checkAccount($input)){   //取得資料前先卻確認帳號密碼正確性            
             $res['error'] = true;
-            $res['message'] = 'wrong password';                 
+            $res['message'] = 'Wrong password';                 
             echo json_encode(array($res));
             return;
         }
@@ -38,7 +38,7 @@ class Api
     public function modifyUserData($input) {
         if(!$this->checkAccount($input)){                  //修改前先卻確認帳號密碼正確性
             $res['error'] = true;
-            $res['message'] = 'wrong password';                 
+            $res['message'] = 'Wrong password';                 
             echo json_encode(array($res));
             return;
         }
@@ -47,7 +47,7 @@ class Api
     public function getCouponData($input) {
         if(!$this->checkAccount($input)){                  //取得折價券先卻確認帳號密碼正確性
             $res['error'] = true;
-            $res['message'] = 'wrong password';                 
+            $res['message'] = 'Wrong password';                 
             echo json_encode(array($res));            
             return;
         }
@@ -68,7 +68,7 @@ class Api
     public function useCoupon($input) {
         if(!$this->checkAccount($input)){                  //使用折價券前先卻確認帳號密碼正確性
             $res['error'] = true;
-            $res['message'] = 'wrong password';                 
+            $res['message'] = 'Wrong password';                 
             echo json_encode(array($res));
             return;
         }
@@ -78,17 +78,21 @@ class Api
         $res->bindParam(':userId', $input['userId'], PDO::PARAM_STR);
         $res->bindParam(':couponId', $input['couponId'], PDO::PARAM_STR);
         if($res->execute()){
-            echo json_encode('1');
+            $res['error'] = false;
+            $res['message'] = 'Successful use of coupon';                 
+            echo json_encode(array($res));
             return;
         }
-        echo json_encode('0');
+        $res['error'] = true;
+        $res['message'] = 'Failed to use coupon';                 
+        echo json_encode(array($res));
         return;
     }
 
-    public function getTranData($input) {           //TODO 雲凱
+    public function getTranData($input) {           
         if(!$this->checkAccount($input)){
             $res['error'] = true;
-            $res['message'] = 'wrong password';                 
+            $res['message'] = 'Wrong password';                 
             echo json_encode(array($res));
             return;
         }
@@ -132,14 +136,14 @@ class Api
         return;
 
         failed :
-        echo json_encode('0');
+        echo json_encode('0');                      //TODO 雲凱
         return;
     }
 
     public function bookingCourse($input){
         if(!$this->checkAccount($input)){                  //參與課程前先卻確認帳號密碼正確性
             $res['error'] = true;
-            $res['message'] = 'wrong password';                 
+            $res['message'] = 'Wrong password';                 
             echo json_encode(array($res));    
             return;
         }
@@ -155,17 +159,21 @@ class Api
         $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
         $res->bindParam(':createTime', $now, PDO::PARAM_STR);
         if($res->execute()){
-            echo json_encode("1");
+            $res['error'] = false;
+            $res['meaasge'] = 'Successful booking course';
+            echo json_encode(array($res));
             return;
         }
-        echo json_encode("0"); 
+        $res['error'] = true;
+        $res['meaasge'] = 'Failed to booking course';
+        echo json_encode(array($res)); 
         return;
     }
 
     public function booking($input){
         if(!$this->checkAccount($input)){                  //預約前先卻確認帳號密碼正確性
             $res['error'] = true;
-            $res['message'] = 'wrong password';                 
+            $res['message'] = 'Wrong password';                 
             echo json_encode(array($res));
             return;
         }
@@ -183,10 +191,14 @@ class Api
         $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
         $res->bindParam(':createTime', $now, PDO::PARAM_STR);
         if($res->execute()){
-            echo json_encode("1");
+            $res['error'] = false;
+            $res['meaasge'] = 'Successful to booking';
+            echo json_encode(array($res)); 
             return;
         }
-        echo json_encode("0"); 
+        $res['error'] = true;
+        $res['meaasge'] = 'Failed to booking';
+        echo json_encode(array($res));  
         return;
     }
 
@@ -217,9 +229,11 @@ class Api
         $res->execute();
         $rowCount = $res->rowCount();
         if($rowCount==0){
-            echo json_encode("0");
+            $res['error'] = false;
+            $res['meaasge'] = 'Nothing to update';
+            echo json_encode(array($res)); 
         }else{
-            $sql = "SELECT `scroll`.*, `image`.`path` FROM  `scroll` ,  `image` WHERE  `image`.`itemid` =  `scroll`.`scrollId`;";
+            $sql = "SELECT `scroll`.*, `image`.`path`, `image`.`link` FROM  `scroll` ,  `image` WHERE  `image`.`itemid` =  `scroll`.`scrollId`;";
             $res = $this->db->prepare($sql);
             $res->execute();
             $allScrollData = $res->fetchAll(PDO::FETCH_ASSOC);
@@ -235,7 +249,9 @@ class Api
         $res->execute();
         $rowCount = $res->rowCount();
         if($rowCount == 0){
-            echo json_encode("0");
+            $res['error'] = false;
+            $res['meaasge'] = 'Nothing to update';
+            echo json_encode(array($res)); 
         }else{
             $sql = "SELECT  `tryOn`. * ,  `frame`.`no` ,  `frame`.`frameName` ,  `image`.`path` 
                     FROM  `tryOn` ,  `frame` ,  `image` 
@@ -257,7 +273,9 @@ class Api
         $res->execute();
         $rowCount = $res->rowCount();
         if($rowCount == 0){
-            echo json_encode("0");
+            $res['error'] = false;
+            $res['meaasge'] = 'Nothing to update';
+            echo json_encode(array($res)); 
         }else{
             $allCourseData = $res->fetchAll(PDO::FETCH_ASSOC);
             echo json_encode($allCourseData);
@@ -272,7 +290,9 @@ class Api
         $res->execute();
         $rowCount = $res->rowCount();
         if($rowCount == 0){
-            echo json_encode("0");
+            $res['error'] = false;
+            $res['meaasge'] = 'Nothing to update';
+            echo json_encode(array($res)); 
         }else{
             $sql = "SELECT `article`.`articleId`, `article`.`title`, `article`.`preview`, `article`.`content`, `article`.`type`, 
                             `article`.`lastUpdateTime`, `article`.`isDelete`, `image`.`path` 
@@ -295,7 +315,9 @@ class Api
         $res->execute();
         $rowCount = $res->rowCount();
         if($rowCount == 0){
-            echo json_encode("0");
+            $res['error'] = false;
+            $res['meaasge'] = 'Nothing to update';
+            echo json_encode(array($res)); 
         }else{
             $sql = "SELECT `storeName`, `phoneNumber`, `address`, `description`, `isDelete` FROM  `store` WHERE `lastUpdateTime` >= :appDate;";
             $res = $this->db->prepare($sql);
