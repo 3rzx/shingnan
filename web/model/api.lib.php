@@ -102,7 +102,10 @@ class Api
         WHERE `userID` = '{$userId}' AND `tran`.`isDelete` = 0;";
         $res = $this->db->prepare($sql);
         if(!$res->execute()) {
-            goto failed;
+            $res['error'] = true;
+            $res['message'] = "wrong userId: {$userId}";
+            echo json_encode(array($res));
+            return;
         }
         $allTrans = $res->fetchAll();
 
@@ -112,7 +115,10 @@ class Api
             WHERE `tranDetail`.`tranId` = '{$singleTran["tranId"]}' AND `tranDetail`.`isDelete` = 0;";
             $res = $this->db->prepare($sql);
             if(!$res->execute()){
-                goto failed;
+                $res['error'] = true;
+                $res['message'] = "wrong tranId: {$singleTran["tranId"]}";
+                echo json_encode(array($res));
+                return;
             }
             $tranDetail = $res->fetchAll();
             $singleTran["tranDetail"] = $tranDetail;
@@ -125,7 +131,9 @@ class Api
                 WHERE `{$whichItem}`.`{$whichItem}Id` = '{$singleItem["itemId"]}';";
                 $res = $this->db->prepare($sql);
                 if(!$res->execute()){
-                    goto failed;
+                    $res['error'] = true;
+                    $res['message'] =  "wrong item: {$whichItem}";
+                    return;
                 }
                 $resItem = $res->fetch();
                 $itemName = $resItem["{$whichItem}Name"];
@@ -133,10 +141,6 @@ class Api
             }
         }
         echo json_encode($allTrans);
-        return;
-
-        failed :
-        echo json_encode('0');                      //TODO 雲凱
         return;
     }
 
