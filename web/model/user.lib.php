@@ -92,7 +92,7 @@ class User
         $userId = $idGen->GetID('user');
         $now = date('Y-m-d H:i:s');
 
-        $sql = "INSERT INTO `shingnan`.`user` (
+        $sql = "INSERT INTO `user` (
         `userId`, `userName`, `account`,`password`,`phone`,`birthday`,
         `gender`,`address`, `point`,`introducerId`,`downlineNum`,
         `isDelete`, `lastUpdateTime`,`createTime`)
@@ -141,7 +141,7 @@ class User
         $originPoint = intval($result['point']);
             $introducer = $result['userId'];
         $finalPoint = $originPoint + 200;
-            $sql = "UPDATE `shingnan`.`user` SET  `point` = '{$finalPoint}', `lastUpdateTime` = '{$now}' WHERE `userId` = '{$introducer}';";
+            $sql = "UPDATE `user` SET  `point` = '{$finalPoint}', `lastUpdateTime` = '{$now}' WHERE `userId` = '{$introducer}';";
         $res = $this->db->prepare($sql);
 
         if (!$res->execute()) {
@@ -223,7 +223,7 @@ class User
         }
 
         $now = date('Y-m-d H:i:s');
-        $sql = "UPDATE `shingnan`.`user` SET  `isDelete` = 1, `lastUpdateTime` = :lastUpdateTime WHERE `userId` = :userId;";
+        $sql = "UPDATE `user` SET  `isDelete` = 1, `lastUpdateTime` = :lastUpdateTime WHERE `userId` = :userId;";
         $res = $this->db->prepare($sql);
         $res->bindParam(':userId', $input['userId'], PDO::PARAM_STR);
         $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
@@ -290,16 +290,16 @@ class User
             return;
         }
 
-        if($this->isNullOrEmptyString($input)){
+        if($this->isNullOrEmptyString($input['introducerId'])){
             $input['introducerId'] = NULL;
         }
 
-        $sql = "UPDATE `shingnan`.`user`
+        $sql = "UPDATE `user` 
                 SET  `lastUpdateTime` = :lastUpdateTime,
                      `userName` = :userName,
                      `account` = :account, `phone` = :phone,
                      `gender` = :gender, `address` = :address,
-                     `birthday` = :birthday, `introducerId`= :introducerId
+                     `birthday` = :birthday, `introducerId`= :introducerId 
                 WHERE `userId` = :userId;";
 
         $now = date('Y-m-d H:i:s');
@@ -315,7 +315,11 @@ class User
         $res->bindParam(':address', $input['address'], PDO::PARAM_STR);
         $res->bindParam(':introducerId', $input['introducerId'], PDO::PARAM_STR);
         $res->execute();
-
+        if ($res) {
+            $error = $res->errorInfo();
+            var_dump($error);
+            return;
+        }
         header("Location: ../controller/userController.php?action=userDetailPrepare&userId={$input["userId"]}");
     }
 
@@ -400,7 +404,7 @@ class User
 
         // TODO: Fix sql condition: userId and courseId
         // TODO: Fix deleteCourseAttendance function in html
-        $sql = "UPDATE `shingnan`.`attendance` SET  `isDelete` = 1, `lastUpdateTime` = '{$now}' WHERE `courseId` = '{$input["courseId"]}' AND `userId` = '{$input["userId"]}';";
+        $sql = "UPDATE `attendance` SET  `isDelete` = 1, `lastUpdateTime` = '{$now}' WHERE `courseId` = '{$input["courseId"]}' AND `userId` = '{$input["userId"]}';";
         $res = $this->db->prepare($sql);
         $res->execute();
 
@@ -425,7 +429,7 @@ class User
         $now = date('Y-m-d H:i:s');
         $attendanceState = $input["attendanceState"];
         $courseId = $input["courseId"];
-        $sql = "UPDATE `shingnan`.`attendance` SET  `state` = '{$attendanceState}', `lastUpdateTime` = '{$now}' WHERE `courseId` = '{$courseId}';";
+        $sql = "UPDATE `attendance` SET  `state` = '{$attendanceState}', `lastUpdateTime` = '{$now}' WHERE `courseId` = '{$courseId}';";
         $res = $this->db->prepare($sql);
         $res->execute();
 
@@ -547,8 +551,8 @@ class User
         $getPoint = floor((int)$input["price"]/ $pointRate);
 
 
-        $sql = "INSERT INTO `shingnan`.`tran` (
-        `tranId`, `userId`, `description`,`checkState`, `price`, `point`, `deletePoint`, `isDelete`, `lastUpdateTime`,`createTime`)
+        $sql = "INSERT INTO `tran` (
+        `tranId`, `userId`, `description`,`checkState`, `price`, `point`, `deletePoint`, `isDelete`, `lastUpdateTime`,`createTime`) 
         VALUES ('{$tranId}', '{$input["userId"]}', '{$input["description"]}', '{$input["checkState"]}', '{$input["price"]}', '{$getPoint}', '{$deletePoint}','0', '{$now}', '{$now}' );";
 
         $res = $this->db->prepare($sql);
@@ -557,7 +561,7 @@ class User
         }
 
         // create transaction detail
-        $sql = "INSERT INTO `shingnan`.`tranDetail` (`tranId`, `itemId`, `itemNum`,`actionState`, `isDelete`) VALUES ";
+        $sql = "INSERT INTO `tranDetail` (`tranId`, `itemId`, `itemNum`,`actionState`, `isDelete`) VALUES ";
         for ($i = 0; $i < (int)$input['tranDetailLength']; $i++) {
             $itemId = $input["itemName_{$i}"];
             $itemNum = $input["amount_{$i}"];
@@ -584,7 +588,7 @@ class User
         }
         // update user point
         $now = date('Y-m-d H:i:s');
-        $sql = "UPDATE `shingnan`.`user` SET  `point` = '{$sumOfPoints}', `lastUpdateTime` = '{$now}' WHERE `userId` = '{$input["userId"]}';";
+        $sql = "UPDATE `user` SET  `point` = '{$sumOfPoints}', `lastUpdateTime` = '{$now}' WHERE `userId` = '{$input["userId"]}';";
         $res = $this->db->prepare($sql);
         $res->execute();
         header("Location: ../controller/userController.php?action=userShoppingRecordPrepare&userId={$input["userId"]}");
@@ -689,8 +693,8 @@ class User
 
 
         $newPoint = (int)$userPoint - (int)$originalTranPoint + $point;
-        $sql = "UPDATE `shingnan`.`user`
-                SET `point`='{$newPoint}'
+        $sql = "UPDATE `user` 
+                SET `point`='{$newPoint}' 
                 WHERE `user`.`userId`='{$input['userId']}';";
         $res = $this->db->prepare($sql);
         if (!$res->execute()) {
@@ -700,8 +704,8 @@ class User
 
 
         // update tran data
-        $sql = "UPDATE `shingnan`.`tran`
-                SET `description`='{$input["description"]}', `price`='{$input["price"]}', `lastUpdateTime`='{$now}', `checkState`='{$input["checkState"]}', `point`='{$point}', `deletePoint`='{$input["deletePoint"]}'
+        $sql = "UPDATE `tran` 
+                SET `description`='{$input["description"]}', `price`='{$input["price"]}', `lastUpdateTime`='{$now}', `checkState`='{$input["checkState"]}', `point`='{$point}', `deletePoint`='{$input["deletePoint"]}' 
                 WHERE `tran`.`tranId`='{$tranId}';";
 
         $res = $this->db->prepare($sql);
@@ -754,12 +758,12 @@ class User
         $now = date('Y-m-d H:i:s');
 
         // delete tran
-        $sql = "UPDATE `shingnan`.`tran` SET  `isDelete` = 1, `lastUpdateTime` = '{$now}' WHERE `tranId` = '{$input["tranId"]}';";
+        $sql = "UPDATE `tran` SET  `isDelete` = 1, `lastUpdateTime` = '{$now}' WHERE `tranId` = '{$input["tranId"]}';";
         $res = $this->db->prepare($sql);
         $res->execute();
 
         // delete corresponding tranDetail
-        $sql = "UPDATE `shingnan`.`tranDetail` SET `isDelete` = 1  WHERE `tranId` = '{$input["tranId"]}';";
+        $sql = "UPDATE `tranDetail` SET `isDelete` = 1  WHERE `tranId` = '{$input["tranId"]}';";
         $res = $this->db->prepare($sql);
         $res->execute();
 
@@ -773,7 +777,7 @@ class User
         $result = $res->fetch();
 
         $remainPoint = (int)$result["userPoint"] - (int)$result["tranPoint"] + (int)$result["deletePoint"];
-        $sql = "UPDATE `shingnan`.`user` SET  `point` = '{$remainPoint}', `lastUpdateTime` = '{$now}' WHERE `userId` = '{$result["userId"]}';";
+        $sql = "UPDATE `user` SET  `point` = '{$remainPoint}', `lastUpdateTime` = '{$now}' WHERE `userId` = '{$result["userId"]}';";
         $res = $this->db->prepare($sql);
         $res->execute();
     }
