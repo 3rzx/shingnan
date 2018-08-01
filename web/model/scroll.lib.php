@@ -63,7 +63,7 @@ class Scroll
             $idGen = new IdGenerator();
             $now = date('Y-m-d H:i:s');
             $scrollId = $idGen->GetID('scroll');
-            $sql = "INSERT INTO `shingnan`.`scroll` (`scrollId`, `scrollName`, `description`,`createTime`) 
+            $sql = "INSERT INTO `scroll` (`scrollId`, `scrollName`, `description`,`createTime`) 
                         VALUES (:scrollId, :scrollName, :description, :createTime);";
             $res = $this->db->prepare($sql);
             $res->bindParam(':scrollId', $scrollId, PDO::PARAM_STR);
@@ -79,7 +79,7 @@ class Scroll
                     $imgName = 'scroll_'.$input['scrollName'];
                     $fileInfo = $_FILES['scrollImage'];
                     $scrollImage = uploadFile($fileInfo, $uploadPath);
-                    $sql = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`, 
+                    $sql = "INSERT INTO `image` (`imageId`, `imageName`, `type`, 
                                                             `itemId`, `ctr`, `path`, `link`, `createTime`) 
                             VALUES (:imgId, :imgName, 10, 
                                     :scrollId, 0, :filePath, ':link', :createTime);";

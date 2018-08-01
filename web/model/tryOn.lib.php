@@ -70,7 +70,7 @@ class TryOn
             $idGen = new IdGenerator();
             $now = date('Y-m-d H:i:s');
             $tryOnId = $idGen->GetID('tryOn');
-            $sql = "INSERT INTO `shingnan`.`tryOn` (`tryOnId`, `frameId`, `createTime`) 
+            $sql = "INSERT INTO `tryOn` (`tryOnId`, `frameId`, `createTime`) 
                         VALUES (:tryOnId, :frameId, :createTime);";
             $res = $this->db->prepare($sql);
             $res->bindParam(':tryOnId', $tryOnId, PDO::PARAM_STR);
@@ -85,7 +85,7 @@ class TryOn
                     $imgName = $tryOnId;
                     $fileInfo = $_FILES['tryOnImage'];
                     $tryOnImage = uploadFile($fileInfo, $uploadPath);
-                    $sql = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`, 
+                    $sql = "INSERT INTO `image` (`imageId`, `imageName`, `type`, 
                                                             `itemId`, `ctr`, `path`, `link`, `createTime`) 
                             VALUES (:imgId, :imgName, 11, 
                                     :tryOnId, 0, :filePath, '', :createTime);";
