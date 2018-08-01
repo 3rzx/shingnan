@@ -67,7 +67,7 @@ class Education
             $idGen = new IdGenerator();
             $now = date('Y-m-d H:i:s');
             $educationId = $idGen->GetID('education');
-            $sql = "INSERT INTO `shingnan`.`article` (`articleId`, `title`,`preview`, `content`, `type`, `ctr`, `isDelete`, `lastUpdateTime`, `createTime`) VALUES (:articleId, :title, :preview, :content, '1', '0', '0', :lastUpdateTime, :createTime);";
+            $sql = "INSERT INTO `article` (`articleId`, `title`,`preview`, `content`, `type`, `ctr`, `isDelete`, `lastUpdateTime`, `createTime`) VALUES (:articleId, :title, :preview, :content, '1', '0', '0', :lastUpdateTime, :createTime);";
             $res = $this->db->prepare($sql);
             $res->bindParam(':articleId', $educationId, PDO::PARAM_STR);
             $res->bindParam(':title', $input['educationTitle'], PDO::PARAM_STR);
@@ -85,7 +85,7 @@ class Education
                     $imgName = 'education_' . $input['educationTitle'];
                     $fileInfo = $_FILES['educationImage'];
                     $educationImage = uploadFile($fileInfo, $uploadPath);
-                    $sql = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`,
+                    $sql = "INSERT INTO `image` (`imageId`, `imageName`, `type`,
                                                             `itemId`, `ctr`, `path`, `link`, `createTime`)
                             VALUES (:imgId, :imgName, 5,
                                     :educationId, 0, :filePath, '', :createTime);";
@@ -144,7 +144,7 @@ class Education
             return 0;
         } else {
             $now = date('Y-m-d H:i:s');
-            $sql = "UPDATE `shingnan`.`article` SET `title` = :title ,`preview`= :preview ,`content` = :content , `lastUpdateTime` =  :lastUpdateTime
+            $sql = "UPDATE `article` SET `title` = :title ,`preview`= :preview ,`content` = :content , `lastUpdateTime` =  :lastUpdateTime
                 WHERE  `article`.`articleId` = :articleId";
             $res = $this->db->prepare($sql);
             $res->bindParam(':articleId', $input['educationId'], PDO::PARAM_STR);
@@ -160,7 +160,7 @@ class Education
                     if (isset($input['imageId'])) {
                         $fileInfo = $_FILES['educationImage'];
                         $educationImage = uploadFile($fileInfo, '../media/picture');
-                        $sql = "UPDATE  `shingnan`.`image` SET  `path` = :pathinfo WHERE `image`.`imageId` = :imageId;";
+                        $sql = "UPDATE  `image` SET  `path` = :pathinfo WHERE `image`.`imageId` = :imageId;";
                         $res = $this->db->prepare($sql);
                         $res->bindParam(':imageId', $input['imageId'], PDO::PARAM_STR);
                         $res->bindParam(':pathinfo', $educationImage, PDO::PARAM_STR);
@@ -176,7 +176,7 @@ class Education
                         $imgName = 'education_' . $input['educationTitle'];
                         $fileInfo = $_FILES['educationImage'];
                         $educationImage = uploadFile($fileInfo, '../media/picture');
-                        $sql = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`,
+                        $sql = "INSERT INTO `image` (`imageId`, `imageName`, `type`,
                                                                 `itemId`, `ctr`, `path`, `link`, `createTime`)
                                 VALUES (:imgId, :imgName, 5,
                                         :educationId, 0, :filePath, '', :createTime);";

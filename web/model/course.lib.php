@@ -64,7 +64,7 @@ class Course
             $idGen = new IdGenerator();
             $now = date('Y-m-d H:i:s');
             $courseId = $idGen->GetID('course');
-            $sql = "INSERT INTO `shingnan`.`course` (`courseId`, `courseName`, `content`, `isDelete`, `lastUpdateTime`, `createTime`) VALUES (:courseId, :courseName, :content, '0',:lastUpdateTime, :createTime);";
+            $sql = "INSERT INTO `course` (`courseId`, `courseName`, `content`, `isDelete`, `lastUpdateTime`, `createTime`) VALUES (:courseId, :courseName, :content, '0',:lastUpdateTime, :createTime);";
             $res = $this->db->prepare($sql);
             $res->bindParam(':courseId', $courseId, PDO::PARAM_STR);
             $res->bindParam(':courseName', $input['courseName'], PDO::PARAM_STR);
@@ -117,7 +117,7 @@ class Course
             $this->viewLogin();
         } else {
             $now = date('Y-m-d H:i:s');
-            $sql = "UPDATE `shingnan`.`course` SET `courseName` = :courseName ,`content` = :content , `lastUpdateTime` =  :lastUpdateTime
+            $sql = "UPDATE `course` SET `courseName` = :courseName ,`content` = :content , `lastUpdateTime` =  :lastUpdateTime
                 WHERE  `course`.`courseId` = :courseId";
             $res = $this->db->prepare($sql);
             $res->bindParam(':courseId', $input['courseId'], PDO::PARAM_STR);

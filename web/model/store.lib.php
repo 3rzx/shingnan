@@ -64,7 +64,7 @@ class Store
             $idGen = new IdGenerator();
             $now = date('Y-m-d H:i:s');
             $storeId = $idGen->GetID('store');
-            $sql = "INSERT INTO `shingnan`.`store` (`storeId`, `storeName`, `phoneNumber`, `address`, `businessFrom`,`businessTo`, `description`, `isDelete`, `lastUpdateTime`, `createTime`) VALUES (:storeId, :storeName, :phoneNumber, :address, :businessFrom , :businessTo , :description, '0', :lastUpdateTime, :createTime);";
+            $sql = "INSERT INTO `store` (`storeId`, `storeName`, `phoneNumber`, `address`, `businessFrom`,`businessTo`, `description`, `isDelete`, `lastUpdateTime`, `createTime`) VALUES (:storeId, :storeName, :phoneNumber, :address, :businessFrom , :businessTo , :description, '0', :lastUpdateTime, :createTime);";
             $res = $this->db->prepare($sql);
             $res->bindParam(':storeId', $storeId, PDO::PARAM_STR);
             $res->bindParam(':storeName', $input['storeName'], PDO::PARAM_STR);
@@ -121,7 +121,7 @@ class Store
             $this->viewLogin();
         } else {
             $now = date('Y-m-d H:i:s');
-            $sql = "UPDATE `shingnan`.`store` SET `storeName` = :storeName ,`phoneNumber` = :phoneNumber , `address` =  :address , `description` =  :description , `businessFrom` =  :businessFrom , `businessTo` =  :businessTo ,
+            $sql = "UPDATE `store` SET `storeName` = :storeName ,`phoneNumber` = :phoneNumber , `address` =  :address , `description` =  :description , `businessFrom` =  :businessFrom , `businessTo` =  :businessTo ,
                 `lastUpdateTime` = :lastUpdateTime
                 WHERE  `store`.`storeId` = :storeId";
             $res = $this->db->prepare($sql);
