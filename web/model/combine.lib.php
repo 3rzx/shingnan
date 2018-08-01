@@ -77,7 +77,7 @@ class Combine
         if (isset($input['isLaunch']))
             $isLaunch = 1;                        
 
-        $sql = "INSERT INTO `shingnan`.`combine` (`combineId`, `combineName`, `price`, `discountPrice`, `isLaunch`, 
+        $sql = "INSERT INTO `combine` (`combineId`, `combineName`, `price`, `discountPrice`, `isLaunch`, 
                                                   `description`, `isDelete`, `lastUpdateTime`, `createTime`) 
                 VALUES (:combineId, :combineName, :price, :discountPrice, :isLaunch, :description, 0, :lastUpdateTime, :createTime);";
         $res = $this->db->prepare($sql);
@@ -93,7 +93,7 @@ class Combine
             
             //deal with comDetail
             $this->msg = '資料新增成功';
-            $sql2 = "INSERT INTO `shingnan`.`comDetail` (`combineId` ,`frameId`) VALUES ";
+            $sql2 = "INSERT INTO `comDetail` (`combineId` ,`frameId`) VALUES ";
             for($i=1;$i<=$input['itemCount'];$i++)
                 if(isset($input['combineItem'.$i]) && $input['combineItem'.$i] !='' )
                     $sql2 .= "('".$combineId."', '". $input['combineItem'.$i] ."'),"; 
@@ -107,7 +107,7 @@ class Combine
             }
             //deal with image
             $uploadPath = '../media/picture';
-            $sql3 = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`,`itemId`, `ctr`, `path`, `link`, `createTime`) VALUES ";
+            $sql3 = "INSERT INTO `image` (`imageId`, `imageName`, `type`,`itemId`, `ctr`, `path`, `link`, `createTime`) VALUES ";
             for($i=0;$i<$input['imgCount'];$i++){
                 $imgCount = 'combineImage'.(string)($i+1);
                 if (isset($_FILES[$imgCount]['error']) && $_FILES[$imgCount]['error'] == 0){
@@ -198,7 +198,7 @@ class Combine
         if (isset($input['isPrimary']))
             $isPrimary = 1;
 
-        $sql = "UPDATE `shingnan`.`combine` 
+        $sql = "UPDATE `combine` 
                 SET `combineName` = :combineName, `price` = :price, `discountPrice` = :discountPrice, `isLaunch` = :isLaunch, 
                     `description` = :description, `lastUpdateTime` =  :lastUpdateTime 
                 WHERE  `combine`.`combineId` = :combineId;" ;
@@ -215,7 +215,7 @@ class Combine
              $this->msg = '資料新增成功';
             
             // //deal with comDetail
-            $sql2 = "INSERT INTO `shingnan`.`comDetail` (`combineId` ,`frameId`) VALUES ";
+            $sql2 = "INSERT INTO `comDetail` (`combineId` ,`frameId`) VALUES ";
             for($i=1;$i<=$input['itemCount'];$i++)
                 if(isset($input['combineItem'.$i]) && $input['combineItem'.$i] !='' )
                     $sql2 .= "('".$combineId."', '". $input['combineItem'.$i] ."'),"; 
@@ -230,7 +230,7 @@ class Combine
 
             // //deal with image
             $uploadPath = '../media/picture';
-            $sql3 = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`,`itemId`, `ctr`, `path`, `link`, `createTime`) VALUES ";
+            $sql3 = "INSERT INTO `image` (`imageId`, `imageName`, `type`,`itemId`, `ctr`, `path`, `link`, `createTime`) VALUES ";
             for($i=0;$i<$input['imgCount'];$i++){
                 $imgCount = 'combineImage'.(string)($i+1);
                 if (isset($_FILES[$imgCount]['error']) && $_FILES[$imgCount]['error'] == 0){
@@ -312,7 +312,7 @@ class Combine
         }
 
         //deal with data TODO
-        $sql = "UPDATE `shingnan`.`combine` SET `isDelete` = '1' WHERE `combine`.`combineId` = :combineId;";
+        $sql = "UPDATE `combine` SET `isDelete` = '1' WHERE `combine`.`combineId` = :combineId;";
         $res = $this->db->prepare($sql);
         $res->bindParam(':combineId', $input['combineId'], PDO::PARAM_STR);
         $res->execute();

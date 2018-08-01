@@ -67,7 +67,7 @@ class Len
         $now = date('Y-m-d H:i:s');
         $lenId = $idGen->GetID('len');
         echo $input['quantity'];
-        $sql = "INSERT INTO `shingnan`.`len` (`lenId`, `lenName`, `brandId`, `quantity`, `size`, `period`, 
+        $sql = "INSERT INTO `len` (`lenId`, `lenName`, `brandId`, `quantity`, `size`, `period`, 
                                               `color`, `isDelete`, `lastUpdateTime`, `createTime`) 
                 VALUES (:lenId, :lenName, :lenBrand, :quantity, :size, :period, 
                         :color, 0, :lastUpdateTime, :createTime);";
@@ -125,7 +125,7 @@ class Len
             $this->viewLogin();
         }
         $now = date('Y-m-d H:i:s');
-        $sql = "UPDATE  `shingnan`.`len` SET  `lenName` = :lenName, `brandId` = :lenBrand, `quantity` = :quantity, 
+        $sql = "UPDATE `len` SET  `lenName` = :lenName, `brandId` = :lenBrand, `quantity` = :quantity, 
                         `period` =  :period, `size` =  :size, `color` =  :color, `lastUpdateTime` = :lastUpdateTime 
                 WHERE `len`.`lenId` = :lenId;" ;
         $res = $this->db->prepare($sql);
@@ -181,7 +181,7 @@ class Len
             $this->viewLogin();
         }
         $now = date('Y-m-d H:i:s');
-        $sql = "UPDATE `shingnan`.`len` SET  `isDelete` = 1, `lastUpdateTime` = :lastUpdateTime WHERE lenId = :lenId;";
+        $sql = "UPDATE `len` SET  `isDelete` = 1, `lastUpdateTime` = :lastUpdateTime WHERE lenId = :lenId;";
         $res = $this->db->prepare($sql);
         $res->bindParam(':lenId', $input['lenId'], PDO::PARAM_STR);
         $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);

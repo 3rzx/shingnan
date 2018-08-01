@@ -66,7 +66,7 @@ class Part
         $now = date('Y-m-d H:i:s');
         $partId = $idGen->GetID('part'); 
 
-        $sql = "INSERT INTO `shingnan`.`part` (`partId`, `partName`, `type`, `size`, `isDelete`, `lastUpdateTime`, `createTime`) 
+        $sql = "INSERT INTO `part` (`partId`, `partName`, `type`, `size`, `isDelete`, `lastUpdateTime`, `createTime`) 
                 VALUES ( :partId , :partName , :partType, :partSize, '0', :lastUpdateTime, :createTime);";
         $res = $this->db->prepare($sql);
         $res->bindParam(':partId', $partId, PDO::PARAM_STR);
@@ -114,7 +114,7 @@ class Part
             $this->viewLogin();
         }
         $now = date('Y-m-d H:i:s');
-        $sql = "UPDATE `shingnan`.`part` SET  `partName` = :partName, `type` = :partType, `size` = :partSize, 
+        $sql = "UPDATE `part` SET  `partName` = :partName, `type` = :partType, `size` = :partSize, 
                 `lastUpdateTime` =  :lastUpdateTime WHERE `part`.`partId` = :partId;" ;
         $res = $this->db->prepare($sql);
         $res->bindParam(':partId', $input['partId'], PDO::PARAM_STR);

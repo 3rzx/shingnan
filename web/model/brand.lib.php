@@ -66,7 +66,7 @@ class Brand
         $idGen = new IdGenerator();
         $now = date('Y-m-d H:i:s');
         $brandId = $idGen->GetID('brand');
-        $sql = "INSERT INTO `shingnan`.`brand` (`brandId`, `brandName`, `isDelete`, `description`,`lastUpdateTime`, `createTime`) 
+        $sql = "INSERT INTO `brand` (`brandId`, `brandName`, `isDelete`, `description`,`lastUpdateTime`, `createTime`) 
                     VALUES (:brandId, :brandName, '0', :description, :lastUpdateTime, :createTime);";
         $res = $this->db->prepare($sql);
         $res->bindParam(':brandId', $brandId, PDO::PARAM_STR);
@@ -83,7 +83,7 @@ class Brand
                 $imgName = 'brand_'.$input['brandName'];
                 $fileInfo = $_FILES['brandImage'];
                 $brandImage = uploadFile($fileInfo, $uploadPath);
-                $sql = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`, 
+                $sql = "INSERT INTO `image` (`imageId`, `imageName`, `type`, 
                                                         `itemId`, `ctr`, `path`, `link`, `createTime`) 
                         VALUES (:imgId, :imgName, 3, 
                                 :brandId, 0, :filePath, '', :createTime);";
@@ -135,7 +135,7 @@ class Brand
             $this->viewLogin();
         }
         $now = date('Y-m-d H:i:s');
-        $sql = "UPDATE  `shingnan`.`brand` SET  `brandName` = :brandName, `description` = :description, 
+        $sql = "UPDATE `brand` SET  `brandName` = :brandName, `description` = :description, 
                 `lastUpdateTime` =  :lastUpdateTime WHERE  `brand`.`brandId` = :brandId;" ;
         $res = $this->db->prepare($sql);
         $res->bindParam(':brandId', $input['brandId'], PDO::PARAM_STR);
@@ -151,7 +151,7 @@ class Brand
                 if( isset($input['imageId']) ){
                     $fileInfo = $_FILES['brandImage'];
                     $brandImage = uploadFile($fileInfo, '../media/picture');
-                    $sql = "UPDATE  `shingnan`.`image` SET  `path` = :pathinfo WHERE `image`.`imageId` = :imageId;";
+                    $sql = "UPDATE `image` SET  `path` = :pathinfo WHERE `image`.`imageId` = :imageId;";
                     $res = $this->db->prepare($sql);
                     $res->bindParam(':imageId', $input['imageId'], PDO::PARAM_STR);
                     $res->bindParam(':pathinfo', $brandImage, PDO::PARAM_STR);
@@ -167,7 +167,7 @@ class Brand
                     $imgName = 'brand_'.$input['brandName'];
                     $fileInfo = $_FILES['brandImage'];
                     $brandImage = uploadFile($fileInfo, '../media/picture');
-                    $sql = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`, 
+                    $sql = "INSERT INTO `image` (`imageId`, `imageName`, `type`, 
                                                             `itemId`, `ctr`, `path`, `link`, `createTime`) 
                             VALUES (:imgId, :imgName, 3, 
                                     :brandId, 0, :filePath, '', :createTime);";
@@ -247,7 +247,7 @@ class Brand
             $deleter->deleteFile($path['path']);
         }
         $now = date('Y-m-d H:i:s');
-        $sql = "UPDATE `shingnan`.`brand` SET  `isDelete` = 1, `lastUpdateTime` = :lastUpdateTime WHERE brandId = :brandId;";
+        $sql = "UPDATE `brand` SET  `isDelete` = 1, `lastUpdateTime` = :lastUpdateTime WHERE brandId = :brandId;";
         $res = $this->db->prepare($sql);
         $res->bindParam(':brandId', $input['brandId'], PDO::PARAM_STR);
         $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
