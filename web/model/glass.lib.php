@@ -67,7 +67,7 @@ class Glass
             $idGen = new IdGenerator();
             $now = date('Y-m-d H:i:s');
             $glassId = $idGen->GetID('glass');
-            $sql = "INSERT INTO `shingnan`.`glass` (`glassId`, `no`, `glassName`, `brandId`, `type`, `memo`, 
+            $sql = "INSERT INTO `glass` (`glassId`, `no`, `glassName`, `brandId`, `type`, `memo`, 
                                                     `isDelete`, `lastUpdateTime`, `createTime`) 
                     VALUES (:glassId, :glassNo, :glassName, :glassBrand, :glassType, :memo, 
                             '0', :lastUpdateTime, :createTime);";
@@ -125,7 +125,7 @@ class Glass
             $this->viewLogin();
         }else{
         $now = date('Y-m-d H:i:s');
-        $sql = "UPDATE  `shingnan`.`glass` SET  `glassName` = :glassName, `brandId`= :brandId, `no` = :no, `type` = :type, `memo` = :memo,
+        $sql = "UPDATE `glass` SET  `glassName` = :glassName, `brandId`= :brandId, `no` = :no, `type` = :type, `memo` = :memo,
                 `lastUpdateTime` =  :lastUpdateTime WHERE `glass`.`glassId` = :glassId;" ;
         $res = $this->db->prepare($sql);
         $res->bindParam(':glassId', $input['glassId'], PDO::PARAM_STR);        
@@ -182,7 +182,7 @@ class Glass
             $this->viewLogin();
         }else{
         $now = date('Y-m-d H:i:s');
-        $sql = "UPDATE `shingnan`.`glass` SET  `isDelete` = 1, `lastUpdateTime` = :lastUpdateTime WHERE `glass`.`glassId` = :glassId;";
+        $sql = "UPDATE `glass` SET  `isDelete` = 1, `lastUpdateTime` = :lastUpdateTime WHERE `glass`.`glassId` = :glassId;";
         $res = $this->db->prepare($sql);
         $res->bindParam(':glassId', $input['glassId'], PDO::PARAM_STR);
         $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);

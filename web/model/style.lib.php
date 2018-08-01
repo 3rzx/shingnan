@@ -59,16 +59,12 @@ class Style
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
-        }else{
-            if(!isset($input['styleName'])){
-                $this->error = '請至少填入風格名稱';
-                $this->styleAddPrepare();
-            }
+        }else{    
             $idGen = new IdGenerator();
             $now = date('Y-m-d H:i:s');
             $styleId = $idGen->GetID('style');
-            $sql = "INSERT INTO `shingnan`.`style` (`styleId`, `styleName`, `isDelete`, `lastUpdateTime`, `createTime`) 
-                        VALUES (:styleId, :styleName, '0', :lastUpdateTime, :createTime);";
+            $sql = "INSERT INTO `style` (`styleId`, `styleName`, `isDelete`, `lastUpdateTime`, `createTime`) 
+                    VALUES (:styleId, :styleName, '0', :lastUpdateTime, :createTime);";
             $res = $this->db->prepare($sql);
             $res->bindParam(':styleId', $styleId, PDO::PARAM_STR);
             $res->bindParam(':styleName', $input['styleName'], PDO::PARAM_STR);
@@ -83,10 +79,10 @@ class Style
                     $imgName = 'style_'.$input['styleName'];
                     $fileInfo = $_FILES['styleImage'];
                     $styleImage = uploadFile($fileInfo, $uploadPath);
-                    $sql = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`, 
-                                                            `itemId`, `ctr`, `path`, `link`, `createTime`) 
+                    $sql = "INSERT INTO `image` (`imageId`, `imageName`, `type`, 
+                                                        `itemId`, `ctr`, `path`, `link`, `crateTime`) 
                             VALUES (:imgId, :imgName, 2, 
-                                    :styleId, 0, :filePath, '', :createTime);";
+                                :styleId, 0, :filePath, '', :createTime);";
                     $res = $this->db->prepare($sql);
                     $res->bindParam(':imgId', $imgId, PDO::PARAM_STR);
                     $res->bindParam(':imgName', $imgName, PDO::PARAM_STR);
@@ -98,7 +94,6 @@ class Style
                         $error = $res->errorInfo();
                         $this->error = $error[0];
                         $this->styleList();
-                    }
                 }
             }
             $this->styleList();
@@ -137,7 +132,7 @@ class Style
             $this->viewLogin();
         }else{
             $now = date('Y-m-d H:i:s');
-            $sql = "UPDATE  `shingnan`.`style` SET  `styleName` =  :styleName,
+            $sql = "UPDATE `style` SET  `styleName` =  :styleName,
                     `lastUpdateTime` =  :lastUpdateTime WHERE  `style`.`styleId` = :styleId;" ;
             $res = $this->db->prepare($sql);
             $res->bindParam(':styleId', $input['styleId'], PDO::PARAM_STR);
@@ -152,7 +147,7 @@ class Style
                     if( isset($input['imageId']) ){                
                         $fileInfo = $_FILES['styleImage'];
                         $styleImage = uploadFile($fileInfo, '../media/picture');
-                        $sql = "UPDATE  `shingnan`.`image` SET  `path` = :pathinfo WHERE `image`.`imageId` = :imageId;";
+                        $sql = "UPDATE `image` SET  `path` = :pathinfo WHERE `image`.`imageId` = :imageId;";
                         $res = $this->db->prepare($sql);
                         $res->bindParam(':imageId', $input['imageId'], PDO::PARAM_STR);
                         $res->bindParam(':pathinfo', $styleImage, PDO::PARAM_STR);
@@ -168,7 +163,7 @@ class Style
                         $imgName = 'style_'.$input['styleName'];
                         $fileInfo = $_FILES['styleImage'];
                         $styleImage = uploadFile($fileInfo, '../media/picture');
-                        $sql = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`, 
+                        $sql = "INSERT INTO `image` (`imageId`, `imageName`, `type`, 
                                                                 `itemId`, `ctr`, `path`, `link`, `createTime`) 
                                 VALUES (:imgId, :imgName, 2, 
                                         :styleId, 0, :filePath, '', :createTime);";
@@ -234,7 +229,7 @@ class Style
                 $this->db->commit();
             }
             $now = date('Y-m-d H:i:s');
-            $sql = "UPDATE `shingnan`.`style` SET  `isDelete` = 1, `lastUpdateTime` = :lastUpdateTime WHERE `styleId` = :styleId;";
+            $sql = "UPDATE `style` SET  `isDelete` = 1, `lastUpdateTime` = :lastUpdateTime WHERE `styleId` = :styleId;";
             $res = $this->db->prepare($sql);
             $res->bindParam(':styleId', $input['styleId'], PDO::PARAM_STR);
             $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);

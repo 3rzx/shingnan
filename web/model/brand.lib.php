@@ -58,47 +58,46 @@ class Brand
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
-        }else{
-            if(!isset($input['brandName'])){
-                $this->error = '請至少填入品牌名稱';
-                $this->brandAddPrepare();
-            }
-            $idGen = new IdGenerator();
-            $now = date('Y-m-d H:i:s');
-            $brandId = $idGen->GetID('brand');
-            $sql = "INSERT INTO `shingnan`.`brand` (`brandId`, `brandName`, `isDelete`, `description`,`lastUpdateTime`, `createTime`) 
-                        VALUES (:brandId, :brandName, '0', :description, :lastUpdateTime, :createTime);";
-            $res = $this->db->prepare($sql);
-            $res->bindParam(':brandId', $brandId, PDO::PARAM_STR);
-            $res->bindParam(':brandName', $input['brandName'], PDO::PARAM_STR);
-            $res->bindParam(':description', $input['description'], PDO::PARAM_STR);
-            $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
-            $res->bindParam(':createTime', $now, PDO::PARAM_STR);
-            if ($res->execute()) {
-            //deal with insert image
-                $this->msg = '新增成功';
-                $uploadPath = '../media/picture';
-                if ($_FILES['brandImage']['error'] == 0) {
-                    $imgId = $idGen->GetID('image');
-                    $imgName = 'brand_'.$input['brandName'];
-                    $fileInfo = $_FILES['brandImage'];
-                    $brandImage = uploadFile($fileInfo, $uploadPath);
-                    $sql = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`, 
-                                                            `itemId`, `ctr`, `path`, `link`, `createTime`) 
-                            VALUES (:imgId, :imgName, 3, 
-                                    :brandId, 0, :filePath, '', :createTime);";
-                    $res = $this->db->prepare($sql);
-                    $res->bindParam(':imgId', $imgId, PDO::PARAM_STR);
-                    $res->bindParam(':imgName', $imgName, PDO::PARAM_STR);
-                    $res->bindParam(':brandId', $brandId, PDO::PARAM_STR);
-                    $res->bindParam(':filePath', $brandImage, PDO::PARAM_STR);
-                    $res->bindParam(':createTime', $now, PDO::PARAM_STR);
-                    $res->execute();
-                    if (!$res) { 
-                        $error = $res->errorInfo();
-                        $this->error = $error[0];
-                        $this->brandList();
-                    }
+        }
+        if(!isset($input['brandName'])){
+            $this->error = '請至少填入品牌名稱';
+            $this->brandAddPrepare();
+        }
+        $idGen = new IdGenerator();
+        $now = date('Y-m-d H:i:s');
+        $brandId = $idGen->GetID('brand');
+        $sql = "INSERT INTO `brand` (`brandId`, `brandName`, `isDelete`, `description`,`lastUpdateTime`, `createTime`) 
+                    VALUES (:brandId, :brandName, '0', :description, :lastUpdateTime, :createTime);";
+        $res = $this->db->prepare($sql);
+        $res->bindParam(':brandId', $brandId, PDO::PARAM_STR);
+        $res->bindParam(':brandName', $input['brandName'], PDO::PARAM_STR);
+        $res->bindParam(':description', $input['description'], PDO::PARAM_STR);
+        $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
+        $res->bindParam(':createTime', $now, PDO::PARAM_STR);
+        if ($res->execute()) {
+        //deal with insert image
+            $this->msg = '新增成功';
+            $uploadPath = '../media/picture';
+            if ($_FILES['brandImage']['error'] == 0) {
+                $imgId = $idGen->GetID('image');
+                $imgName = 'brand_'.$input['brandName'];
+                $fileInfo = $_FILES['brandImage'];
+                $brandImage = uploadFile($fileInfo, $uploadPath);
+                $sql = "INSERT INTO `image` (`imageId`, `imageName`, `type`, 
+                                                        `itemId`, `ctr`, `path`, `link`, `createTime`) 
+                        VALUES (:imgId, :imgName, 3, 
+                                :brandId, 0, :filePath, '', :createTime);";
+                $res = $this->db->prepare($sql);
+                $res->bindParam(':imgId', $imgId, PDO::PARAM_STR);
+                $res->bindParam(':imgName', $imgName, PDO::PARAM_STR);
+                $res->bindParam(':brandId', $brandId, PDO::PARAM_STR);
+                $res->bindParam(':filePath', $brandImage, PDO::PARAM_STR);
+                $res->bindParam(':createTime', $now, PDO::PARAM_STR);
+                $res->execute();
+                if (!$res) { 
+                    $error = $res->errorInfo();
+                    $this->error = $error[0];
+                    $this->brandList();
                 }
             }
            $this->brandList();
@@ -135,56 +134,55 @@ class Brand
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
-        }else{
-            $now = date('Y-m-d H:i:s');
-            $sql = "UPDATE  `shingnan`.`brand` SET  `brandName` = :brandName, `description` = :description, 
-                    `lastUpdateTime` =  :lastUpdateTime WHERE  `brand`.`brandId` = :brandId;" ;
-            $res = $this->db->prepare($sql);
-            $res->bindParam(':brandId', $input['brandId'], PDO::PARAM_STR);
-            $res->bindParam(':brandName',$input['brandName'], PDO::PARAM_STR);
-            $res->bindParam(':description',$input['description'], PDO::PARAM_STR);
-            $res->bindParam(':lastUpdateTime',$now, PDO::PARAM_STR);
-            $res->execute();
+        }
+        $now = date('Y-m-d H:i:s');
+        $sql = "UPDATE `brand` SET  `brandName` = :brandName, `description` = :description, 
+                `lastUpdateTime` =  :lastUpdateTime WHERE  `brand`.`brandId` = :brandId;" ;
+        $res = $this->db->prepare($sql);
+        $res->bindParam(':brandId', $input['brandId'], PDO::PARAM_STR);
+        $res->bindParam(':brandName',$input['brandName'], PDO::PARAM_STR);
+        $res->bindParam(':description',$input['description'], PDO::PARAM_STR);
+        $res->bindParam(':lastUpdateTime',$now, PDO::PARAM_STR);
+        $res->execute();
 
-            if ($res->execute()) {
-            //update image 
-                $this->msg = '更新成功';
-                if ($_FILES['brandImage']['error'] == 0) {
-                    if( isset($input['imageId']) ){
-                        $fileInfo = $_FILES['brandImage'];
-                        $brandImage = uploadFile($fileInfo, '../media/picture');
-                        $sql = "UPDATE  `shingnan`.`image` SET  `path` = :pathinfo WHERE `image`.`imageId` = :imageId;";
-                        $res = $this->db->prepare($sql);
-                        $res->bindParam(':imageId', $input['imageId'], PDO::PARAM_STR);
-                        $res->bindParam(':pathinfo', $brandImage, PDO::PARAM_STR);
-                        $res->execute();
-                        if (!$res) { 
-                            $error = $res->errorInfo();
-                            $this->error = $error[0];
-                            $this->brandList();
-                        }
-                    }else{
-                        $idGen = new IdGenerator();
-                        $imgId = $idGen->GetID('image');
-                        $imgName = 'brand_'.$input['brandName'];
-                        $fileInfo = $_FILES['brandImage'];
-                        $brandImage = uploadFile($fileInfo, '../media/picture');
-                        $sql = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`, 
-                                                                `itemId`, `ctr`, `path`, `link`, `createTime`) 
-                                VALUES (:imgId, :imgName, 3, 
-                                        :brandId, 0, :filePath, '', :createTime);";
-                        $res = $this->db->prepare($sql);
-                        $res->bindParam(':imgId', $imgId, PDO::PARAM_STR);
-                        $res->bindParam(':imgName', $imgName, PDO::PARAM_STR);
-                        $res->bindParam(':brandId', $input['brandId'], PDO::PARAM_STR);
-                        $res->bindParam(':filePath', $brandImage, PDO::PARAM_STR);
-                        $res->bindParam(':createTime', $now, PDO::PARAM_STR);
-                        $res->execute();
-                        if (!$res) { 
-                            $error = $res->errorInfo();
-                            $this->error = $error[0];
-                            $this->brandList();
-                        }
+        if ($res->execute()) {
+        //update image 
+            $this->msg = '更新成功';
+            if ($_FILES['brandImage']['error'] == 0) {
+                if( isset($input['imageId']) ){
+                    $fileInfo = $_FILES['brandImage'];
+                    $brandImage = uploadFile($fileInfo, '../media/picture');
+                    $sql = "UPDATE `image` SET  `path` = :pathinfo WHERE `image`.`imageId` = :imageId;";
+                    $res = $this->db->prepare($sql);
+                    $res->bindParam(':imageId', $input['imageId'], PDO::PARAM_STR);
+                    $res->bindParam(':pathinfo', $brandImage, PDO::PARAM_STR);
+                    $res->execute();
+                    if (!$res) { 
+                        $error = $res->errorInfo();
+                        $this->error = $error[0];
+                        $this->brandList();
+                    }
+                }else{
+                    $idGen = new IdGenerator();
+                    $imgId = $idGen->GetID('image');
+                    $imgName = 'brand_'.$input['brandName'];
+                    $fileInfo = $_FILES['brandImage'];
+                    $brandImage = uploadFile($fileInfo, '../media/picture');
+                    $sql = "INSERT INTO `image` (`imageId`, `imageName`, `type`, 
+                                                            `itemId`, `ctr`, `path`, `link`, `createTime`) 
+                            VALUES (:imgId, :imgName, 3, 
+                                    :brandId, 0, :filePath, '', :createTime);";
+                    $res = $this->db->prepare($sql);
+                    $res->bindParam(':imgId', $imgId, PDO::PARAM_STR);
+                    $res->bindParam(':imgName', $imgName, PDO::PARAM_STR);
+                    $res->bindParam(':brandId', $input['brandId'], PDO::PARAM_STR);
+                    $res->bindParam(':filePath', $brandImage, PDO::PARAM_STR);
+                    $res->bindParam(':createTime', $now, PDO::PARAM_STR);
+                    $res->execute();
+                    if (!$res) { 
+                        $error = $res->errorInfo();
+                        $this->error = $error[0];
+                        $this->brandList();
                     }
                 }
             }
@@ -250,7 +248,7 @@ class Brand
                 $deleter->deleteFile($path['path']);
             }
             $now = date('Y-m-d H:i:s');
-            $sql = "UPDATE `shingnan`.`brand` SET  `isDelete` = 1, `lastUpdateTime` = :lastUpdateTime WHERE brandId = :brandId;";
+            $sql = "UPDATE `brand` SET  `isDelete` = 1, `lastUpdateTime` = :lastUpdateTime WHERE brandId = :brandId;";
             $res = $this->db->prepare($sql);
             $res->bindParam(':brandId', $input['brandId'], PDO::PARAM_STR);
             $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
@@ -283,7 +281,12 @@ class Brand
             //delete data file
             $deleter = new deleteImgFile();
             $deleter->deleteFile($path['path']);
-
+            $now = date('Y-m-d H:i:s');
+            $sql = "UPDATE `brand` SET  `isDelete` = 1, `lastUpdateTime` = :lastUpdateTime WHERE brandId = :brandId;";
+            $res = $this->db->prepare($sql);
+            $res->bindParam(':brandId', $input['brandId'], PDO::PARAM_STR);
+            $res->bindParam(':lastUpdateTime', $now, PDO::PARAM_STR);
+            $res->execute();
             $this->brandList();
         }
     }

@@ -85,7 +85,7 @@ class Frame
             $isPrimary = 1;                          
 
 
-        $sql = "INSERT INTO `shingnan`.`frame` (`frameId`, `no`, `frameName`, `brandId`, `shape`, `material`, `color`, `price`, 
+        $sql = "INSERT INTO `frame` (`frameId`, `no`, `frameName`, `brandId`, `shape`, `material`, `color`, `price`, 
                                                 `discountPrice`, `isLaunch`, `isPrimary`, `isDelete`, `lastUpdateTime`, `createTime`) 
                 VALUES (:frameId, :no, :frameName, :frameBrand, :shape, :material, :color, :price, 
                         :discountPrice, :isLaunch, :isPrimary, 0, :lastUpdateTime, :createTime);";
@@ -108,7 +108,7 @@ class Frame
             $this->msg = '資料新增成功';
             $frameStyle = $input['frameStyle'];
             if(!empty($frameStyle)){
-                $sql2 = "INSERT INTO `shingnan`.`frameStyle` (`styleId`, `frameId`, `createTime`) VALUES";
+                $sql2 = "INSERT INTO `frameStyle` (`styleId`, `frameId`, `createTime`) VALUES";
                 foreach($frameStyle as $s){
                     $sql2 .= " ('" . $s . "', '" . $frameId . "', '" . $now . "'),";
                 }
@@ -122,7 +122,7 @@ class Frame
             }
             //deal with image
             $uploadPath = '../media/picture';
-            $sql3 = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`,`itemId`, `ctr`, `path`, `link`, `createTime`) VALUES ";
+            $sql3 = "INSERT INTO `image` (`imageId`, `imageName`, `type`,`itemId`, `ctr`, `path`, `link`, `createTime`) VALUES ";
             for($i=0;$i<$input['imgCount'];$i++){
                 $imgCount = 'frameImage'.(string)($i+1);
                 if (isset($_FILES[$imgCount]['error']) && $_FILES[$imgCount]['error'] == 0){
@@ -219,7 +219,7 @@ class Frame
         if (isset($input['isPrimary']))
             $isPrimary = 1;
 
-        $sql = "UPDATE `shingnan`.`frame` 
+        $sql = "UPDATE `frame` 
                 SET `frameName` = :frameName, `no` = :no, `brandId` = :frameBrand, `shape` = :shape, `material` = :material, `color` = :color, `price` = :price, `discountPrice` = :discountPrice, `isLaunch` = :isLaunch, `isPrimary` = :isPrimary, `lastUpdateTime` =  :lastUpdateTime 
                 WHERE  `frame`.`frameId` = :frameId;" ;
         $res = $this->db->prepare($sql);
@@ -249,7 +249,7 @@ class Frame
                 $res->execute();
                 $this->db->commit();
 
-                $sql2 = "INSERT INTO `shingnan`.`frameStyle` (`styleId`, `frameId`, `createTime`) VALUES";
+                $sql2 = "INSERT INTO `frameStyle` (`styleId`, `frameId`, `createTime`) VALUES";
                 foreach($frameStyle as $s){
                     $sql2 .= " ('" . $s . "', '" . $frameId . "', '" . $now . "'),";
                 }
@@ -263,7 +263,7 @@ class Frame
             }
             //deal with image
             $uploadPath = '../media/picture';
-            $sql3 = "INSERT INTO `shingnan`.`image` (`imageId`, `imageName`, `type`,`itemId`, `ctr`, `path`, `link`, `createTime`) VALUES ";
+            $sql3 = "INSERT INTO `image` (`imageId`, `imageName`, `type`,`itemId`, `ctr`, `path`, `link`, `createTime`) VALUES ";
             for($i=0;$i<$input['imgCount'];$i++){
                 $imgCount = 'frameImage'.(string)($i+1);
                 if (isset($_FILES[$imgCount]['error']) && $_FILES[$imgCount]['error'] == 0){
