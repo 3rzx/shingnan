@@ -315,9 +315,8 @@ class User
         $res->bindParam(':address', $input['address'], PDO::PARAM_STR);
         $res->bindParam(':introducerId', $input['introducerId'], PDO::PARAM_STR);
         $res->execute();
-        if ($res) {
+        if (!$res) {
             $error = $res->errorInfo();
-            var_dump($error);
             return;
         }
         header("Location: ../controller/userController.php?action=userDetailPrepare&userId={$input["userId"]}");
