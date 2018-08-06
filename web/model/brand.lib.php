@@ -46,9 +46,10 @@ class Brand
         if ($_SESSION['isLogin'] == false) {
             $this->error = '請先登入!';
             $this->viewLogin();
-        }
-        $this->smarty->assign('error', $this->error);
-        $this->smarty->display('brand/brandAdd.html');
+        }else{
+            $this->smarty->assign('error', $this->error);
+            $this->smarty->display('brand/brandAdd.html');    
+        }    
     }
 
     /**

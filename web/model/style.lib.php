@@ -94,6 +94,7 @@ class Style
                         $error = $res->errorInfo();
                         $this->error = $error[0];
                         $this->styleList();
+                    }
                 }
             }
             $this->styleList();
